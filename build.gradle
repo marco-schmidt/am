@@ -169,8 +169,8 @@ publishing {
 }
 
 dependencyCheck {
-  autoUpdate=false
-  cveValidForHours=1
+  autoUpdate=true
+  cveValidForHours=24
   failBuildOnCVSS=11
 }
 

@@ -1,0 +1,177 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+}
+
+plugins {
+  id 'com.diffplug.gradle.spotless' version '3.21.1'
+  id 'com.github.jk1.dependency-license-report' version '1.6'
+  id 'com.github.spotbugs' version '1.7.1'
+  id 'org.owasp.dependencycheck' version '5.0.0-M2'
+}
+
+repositories {
+  jcenter()
+  mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'maven-publish'
+apply plugin: 'com.diffplug.gradle.spotless'
+apply plugin: 'com.github.jk1.dependency-license-report'
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'org.owasp.dependencycheck'
+
+description 'Asset Manager'
+version = '0.0.1-SNAPSHOT'
+mainClassName = 'am.app.App'
+def licenseName = 'The Apache Software License, Version 2.0'
+
+defaultTasks 'clean', 'check', 'javadoc', 'installDist', 'generateLicenseReport', 'run'
+
+dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.4.0'
+    compile group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.9.0'
+    testImplementation 'junit:junit:4.12'
+}
+
+wrapper {
+  gradleVersion = '5.4-rc-1'
+}
+
+tasks.withType(JavaCompile) {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = sourceCompatibility
+  options.debugOptions.debugLevel = 'lines,vars,source'
+  options.encoding = java.nio.charset.StandardCharsets.UTF_8
+  options.warnings = true
+  options.deprecation = true
+  options.compilerArgs += ['-Xlint:all', '-Werror']
+}
+
+def retrieveGitModification = { ->
+  def baos = new ByteArrayOutputStream()
+  exec {
+    commandLine 'git', 'diff', '--shortstat'
+    standardOutput = baos
+  }
+  return baos.toString().trim()
+}
+
+def retrieveGitRevision = { ->
+  def baos = new ByteArrayOutputStream()
+  exec {
+    commandLine 'git', 'rev-parse', 'HEAD'
+    standardOutput = baos
+  }
+  return baos.toString().trim()
+}
+
+jar {
+  manifest {
+    attributes(
+      'Implementation-Title': project.name,
+      'Implementation-Version': project.version,
+      'Created-By': 'Gradle ' + getProject().getGradle().getGradleVersion(),
+      'Build-Date': new Date(),
+      'License': licenseName,
+      'Main-Class': mainClassName,
+      'Java-Version': targetCompatibility,
+      'Git-Revision': retrieveGitRevision(),
+      'Git-Modified': retrieveGitModification(),
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '))
+  }
+  from ('.') {
+    include 'LICENSE'
+    into 'META-INF'
+  }
+}
+
+run {
+  args += '--print-env'
+}
+
+// https://github.com/diffplug/spotless
+spotless {
+  java {
+    licenseHeaderFile 'config/spotless/license-header.txt'
+    removeUnusedImports()
+    trimTrailingWhitespace()
+    eclipse().configFile 'config/eclipse/formatter.xml'
+  }
+}
+
+// https://github.com/checkstyle/checkstyle
+// http://checkstyle.sourceforge.net
+checkstyle {
+  toolVersion '8.19'
+  ignoreFailures false
+  showViolations true
+}
+
+// https://github.com/spotbugs/spotbugs
+spotbugs {
+  toolVersion = '3.1.12'
+  effort = 'max' // min, default, max
+  reportLevel = 'low' // low, medium, high  
+  ignoreFailures = false
+  excludeFilter = file('config/spotbugs/excludeBugsFilter.xml')
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+    html.stylesheet resources.text.fromFile('config/spotbugs/report-stylesheet.xsl')
+  }
+}
+
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task packageSources(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+publishing {
+  publications {
+    library(MavenPublication) {
+      from components.java
+      artifact packageSources
+      artifact packageJavadoc
+      groupId 'com.github.marco-schmidt'
+      pom.withXml {
+        asNode().appendNode('url', 'https://github.com/marco-schmidt/am')
+        asNode().appendNode('description', "${description}")
+        asNode().appendNode('scm').
+          appendNode('connection', 'scm:git:git@github.com:marco-schmidt/am.git').parent().
+          appendNode('developerConnection', 'scm:git:git@github.com:marco-schmidt/am.git').parent().
+          appendNode('url', 'https://github.com/marco-schmidt/am')
+        asNode().appendNode('developers').appendNode('developer').
+          appendNode('id', 'marco-schmidt').parent().
+          appendNode('name', 'Marco Schmidt').parent().
+          appendNode('email', 'mschmidtgit@protonmail.com')
+        asNode().appendNode('licenses').appendNode('license').
+          appendNode('name', licenseName).parent().
+          appendNode('url', 'https://www.apache.org/licenses/LICENSE-2.0.html')
+      }
+    }
+  }
+}
+
+dependencyCheck {
+  autoUpdate=false
+  cveValidForHours=1
+  failBuildOnCVSS=11
+}
+
+check.dependsOn dependencyCheckAnalyze

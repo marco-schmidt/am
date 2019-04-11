@@ -15,23 +15,22 @@
  */
 package am.app;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocument;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
-import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
-import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
@@ -53,6 +52,47 @@ public class App
     // {
     // exifTool = new ExifToolBuilder().build();
     // }
+  }
+
+  private void loadConfig(final AppConfig config)
+  {
+    final File dir = new File(System.getProperty("user.home"));
+    final File file = new File(dir, ".am.properties");
+    final String fileName = file.getAbsolutePath();
+    if (file.exists())
+    {
+      BufferedReader reader = null;
+      try
+      {
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        final Properties props = new Properties();
+        props.load(reader);
+        config.setProperties(props);
+        LOGGER.debug(config.msg("init.info.success_load_configuration", fileName, props.size()));
+      }
+      catch (final IOException e)
+      {
+        LOGGER.error(config.msg("init.error.failure_load_configuration", fileName, e.getMessage()));
+      }
+      finally
+      {
+        try
+        {
+          if (reader != null)
+          {
+            reader.close();
+          }
+        }
+        catch (final IOException e)
+        {
+          LOGGER.error(config.msg("init.error.failure_close_configuration", fileName, e.getMessage()));
+        }
+      }
+    }
+    else
+    {
+      LOGGER.info(config.msg("init.info.skip_load_configuration", fileName));
+    }
   }
 
   private boolean initialize(final AppConfig config, final String... args)
@@ -83,6 +123,7 @@ public class App
       {
         info.print(config);
       }
+      loadConfig(config);
     }
     else
     {
@@ -91,29 +132,16 @@ public class App
     return success;
   }
 
-  public static void wd() throws MediaWikiApiErrorException
-  {
-    final WikibaseDataFetcher wbdf = WikibaseDataFetcher.getWikidataDataFetcher();
-    final EntityDocument q42 = wbdf.getEntityDocument("Q42");
-    System.out.println("The current revision of the data for entity Q42 is " + q42.getRevisionId());
-    final List<WbSearchEntitiesResult> list = wbdf.searchEntities("Wikidata Toolkit");
-    for (final WbSearchEntitiesResult res : list)
-    {
-      System.out.println(res.getTitle() + " " + res.getLabel());
-      final EntityDocument ent = wbdf.getEntityDocument(res.getEntityId());
-      if (ent instanceof ItemDocument)
-      {
-        final ItemDocument doc = (ItemDocument) ent;
-        final Iterator<Statement> stats = doc.getAllStatements();
-        while (stats.hasNext())
-        {
-          final Statement s = stats.next();
-          System.out.println(s.toString());
-        }
-      }
-      break;
-    }
-  }
+  /*
+   * public static void wd() throws MediaWikiApiErrorException { final WikibaseDataFetcher wbdf =
+   * WikibaseDataFetcher.getWikidataDataFetcher(); final EntityDocument q42 = wbdf.getEntityDocument("Q42");
+   * System.out.println("The current revision of the data for entity Q42 is " + q42.getRevisionId()); final
+   * List<WbSearchEntitiesResult> list = wbdf.searchEntities("Wikidata Toolkit"); for (final WbSearchEntitiesResult res
+   * : list) { System.out.println(res.getTitle() + " " + res.getLabel()); final EntityDocument ent =
+   * wbdf.getEntityDocument(res.getEntityId()); if (ent instanceof ItemDocument) { final ItemDocument doc =
+   * (ItemDocument) ent; final Iterator<Statement> stats = doc.getAllStatements(); while (stats.hasNext()) { final
+   * Statement s = stats.next(); System.out.println(s.toString()); } } break; } }
+   */
 
   private static LoggerContext initLoggerContext(final LoggerContext loggerContext)
   {

@@ -17,6 +17,7 @@ package am.app;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import am.conversion.StrUtil;
 
@@ -47,6 +48,7 @@ public class AppConfig
   private Integer numberOfThreads;
   private Locale locale;
   private boolean quiet;
+  private Properties properties;
 
   public AppConfig()
   {
@@ -163,5 +165,15 @@ public class AppConfig
   public void setQuiet(final boolean quiet)
   {
     this.quiet = quiet;
+  }
+
+  public Properties getProperties()
+  {
+    return properties;
+  }
+
+  public void setProperties(Properties properties)
+  {
+    this.properties = properties;
   }
 }

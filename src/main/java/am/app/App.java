@@ -15,17 +15,10 @@
  */
 package am.app;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.Logger;
@@ -52,47 +45,6 @@ public class App
     // {
     // exifTool = new ExifToolBuilder().build();
     // }
-  }
-
-  private void loadConfig(final AppConfig config)
-  {
-    final File dir = new File(System.getProperty("user.home"));
-    final File file = new File(dir, ".am.properties");
-    final String fileName = file.getAbsolutePath();
-    if (file.exists())
-    {
-      BufferedReader reader = null;
-      try
-      {
-        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-        final Properties props = new Properties();
-        props.load(reader);
-        config.setProperties(props);
-        LOGGER.debug(config.msg("init.info.success_load_configuration", fileName, props.size()));
-      }
-      catch (final IOException e)
-      {
-        LOGGER.error(config.msg("init.error.failure_load_configuration", fileName, e.getMessage()));
-      }
-      finally
-      {
-        try
-        {
-          if (reader != null)
-          {
-            reader.close();
-          }
-        }
-        catch (final IOException e)
-        {
-          LOGGER.error(config.msg("init.error.failure_close_configuration", fileName, e.getMessage()));
-        }
-      }
-    }
-    else
-    {
-      LOGGER.info(config.msg("init.info.skip_load_configuration", fileName));
-    }
   }
 
   private boolean initialize(final AppConfig config, final String... args)
@@ -123,7 +75,7 @@ public class App
       {
         info.print(config);
       }
-      loadConfig(config);
+      AppConfigLoader.loadConfig(config);
     }
     else
     {

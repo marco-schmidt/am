@@ -16,10 +16,13 @@
 package am.app;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import am.conversion.StrUtil;
+import am.model.Volume;
 
 /**
  * Configuration for {@link App} application.
@@ -49,9 +52,11 @@ public class AppConfig
   private Locale locale;
   private boolean quiet;
   private Properties properties;
+  private final List<Volume> volumes;
 
   public AppConfig()
   {
+    volumes = new ArrayList<>();
   }
 
   public ResourceBundle getBundle()
@@ -175,5 +180,10 @@ public class AppConfig
   public void setProperties(Properties properties)
   {
     this.properties = properties;
+  }
+
+  public List<Volume> getVolumes()
+  {
+    return volumes;
   }
 }

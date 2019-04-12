@@ -21,8 +21,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Properties;
 import org.slf4j.LoggerFactory;
+import am.model.Volume;
 
 /**
  * Load configuration information from a properties file to an {@link AppConfig} object.
@@ -35,6 +37,37 @@ public final class AppConfigLoader
   private AppConfigLoader()
   {
     // prevent instantiation
+  }
+
+  private static void loadVolumes(final AppConfig config, final Properties props)
+  {
+    final List<Volume> volumes = config.getVolumes();
+    int volNr = 1;
+    boolean found = true;
+    do
+    {
+      final String key = "volume" + volNr;
+      final Object value = props.remove(key);
+      if (value == null)
+      {
+        found = false;
+      }
+      else
+      {
+        final Volume vol = new Volume();
+        vol.setPath(value.toString());
+        volumes.add(vol);
+        volNr++;
+      }
+    }
+    while (found);
+    LOGGER.debug(config.msg("init.debug.loaded_volumes", volumes.size()));
+  }
+
+  public static void interpretProperties(final AppConfig config)
+  {
+    final Properties props = config.getProperties();
+    loadVolumes(config, props);
   }
 
   public static void loadConfig(final AppConfig config)

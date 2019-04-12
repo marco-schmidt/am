@@ -76,6 +76,7 @@ public class App
         info.print(config);
       }
       AppConfigLoader.loadConfig(config);
+      AppConfigLoader.interpretProperties(config);
     }
     else
     {

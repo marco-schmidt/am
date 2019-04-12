@@ -34,10 +34,21 @@ def licenseName = 'The Apache Software License, Version 2.0'
 defaultTasks 'clean', 'check', 'javadoc', 'installDist', 'generateLicenseReport', 'run'
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.4.0'
-    compile group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.9.0'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.4.0'
+    implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.9.0'
+    // force two particular versions of transitive dependencies to fix security issues
+    implementation('com.fasterxml.jackson.core:jackson-databind') {
+      version {
+        strictly '2.9.8'
+      }
+    }
+    implementation('org.apache.commons:commons-compress') {
+      version {
+        strictly '1.18'
+      }
+    }
     testImplementation 'junit:junit:4.12'
 }
 
@@ -94,7 +105,7 @@ jar {
 }
 
 run {
-  args += '--print-env'
+  args += ['--print-env', '-l', 'debug']
 }
 
 // https://github.com/diffplug/spotless
@@ -169,9 +180,8 @@ publishing {
 }
 
 dependencyCheck {
-  autoUpdate=true
   cveValidForHours=24
-  failBuildOnCVSS=11
+  failBuildOnCVSS=0
 }
 
 check.dependsOn dependencyCheckAnalyze

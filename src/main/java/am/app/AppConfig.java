@@ -57,6 +57,7 @@ public class AppConfig
   public AppConfig()
   {
     volumes = new ArrayList<>();
+    setProperties(new Properties());
   }
 
   public ResourceBundle getBundle()

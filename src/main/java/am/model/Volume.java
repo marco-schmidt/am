@@ -21,6 +21,7 @@ package am.model;
 public class Volume
 {
   private String path;
+  private Directory root;
 
   public String getPath()
   {
@@ -30,5 +31,15 @@ public class Volume
   public void setPath(String path)
   {
     this.path = path;
+  }
+
+  public Directory getRoot()
+  {
+    return root;
+  }
+
+  public void setRoot(Directory root)
+  {
+    this.root = root;
   }
 }

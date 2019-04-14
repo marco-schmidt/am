@@ -13,26 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.app;
+package am.model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Main mode of command line application {@link App}.
+ * Data model class representing a directory as part of a {@link Volume}. Has a name, contains subdirectories and files.
  */
-public enum ProcessMode
+public class Directory
 {
+  private String name;
+  private final List<Directory> subdirectories = new ArrayList<>();
+  private final List<File> files = new ArrayList<>();
 
-  /**
-   * Display program help.
-   */
-  ShowHelp,
+  public String getName()
+  {
+    return name;
+  }
 
-  /**
-   * Display program version.
-   */
-  ShowVersion,
+  public void setName(String name)
+  {
+    this.name = name;
+  }
 
-  /**
-   * Check current file system state against catalog.
-   */
-  Check
+  public void add(Directory d)
+  {
+    subdirectories.add(d);
+  }
+
+  public void add(File f)
+  {
+    files.add(f);
+  }
 }

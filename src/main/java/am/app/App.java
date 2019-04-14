@@ -24,6 +24,8 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import am.filesystem.VolumeScanner;
+import am.model.Volume;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
@@ -119,16 +121,15 @@ public class App
 
     final PatternLayoutEncoder encoder = new PatternLayoutEncoder();
     encoder.setContext(loggerContext);
-    // encoder.setPattern("%message%n");
     encoder.setPattern(AppConfig.DEFAULT_LOGGING_PATTERN);
     encoder.start();
 
-    final ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
-    appender.setContext(loggerContext);
-    appender.setEncoder(encoder);
-    appender.start();
+    final ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<ILoggingEvent>();
+    consoleAppender.setContext(loggerContext);
+    consoleAppender.setEncoder(encoder);
+    consoleAppender.start();
+    rootLogger.addAppender(consoleAppender);
 
-    rootLogger.addAppender(appender);
     rootLogger.setLevel(Level.INFO);
   }
 
@@ -161,7 +162,11 @@ public class App
     }
     default:
     {
-      // TODO: process volumes
+      for (final Volume vol : config.getVolumes())
+      {
+        final VolumeScanner scanner = new VolumeScanner(config, vol);
+        scanner.scan();
+      }
       break;
     }
     }
@@ -173,6 +178,7 @@ public class App
     TimeZone.setDefault(TimeZone.getTimeZone(ZoneOffset.UTC));
     final AppConfig config = new AppConfig();
     config.setLocale(Locale.ENGLISH);
+    config.setMode(ProcessMode.Check);
     initLogger(config);
     if (app.initialize(config, args))
     {

@@ -32,17 +32,17 @@ public class Directory
     return name;
   }
 
-  public void setName(String name)
+  public void setName(final String name)
   {
     this.name = name;
   }
 
-  public void add(Directory d)
+  public void add(final Directory d)
   {
     subdirectories.add(d);
   }
 
-  public void add(File f)
+  public void add(final File f)
   {
     files.add(f);
   }

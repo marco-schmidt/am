@@ -15,22 +15,13 @@
  */
 package am.app;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import am.filesystem.VolumeScanner;
 import am.model.Volume;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.ConsoleAppender;
 
 /**
  */
@@ -73,12 +64,12 @@ public class App
       final SystemInfo info = new SystemInfo();
       config.setSystemInfo(info);
       info.initialize(config, args);
+      AppConfigLoader.loadConfig(config);
+      AppConfigLoader.interpretProperties(config);
       if (config.isShowEnvironment())
       {
         info.print(config);
       }
-      AppConfigLoader.loadConfig(config);
-      AppConfigLoader.interpretProperties(config);
     }
     else
     {
@@ -97,41 +88,6 @@ public class App
    * (ItemDocument) ent; final Iterator<Statement> stats = doc.getAllStatements(); while (stats.hasNext()) { final
    * Statement s = stats.next(); System.out.println(s.toString()); } } break; } }
    */
-
-  private static LoggerContext initLoggerContext(final LoggerContext loggerContext)
-  {
-    loggerContext.reset();
-    return loggerContext;
-  }
-
-  private static void initLogger(final AppConfig config)
-  {
-    final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory
-        .getLogger(Logger.ROOT_LOGGER_NAME);
-    final LoggerContext loggerContext = initLoggerContext(rootLogger.getLoggerContext());
-
-    try
-    {
-      MDC.put(AppConfig.MDC_MACHINE, InetAddress.getLocalHost().getHostName());
-    }
-    catch (IllegalArgumentException | UnknownHostException e)
-    {
-      LOGGER.error(config.msg("system.error.failed_to_look_up_host", e.getMessage()));
-    }
-
-    final PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-    encoder.setContext(loggerContext);
-    encoder.setPattern(AppConfig.DEFAULT_LOGGING_PATTERN);
-    encoder.start();
-
-    final ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<ILoggingEvent>();
-    consoleAppender.setContext(loggerContext);
-    consoleAppender.setEncoder(encoder);
-    consoleAppender.start();
-    rootLogger.addAppender(consoleAppender);
-
-    rootLogger.setLevel(Level.INFO);
-  }
 
   private void printVersion(final AppConfig config)
   {
@@ -179,7 +135,9 @@ public class App
     final AppConfig config = new AppConfig();
     config.setLocale(Locale.ENGLISH);
     config.setMode(ProcessMode.Check);
-    initLogger(config);
+    final LoggingHandler log = new LoggingHandler();
+    config.setLoggingHandler(log);
+    log.initialize(config);
     if (app.initialize(config, args))
     {
       app.process(config);

@@ -33,6 +33,7 @@ import am.model.Volume;
 public final class AppConfigLoader
 {
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigLoader.class);
+  private static final String LOG_DIR = "logDir";
 
   private AppConfigLoader()
   {
@@ -67,6 +68,22 @@ public final class AppConfigLoader
   public static void interpretProperties(final AppConfig config)
   {
     final Properties props = config.getProperties();
+    final LoggingHandler loggingHandler = config.getLoggingHandler();
+    if (props.containsKey(LOG_DIR))
+    {
+      final Object logDir = props.remove(LOG_DIR);
+      final String path = logDir.toString();
+      final File dir = new File(path);
+      if (dir.isDirectory())
+      {
+        loggingHandler.setLogDirectory(dir);
+        loggingHandler.initializeFile(config);
+      }
+      else
+      {
+        LOGGER.error(config.msg("init.error.invalid_log_directory", path));
+      }
+    }
     loadVolumes(config, props);
   }
 

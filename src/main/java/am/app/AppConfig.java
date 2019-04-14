@@ -53,11 +53,13 @@ public class AppConfig
   private boolean quiet;
   private Properties properties;
   private final List<Volume> volumes;
+  private LoggingHandler loggingHandler;
 
   public AppConfig()
   {
     volumes = new ArrayList<>();
     setProperties(new Properties());
+    loggingHandler = new LoggingHandler();
   }
 
   public ResourceBundle getBundle()
@@ -186,5 +188,15 @@ public class AppConfig
   public List<Volume> getVolumes()
   {
     return volumes;
+  }
+
+  public LoggingHandler getLoggingHandler()
+  {
+    return loggingHandler;
+  }
+
+  public void setLoggingHandler(LoggingHandler loggingHandler)
+  {
+    this.loggingHandler = loggingHandler;
   }
 }

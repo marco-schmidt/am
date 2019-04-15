@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.model;
+package am.filesystem.model;
 
 /**
  * Data model class for a volume, a directory tree mounted below a path.

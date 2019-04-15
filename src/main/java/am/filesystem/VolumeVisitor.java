@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.Stack;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
-import am.model.Directory;
-import am.model.File;
+import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 
 /**
  * Visit all files and directories in a volume, an abstraction for a directory tree.

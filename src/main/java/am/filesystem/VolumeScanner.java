@@ -22,8 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
-import am.model.Directory;
-import am.model.Volume;
+import am.filesystem.model.Directory;
+import am.filesystem.model.Volume;
 
 /**
  * Scan a directory tree for entries and put them into a {@link Volume} object.

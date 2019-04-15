@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import am.conversion.StrUtil;
-import am.model.Volume;
+import am.filesystem.model.Volume;
 
 /**
  * Configuration for {@link App} application.

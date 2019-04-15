@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 import org.slf4j.LoggerFactory;
-import am.model.Volume;
+import am.filesystem.model.Volume;
 
 /**
  * Load configuration information from a properties file to an {@link AppConfig} object.
@@ -65,9 +65,8 @@ public final class AppConfigLoader
     LOGGER.debug(config.msg("init.debug.loaded_volumes", volumes.size()));
   }
 
-  public static void interpretProperties(final AppConfig config)
+  private static void initLogging(final AppConfig config, final Properties props)
   {
-    final Properties props = config.getProperties();
     final LoggingHandler loggingHandler = config.getLoggingHandler();
     if (props.containsKey(LOG_DIR))
     {
@@ -84,6 +83,12 @@ public final class AppConfigLoader
         LOGGER.error(config.msg("init.error.invalid_log_directory", path));
       }
     }
+  }
+
+  public static void interpretProperties(final AppConfig config)
+  {
+    final Properties props = config.getProperties();
+    initLogging(config, props);
     loadVolumes(config, props);
   }
 

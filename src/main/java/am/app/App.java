@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
 import am.filesystem.VolumeScanner;
-import am.model.Volume;
+import am.filesystem.model.Volume;
 
 /**
  */

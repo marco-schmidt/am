@@ -28,7 +28,6 @@ apply plugin: 'com.github.spotbugs'
 apply plugin: 'org.owasp.dependencycheck'
 
 description 'Asset Manager'
-version = '0.0.1-SNAPSHOT'
 mainClassName = 'am.app.App'
 def licenseName = 'The Apache Software License, Version 2.0'
 

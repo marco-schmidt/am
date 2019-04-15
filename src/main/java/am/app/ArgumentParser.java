@@ -124,6 +124,13 @@ public class ArgumentParser
         {
           config.setQuiet(true);
         };
+      }, new AbstractParameter("args.config_file", "config", "c", ParameterType.File)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setConfigFileName(nextArg);
+        };
       }
   };
   private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentParser.class);

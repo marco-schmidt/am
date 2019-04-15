@@ -89,9 +89,18 @@ public final class AppConfigLoader
 
   public static void loadConfig(final AppConfig config)
   {
-    final File dir = new File(System.getProperty("user.home"));
-    final File file = new File(dir, ".am.properties");
-    final String fileName = file.getAbsolutePath();
+    final String fileName = config.getConfigFileName();
+    File file;
+    if (fileName == null)
+    {
+      final File dir = new File(System.getProperty("user.home"));
+      file = new File(dir, ".am.properties");
+    }
+    else
+    {
+      file = new File(fileName);
+    }
+
     if (file.exists())
     {
       BufferedReader reader = null;

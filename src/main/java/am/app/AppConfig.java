@@ -54,6 +54,7 @@ public class AppConfig
   private Properties properties;
   private final List<Volume> volumes;
   private LoggingHandler loggingHandler;
+  private String configFileName;
 
   public AppConfig()
   {
@@ -198,5 +199,15 @@ public class AppConfig
   public void setLoggingHandler(LoggingHandler loggingHandler)
   {
     this.loggingHandler = loggingHandler;
+  }
+
+  public String getConfigFileName()
+  {
+    return configFileName;
+  }
+
+  public void setConfigFileName(String configFileName)
+  {
+    this.configFileName = configFileName;
   }
 }

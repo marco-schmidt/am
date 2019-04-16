@@ -46,4 +46,14 @@ public class Directory
   {
     files.add(f);
   }
+
+  public List<Directory> getSubdirectories()
+  {
+    return new ArrayList<>(subdirectories);
+  }
+
+  public List<File> getFiles()
+  {
+    return new ArrayList<>(files);
+  }
 }

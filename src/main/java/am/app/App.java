@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
+import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
 
@@ -123,6 +124,8 @@ public class App
         final VolumeScanner scanner = new VolumeScanner(config, vol);
         scanner.scan();
       }
+      final TsvSerialization tsv = new TsvSerialization();
+      tsv.save(config, config.getVolumes());
       break;
     }
     }

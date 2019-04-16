@@ -34,6 +34,7 @@ public final class AppConfigLoader
 {
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigLoader.class);
   private static final String LOG_DIR = "logDir";
+  private static final String TSV_DIR = "tsvDir";
 
   private AppConfigLoader()
   {
@@ -90,6 +91,25 @@ public final class AppConfigLoader
     final Properties props = config.getProperties();
     initLogging(config, props);
     loadVolumes(config, props);
+    initDatabase(config, props);
+  }
+
+  private static void initDatabase(AppConfig config, Properties props)
+  {
+    if (props.containsKey(TSV_DIR))
+    {
+      final Object obj = props.remove(TSV_DIR);
+      final String dirName = obj.toString();
+      final File dir = new File(dirName);
+      if (dir.isDirectory())
+      {
+        config.setTsvDirectory(dir);
+      }
+      else
+      {
+        LOGGER.error(config.msg("init.error.tsv_dir_does_not_exist", dirName));
+      }
+    }
   }
 
   public static void loadConfig(final AppConfig config)

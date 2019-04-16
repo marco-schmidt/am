@@ -15,6 +15,7 @@
  */
 package am.app;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class AppConfig
   private final List<Volume> volumes;
   private LoggingHandler loggingHandler;
   private String configFileName;
+  private File tsvDirectory;
 
   public AppConfig()
   {
@@ -209,5 +211,15 @@ public class AppConfig
   public void setConfigFileName(String configFileName)
   {
     this.configFileName = configFileName;
+  }
+
+  public File getTsvDirectory()
+  {
+    return tsvDirectory;
+  }
+
+  public void setTsvDirectory(File tsvDirectory)
+  {
+    this.tsvDirectory = tsvDirectory;
   }
 }

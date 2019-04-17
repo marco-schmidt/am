@@ -114,12 +114,13 @@ public final class AppConfigLoader
 
   public static void loadConfig(final AppConfig config)
   {
-    final String fileName = config.getConfigFileName();
+    String fileName = config.getConfigFileName();
     File file;
     if (fileName == null)
     {
       final File dir = new File(System.getProperty("user.home"));
       file = new File(dir, ".am.properties");
+      fileName = file.getAbsolutePath();
     }
     else
     {

@@ -49,19 +49,6 @@ public class App
     final ArgumentParser parser = new ArgumentParser();
     if (parser.parse(config, args))
     {
-      // for (final String dirName : config.getDirectoryNames())
-      // {
-      // try
-      // {
-      // LOGGER.debug(config.msg("args.debug.scanning_directory", dirName));
-      // // Files.walkFileTree(Paths.get(dirName), new CollectAllFilesVisitor(config));
-      // }
-      // catch (final IOException e)
-      // {
-      // LOGGER.error(config.msg("args.error.scanning_directory", dirName), e);
-      // }
-      // }
-
       final SystemInfo info = new SystemInfo();
       config.setSystemInfo(info);
       info.initialize(config, args);

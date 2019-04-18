@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import am.conversion.StrUtil;
 import am.filesystem.model.Volume;
 
@@ -57,6 +58,7 @@ public class AppConfig
   private LoggingHandler loggingHandler;
   private String configFileName;
   private File tsvDirectory;
+  private Set<String> ignoreDirNames;
 
   public AppConfig()
   {
@@ -221,5 +223,15 @@ public class AppConfig
   public void setTsvDirectory(File tsvDirectory)
   {
     this.tsvDirectory = tsvDirectory;
+  }
+
+  public Set<String> getIgnoreDirNames()
+  {
+    return ignoreDirNames;
+  }
+
+  public void setIgnoreDirNames(Set<String> ignoreDirNames)
+  {
+    this.ignoreDirNames = ignoreDirNames;
   }
 }

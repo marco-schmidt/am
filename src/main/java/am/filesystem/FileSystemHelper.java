@@ -16,6 +16,9 @@
 package am.filesystem;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Helper routines to deal with the file system.
@@ -72,5 +75,22 @@ public final class FileSystemHelper
       }
     }
     return max;
+  }
+
+  public static Set<String> splitFileNames(final String value, final String sep)
+  {
+    final Set<String> result = new HashSet<>();
+    if (value == null)
+    {
+      return result;
+    }
+    if (sep == null)
+    {
+      result.add(value);
+      return result;
+    }
+    final String[] items = value.split(sep);
+    result.addAll(Arrays.asList(items));
+    return result;
   }
 }

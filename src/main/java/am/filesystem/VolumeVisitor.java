@@ -50,6 +50,12 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
   @Override
   public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException
   {
+    final Path fileName = path.getFileName();
+    final String name = fileName == null ? null : fileName.toString();
+    if (config.getIgnoreDirNames().contains(name))
+    {
+      return FileVisitResult.SKIP_SUBTREE;
+    }
     if (LOGGER.isDebugEnabled())
     {
       LOGGER.debug(config.msg("scanner.debug.enter", path.toAbsolutePath()));

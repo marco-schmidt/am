@@ -21,9 +21,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import org.slf4j.LoggerFactory;
+import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 
 /**
@@ -35,6 +38,7 @@ public final class AppConfigLoader
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigLoader.class);
   private static final String LOG_DIR = "logDir";
   private static final String TSV_DIR = "tsvDir";
+  private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
 
   private AppConfigLoader()
   {
@@ -92,6 +96,22 @@ public final class AppConfigLoader
     initLogging(config, props);
     loadVolumes(config, props);
     initDatabase(config, props);
+    initIgnoreDirNames(config, props);
+  }
+
+  private static void initIgnoreDirNames(final AppConfig config, final Properties props)
+  {
+    Set<String> names;
+    if (props.containsKey(IGNORE_DIR_NAMES))
+    {
+      final Object value = props.remove(IGNORE_DIR_NAMES);
+      names = FileSystemHelper.splitFileNames(value.toString(), ",");
+    }
+    else
+    {
+      names = new HashSet<>();
+    }
+    config.setIgnoreDirNames(names);
   }
 
   private static void initDatabase(AppConfig config, Properties props)

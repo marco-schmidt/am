@@ -16,7 +16,9 @@
 package am.filesystem.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data model class representing a directory as part of a {@link Volume}. Has a name, contains subdirectories and files.
@@ -26,6 +28,8 @@ public class Directory
   private String name;
   private final List<Directory> subdirectories = new ArrayList<>();
   private final List<File> files = new ArrayList<>();
+  private final Map<String, Directory> subdirectoryMap = new HashMap<>();
+  private final Map<String, File> fileMap = new HashMap<>();
 
   public String getName()
   {
@@ -40,11 +44,13 @@ public class Directory
   public void add(final Directory d)
   {
     subdirectories.add(d);
+    subdirectoryMap.put(d.getName(), d);
   }
 
   public void add(final File f)
   {
     files.add(f);
+    fileMap.put(f.getName(), f);
   }
 
   public List<Directory> getSubdirectories()
@@ -55,5 +61,18 @@ public class Directory
   public List<File> getFiles()
   {
     return new ArrayList<>(files);
+  }
+
+  public Directory findOrCreateSubdirectory(String name)
+  {
+    Directory result = subdirectoryMap.get(name);
+    if (result == null)
+    {
+      result = new Directory();
+      result.setName(name);
+      subdirectories.add(result);
+      subdirectoryMap.put(name, result);
+    }
+    return result;
   }
 }

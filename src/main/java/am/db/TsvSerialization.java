@@ -29,7 +29,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
@@ -40,6 +42,8 @@ import am.filesystem.model.Volume;
 
 /**
  * Read and write {@link Volume} information from and to a tab-separated values (tsv) file.
+ *
+ * @author Marco Schmidt
  */
 public class TsvSerialization
 {
@@ -48,16 +52,76 @@ public class TsvSerialization
   private static final String END_OF_LINE = "\n";
   private static final String TAB = "\t";
 
+  private void parseLine(final List<Volume> list, final Map<String, Volume> map, final String line)
+  {
+    final String[] items = line.split(TAB);
+    final String volumePath = items[0];
+    Volume volume = map.get(volumePath);
+    if (volume == null)
+    {
+      volume = new Volume();
+      volume.setPath(volumePath);
+      map.put(volumePath, volume);
+      list.add(volume);
+    }
+    final String dirPath = items[1];
+    final Directory dir = findOrCreateDirectory(volume, dirPath);
+    final am.filesystem.model.File file = new am.filesystem.model.File();
+    file.setName(items[2]);
+    file.setByteSize(Long.valueOf(items[3]));
+    file.setLastModified(new Date(Long.parseLong(items[4])));
+    dir.add(file);
+  }
+
+  private Directory findOrCreateDirectory(Volume volume, String dirPath)
+  {
+    // remove leading separator
+    if (dirPath.startsWith(DIR_SEPARATOR))
+    {
+      dirPath = dirPath.substring(DIR_SEPARATOR.length());
+    }
+
+    // find or create root directory
+    Directory root = volume.getRoot();
+    if (root == null)
+    {
+      root = new Directory();
+      root.setName("");
+      volume.setRoot(root);
+    }
+
+    // if the path is empty just return root
+    if (dirPath.isEmpty())
+    {
+      return root;
+    }
+
+    // get path parts
+    final String[] items = dirPath.split(DIR_SEPARATOR);
+
+    // traverse or create tree using parts
+    Directory dir = root;
+    int index = 0;
+    while (index < items.length)
+    {
+      dir = dir.findOrCreateSubdirectory(items[index++]);
+    }
+
+    return dir;
+  }
+
   public List<Volume> load(final AppConfig config)
   {
     final List<Volume> result = new ArrayList<>();
-    final File dir = config.getTsvDirectory();
-    final File[] files = dir.listFiles();
+    final Map<String, Volume> map = new HashMap<>();
+    final File tsvDir = config.getTsvDirectory();
+    final File[] files = tsvDir.listFiles();
     final File newest = FileSystemHelper.findNewest(files);
     if (newest == null)
     {
       return result;
     }
+    LOGGER.info(config.msg("init.info.load_tsv", newest.getAbsolutePath()));
     BufferedReader in = null;
     try
     {
@@ -65,10 +129,7 @@ public class TsvSerialization
       String line;
       while ((line = in.readLine()) != null)
       {
-        if (line.equals("todo: parse this"))
-        {
-          break;
-        }
+        parseLine(result, map, line);
       }
     }
     catch (final IOException e)
@@ -112,6 +173,7 @@ public class TsvSerialization
       {
         save(out, volume.getPath(), "", volume.getRoot());
       }
+      LOGGER.info(config.msg("init.info.finish_save_tsv", fullName));
     }
     catch (final FileNotFoundException e)
     {

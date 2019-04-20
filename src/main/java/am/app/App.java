@@ -16,6 +16,7 @@
 package am.app;
 
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
@@ -101,6 +102,8 @@ public class App
         scanner.scan();
       }
       final TsvSerialization tsv = new TsvSerialization();
+      final List<Volume> loadedVolumes = tsv.load(config);
+      LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
       tsv.save(config, config.getVolumes());
       break;
     }

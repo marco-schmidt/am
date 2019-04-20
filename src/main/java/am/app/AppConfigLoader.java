@@ -95,14 +95,14 @@ public final class AppConfigLoader
     }
   }
 
-  public static void interpretProperties(final AppConfig config)
+  public static boolean interpretProperties(final AppConfig config)
   {
     final Properties props = config.getProperties();
     initLogging(config, props);
     loadVolumes(config, props);
-    initDatabase(config, props);
     initIgnoreDirNames(config, props);
     initExiftool(config, props);
+    return initDatabase(config, props);
   }
 
   private static void initExiftool(AppConfig config, Properties props)
@@ -144,7 +144,7 @@ public final class AppConfigLoader
     config.setIgnoreDirNames(names);
   }
 
-  private static void initDatabase(AppConfig config, Properties props)
+  private static boolean initDatabase(AppConfig config, Properties props)
   {
     if (props.containsKey(TSV_DIR))
     {
@@ -158,9 +158,10 @@ public final class AppConfigLoader
       else
       {
         LOGGER.error(config.msg("init.error.tsv_dir_does_not_exist", dirName));
-        System.exit(1);
+        return false;
       }
     }
+    return true;
   }
 
   public static void loadConfig(final AppConfig config)

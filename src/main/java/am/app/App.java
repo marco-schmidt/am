@@ -43,7 +43,10 @@ public class App
       config.setSystemInfo(info);
       info.initialize(config, args);
       AppConfigLoader.loadConfig(config);
-      AppConfigLoader.interpretProperties(config);
+      if (!AppConfigLoader.interpretProperties(config))
+      {
+        return false;
+      }
       if (config.isShowEnvironment())
       {
         info.print(config);
@@ -124,6 +127,5 @@ public class App
     {
       app.process(config);
     }
-    // wd();
   }
 }

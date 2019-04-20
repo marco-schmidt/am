@@ -158,6 +158,7 @@ public final class AppConfigLoader
       else
       {
         LOGGER.error(config.msg("init.error.tsv_dir_does_not_exist", dirName));
+        System.exit(1);
       }
     }
   }

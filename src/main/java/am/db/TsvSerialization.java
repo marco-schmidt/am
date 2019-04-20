@@ -52,6 +52,21 @@ public class TsvSerialization
   private static final String END_OF_LINE = "\n";
   private static final String TAB = "\t";
 
+  private boolean checkTsvDirectory(final AppConfig config, final File tsvDir)
+  {
+    if (tsvDir == null)
+    {
+      LOGGER.info(config.msg("tsv.info.directory_undefined"));
+      return false;
+    }
+    if (!tsvDir.isDirectory())
+    {
+      LOGGER.error(config.msg("tsv.error.directory_does_not_exist", tsvDir.getAbsolutePath()));
+      return false;
+    }
+    return true;
+  }
+
   private void parseLine(final List<Volume> list, final Map<String, Volume> map, final String line)
   {
     final String[] items = line.split(TAB);
@@ -115,6 +130,10 @@ public class TsvSerialization
     final List<Volume> result = new ArrayList<>();
     final Map<String, Volume> map = new HashMap<>();
     final File tsvDir = config.getTsvDirectory();
+    if (!checkTsvDirectory(config, tsvDir))
+    {
+      return result;
+    }
     final File[] files = tsvDir.listFiles();
     final File newest = FileSystemHelper.findNewest(files);
     if (newest == null)
@@ -155,14 +174,14 @@ public class TsvSerialization
 
   public void save(final AppConfig config, final List<Volume> volumes)
   {
-    final File dir = config.getTsvDirectory();
-    if (dir == null)
+    final File tsvDir = config.getTsvDirectory();
+    if (!checkTsvDirectory(config, tsvDir))
     {
       return;
     }
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     final String name = formatter.format(new Date()) + ".log";
-    final File file = new File(dir, name);
+    final File file = new File(tsvDir, name);
     final String fullName = file.getAbsolutePath();
     Writer out = null;
     try

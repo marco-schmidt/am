@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.LoggerFactory;
+import com.thebuzzmedia.exiftool.ExifTool;
+import com.thebuzzmedia.exiftool.ExifToolBuilder;
+import com.thebuzzmedia.exiftool.Version;
+import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 
@@ -39,6 +43,7 @@ public final class AppConfigLoader
   private static final String LOG_DIR = "logDir";
   private static final String TSV_DIR = "tsvDir";
   private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
+  private static final String EXIFTOOL_PATH = "exiftoolPath";
 
   private AppConfigLoader()
   {
@@ -97,6 +102,31 @@ public final class AppConfigLoader
     loadVolumes(config, props);
     initDatabase(config, props);
     initIgnoreDirNames(config, props);
+    initExiftool(config, props);
+  }
+
+  private static void initExiftool(AppConfig config, Properties props)
+  {
+    if (props.containsKey(EXIFTOOL_PATH))
+    {
+      final Object exiftoolPath = props.remove(EXIFTOOL_PATH);
+      final String path = exiftoolPath.toString();
+      try
+      {
+        final ExifTool exifTool = new ExifToolBuilder().withPath(path).enableStayOpen().build();
+        final Version version = exifTool.getVersion();
+        LOGGER.info(config.msg("init.info.exiftool_setup", path, version.toString()));
+        config.setExifTool(exifTool);
+      }
+      catch (final UnsupportedFeatureException ex)
+      {
+        LOGGER.error(config.msg("init.error.exiftool_setup", path), ex);
+      }
+    }
+    else
+    {
+      LOGGER.debug(config.msg("init.debug.exiftool_undefined"));
+    }
   }
 
   private static void initIgnoreDirNames(final AppConfig config, final Properties props)

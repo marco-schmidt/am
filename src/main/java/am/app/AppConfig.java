@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
+import com.thebuzzmedia.exiftool.ExifTool;
 import am.conversion.StrUtil;
 import am.filesystem.model.Volume;
 
@@ -59,6 +60,7 @@ public class AppConfig
   private String configFileName;
   private File tsvDirectory;
   private Set<String> ignoreDirNames;
+  private ExifTool exifTool;
 
   public AppConfig()
   {
@@ -233,5 +235,15 @@ public class AppConfig
   public void setIgnoreDirNames(Set<String> ignoreDirNames)
   {
     this.ignoreDirNames = ignoreDirNames;
+  }
+
+  public ExifTool getExifTool()
+  {
+    return exifTool;
+  }
+
+  public void setExifTool(ExifTool exifTool)
+  {
+    this.exifTool = exifTool;
   }
 }

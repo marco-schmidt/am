@@ -29,17 +29,6 @@ import am.filesystem.model.Volume;
 public class App
 {
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(App.class);
-  static
-  {
-    // try
-    // {
-    // exifTool = new ExifToolBuilder().withPath("/usr/local/bin/exiftool").enableStayOpen().build();
-    // }
-    // catch (final UnsupportedFeatureException ex)
-    // {
-    // exifTool = new ExifToolBuilder().build();
-    // }
-  }
 
   private boolean initialize(final AppConfig config, final String... args)
   {

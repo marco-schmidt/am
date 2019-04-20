@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class SystemInfo
 {
   /** Application name (short version). */
-  public static final String APP_NAME = "ufxcoder";
+  public static final String APP_NAME = "am";
   private static final Logger LOGGER = LoggerFactory.getLogger(SystemInfo.class);
   private final List<AbstractMap.SimpleEntry<String, String>> props = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
   private String applicationVersion;
@@ -118,7 +118,7 @@ public class SystemInfo
     {
       result = InetAddress.getLocalHost();
     }
-    catch (UnknownHostException uhe)
+    catch (final UnknownHostException uhe)
     {
       LOGGER.error("Cannot determine local host.", uhe);
     }
@@ -168,7 +168,7 @@ public class SystemInfo
     {
       resources = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
     }
-    catch (IOException e)
+    catch (final IOException e)
     {
       LOGGER.error("Unable to retrieve manifest resources.", e);
     }
@@ -229,7 +229,7 @@ public class SystemInfo
         result = String.format("%s (%s)", result, jarName);
       }
     }
-    catch (IOException ioe)
+    catch (final IOException ioe)
     {
       LOGGER.error("Unable to parse manifest.", ioe);
     }

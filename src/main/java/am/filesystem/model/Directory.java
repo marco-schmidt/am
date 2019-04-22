@@ -31,6 +31,7 @@ public class Directory
   private final List<File> files = new ArrayList<>();
   private final Map<String, Directory> subdirectoryMap = new HashMap<>();
   private final Map<String, File> fileMap = new HashMap<>();
+  private java.io.File entry;
 
   public String getName()
   {
@@ -95,5 +96,15 @@ public class Directory
   public File getFile(String name)
   {
     return fileMap.get(name);
+  }
+
+  public java.io.File getEntry()
+  {
+    return entry;
+  }
+
+  public void setEntry(java.io.File entry)
+  {
+    this.entry = entry;
   }
 }

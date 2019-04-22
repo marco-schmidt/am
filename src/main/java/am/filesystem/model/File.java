@@ -26,6 +26,7 @@ public class File
   private Date lastModified;
   private Long byteSize;
   private String fileType;
+  private java.io.File entry;
 
   public String getName()
   {
@@ -65,5 +66,15 @@ public class File
   public void setFileType(String fileType)
   {
     this.fileType = fileType;
+  }
+
+  public java.io.File getEntry()
+  {
+    return entry;
+  }
+
+  public void setEntry(java.io.File entry)
+  {
+    this.entry = entry;
   }
 }

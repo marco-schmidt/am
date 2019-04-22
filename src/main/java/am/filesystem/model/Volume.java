@@ -15,6 +15,8 @@
  */
 package am.filesystem.model;
 
+import java.io.File;
+
 /**
  * Data model class for a volume, a directory tree mounted below a path.
  */
@@ -22,6 +24,7 @@ public class Volume
 {
   private String path;
   private Directory root;
+  private File entry;
 
   public String getPath()
   {
@@ -41,5 +44,15 @@ public class Volume
   public void setRoot(Directory root)
   {
     this.root = root;
+  }
+
+  public File getEntry()
+  {
+    return entry;
+  }
+
+  public void setEntry(File entry)
+  {
+    this.entry = entry;
   }
 }

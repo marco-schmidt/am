@@ -68,10 +68,12 @@ public class VolumeProcessor
   {
     if (scanned == null)
     {
+      // missing file
       return loaded;
     }
     if (loaded == null)
     {
+      // new file
       return scanned;
     }
     final File result = new File();
@@ -81,14 +83,19 @@ public class VolumeProcessor
     result.setByteSize(size);
     final String fileType = loaded.getFileType();
     result.setFileType(fileType);
-    // check size, last mod, hash, last hash check
-    // if (!size.equals(loaded.getByteSize()))
-    // {
-    //
-    // }
+    // changed: size, lastmod
     return result;
   }
 
+  /**
+   * Merge information from scanned and loaded volume.
+   *
+   * @param scannedVolume
+   *          volume information just loaded from the file system
+   * @param loadedVolume
+   *          volume information from database
+   * @return new volume with information from both merged
+   */
   public Volume mergeVolume(Volume scannedVolume, Volume loadedVolume)
   {
     final Volume result = new Volume();
@@ -106,6 +113,28 @@ public class VolumeProcessor
       result.put(vol.getPath(), vol);
     }
     return result;
+  }
+
+  private void assignFileSystemEntries(java.io.File parent, Directory dir)
+  {
+    final java.io.File dirEntry = new java.io.File(parent, dir.getName());
+    dir.setEntry(dirEntry);
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      assignFileSystemEntries(dirEntry, sub);
+    }
+    for (final File file : dir.getFiles())
+    {
+      file.setEntry(new java.io.File(dirEntry, file.getName()));
+    }
+  }
+
+  private void assignFileSystemEntries(Volume vol)
+  {
+    final String path = vol.getPath();
+    final java.io.File entry = new java.io.File(path);
+    vol.setEntry(entry);
+    assignFileSystemEntries(entry, vol.getRoot());
   }
 
   public List<Volume> processVolumes(List<Volume> scannedVolumes, List<Volume> loadedVolumes)
@@ -129,12 +158,14 @@ public class VolumeProcessor
       Volume merged;
       if (loaded == null)
       {
+        // new volume
         merged = scanned;
       }
       else
       {
         if (scanned == null)
         {
+          // missing volume
           merged = loaded;
         }
         else
@@ -143,6 +174,7 @@ public class VolumeProcessor
         }
       }
       result.add(merged);
+      assignFileSystemEntries(merged);
     }
 
     return result;

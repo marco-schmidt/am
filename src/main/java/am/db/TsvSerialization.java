@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,19 @@ public class TsvSerialization
   private static final String DIR_SEPARATOR = "/";
   private static final String END_OF_LINE = "\n";
   private static final String TAB = "\t";
+  private static final String TSV_FILE_EXTENSION = ".tsv";
+
+  /**
+   * File name filter accepting files with the extension ".tsv".
+   */
+  private static class TsvFilenameFilter implements FilenameFilter
+  {
+    @Override
+    public boolean accept(File dir, String name)
+    {
+      return name != null && name.toLowerCase(Locale.ENGLISH).endsWith(TSV_FILE_EXTENSION);
+    }
+  }
 
   private boolean checkTsvDirectory(final AppConfig config, final File tsvDir)
   {
@@ -135,7 +150,7 @@ public class TsvSerialization
     {
       return result;
     }
-    final File[] files = tsvDir.listFiles();
+    final File[] files = tsvDir.listFiles(new TsvFilenameFilter());
     final File newest = FileSystemHelper.findNewest(files);
     if (newest == null)
     {
@@ -181,7 +196,7 @@ public class TsvSerialization
       return;
     }
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-    final String name = formatter.format(new Date()) + ".tsv";
+    final String name = formatter.format(new Date()) + TSV_FILE_EXTENSION;
     final File file = new File(tsvDir, name);
     final String fullName = file.getAbsolutePath();
     Writer out = null;

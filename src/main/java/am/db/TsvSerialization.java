@@ -85,6 +85,7 @@ public class TsvSerialization
     file.setName(items[2]);
     file.setByteSize(Long.valueOf(items[3]));
     file.setLastModified(new Date(Long.parseLong(items[4])));
+    file.setFileType(items.length > 5 ? items[5] : "");
     dir.add(file);
   }
 
@@ -180,7 +181,7 @@ public class TsvSerialization
       return;
     }
     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-    final String name = formatter.format(new Date()) + ".log";
+    final String name = formatter.format(new Date()) + ".tsv";
     final File file = new File(tsvDir, name);
     final String fullName = file.getAbsolutePath();
     Writer out = null;
@@ -242,6 +243,9 @@ public class TsvSerialization
     sb.append(file.getByteSize());
     sb.append(TAB);
     sb.append(file.getLastModified().getTime());
+    sb.append(TAB);
+    final String fileType = file.getFileType();
+    sb.append(fileType == null ? "" : fileType);
     out.write(sb.toString());
     out.write(END_OF_LINE);
   }

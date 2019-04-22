@@ -15,6 +15,7 @@
  */
 package am.app;
 
+import java.io.File;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
+import am.processor.VolumeProcessor;
 
 /**
  */
@@ -83,6 +85,37 @@ public class App
     }
   }
 
+  private void processVolumes(final AppConfig config)
+  {
+    for (final Volume vol : config.getVolumes())
+    {
+      final String path = vol.getPath();
+      final File dir = new File(path);
+      if (dir.exists())
+      {
+        if (dir.isDirectory())
+        {
+          final VolumeScanner scanner = new VolumeScanner(config, vol);
+          scanner.scan();
+        }
+        else
+        {
+          LOGGER.error(config.msg("processor.error.not_a_directory", path));
+        }
+      }
+      else
+      {
+        LOGGER.error(config.msg("processor.error.directory_invalid", path));
+      }
+    }
+    final TsvSerialization tsv = new TsvSerialization();
+    final List<Volume> loadedVolumes = tsv.load(config);
+    LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
+    final VolumeProcessor proc = new VolumeProcessor();
+    final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
+    tsv.save(config, mergedVolumes);
+  }
+
   private void process(final AppConfig config)
   {
     switch (config.getMode())
@@ -99,15 +132,7 @@ public class App
     }
     default:
     {
-      for (final Volume vol : config.getVolumes())
-      {
-        final VolumeScanner scanner = new VolumeScanner(config, vol);
-        scanner.scan();
-      }
-      final TsvSerialization tsv = new TsvSerialization();
-      final List<Volume> loadedVolumes = tsv.load(config);
-      LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
-      tsv.save(config, config.getVolumes());
+      processVolumes(config);
       break;
     }
     }

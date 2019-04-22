@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Data model class representing a directory as part of a {@link Volume}. Has a name, contains subdirectories and files.
@@ -74,5 +75,25 @@ public class Directory
       subdirectoryMap.put(name, result);
     }
     return result;
+  }
+
+  public Set<String> getFileNames()
+  {
+    return fileMap.keySet();
+  }
+
+  public Set<String> getSubdirectoryNames()
+  {
+    return subdirectoryMap.keySet();
+  }
+
+  public Directory getSubdirectory(String name)
+  {
+    return subdirectoryMap.get(name);
+  }
+
+  public File getFile(String name)
+  {
+    return fileMap.get(name);
   }
 }

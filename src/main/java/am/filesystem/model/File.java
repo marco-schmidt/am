@@ -25,6 +25,7 @@ public class File
   private String name;
   private Date lastModified;
   private Long byteSize;
+  private String fileType;
 
   public String getName()
   {
@@ -54,5 +55,15 @@ public class File
   public void setByteSize(Long byteSize)
   {
     this.byteSize = byteSize;
+  }
+
+  public String getFileType()
+  {
+    return fileType;
+  }
+
+  public void setFileType(String fileType)
+  {
+    this.fileType = fileType;
   }
 }

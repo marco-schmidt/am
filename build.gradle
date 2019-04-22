@@ -105,7 +105,7 @@ jar {
 }
 
 run {
-  args += ['--print-env', '-l', 'debug']
+  args += ['--print-env', '-l', 'info']
 }
 
 // https://github.com/diffplug/spotless

@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-  id 'com.diffplug.gradle.spotless' version '3.21.1'
+  id 'com.diffplug.gradle.spotless' version '3.22.0'
   id 'com.github.jk1.dependency-license-report' version '1.6'
   id 'com.github.spotbugs' version '1.7.1'
   id 'org.owasp.dependencycheck' version '5.0.0-M2'

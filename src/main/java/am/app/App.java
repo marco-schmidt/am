@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
+import am.processor.MetadataExtraction;
 import am.processor.VolumeProcessor;
 
 /**
@@ -113,6 +114,8 @@ public class App
     LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
     final VolumeProcessor proc = new VolumeProcessor();
     final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
+    final MetadataExtraction extraction = new MetadataExtraction();
+    extraction.update(config, mergedVolumes);
     tsv.save(config, mergedVolumes);
   }
 

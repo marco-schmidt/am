@@ -1,11 +1,4 @@
 language: java
-os:
-  - windows
-  - linux
-  - osx
-jdk:
-  - openjdk8
-  - oraclejdk8
 
 matrix:
   include:
@@ -15,9 +8,9 @@ matrix:
     jdk: oraclejdk8
   allow_failures:
   - os: osx
-    jdk: openjdk8
+    jdk: oraclejdk8
   - os: windows
-    jdk: openjdk8
+    jdk: oraclejdk8
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

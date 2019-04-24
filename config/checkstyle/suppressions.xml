@@ -8,5 +8,5 @@
     <suppress checks="Javadoc.*"
               files=".*[/\\]src[/\\]test[/\\].+"/>
     <!-- allow catching Exception and similar high-level exception types because some APIs have such throws clauses -->
-    <suppress checks="IllegalCatch" files="src/.+MetadataExtraction\.java"/>
+    <suppress checks="IllegalCatch" files=".+MetadataExtraction\.java"/>
 </suppressions>

@@ -29,7 +29,8 @@ import am.filesystem.model.File;
 import am.filesystem.model.Volume;
 
 /**
- * Retrieve metadata on files.
+ * Retrieve metadata included in file by running exiftool on that file and parsing exiftool's standard output. Requires
+ * exiftool being installed on the system and the path to the exiftool executable defined in the am configuration file.
  *
  * @author Marco Schmidt
  */
@@ -120,7 +121,7 @@ public class MetadataExtraction
       {
         exifTool.close();
       }
-      catch (final Throwable e)
+      catch (final Exception e)
       {
         LOGGER.error("exiftool.error.failed_to_close", e);
       }

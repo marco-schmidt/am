@@ -16,6 +16,7 @@
 package am.processor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,20 +27,35 @@ import am.filesystem.model.File;
 import am.filesystem.model.Volume;
 
 /**
- * Process the content of a volume.
+ * Merge two descriptions of a directory tree (volume), one as was just determined from the file system and one stored
+ * in a database from a previous run.
  *
  * @author Marco Schmidt
  */
 public class VolumeProcessor
 {
+  private void assignFileState(Directory dir, FileState state)
+  {
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      assignFileState(sub, state);
+    }
+    for (final File file : dir.getFiles())
+    {
+      file.setState(state);
+    }
+  }
+
   private Directory mergeDirectory(Directory scanned, Directory loaded)
   {
     if (scanned == null)
     {
+      assignFileState(loaded, FileState.Missing);
       return loaded;
     }
     if (loaded == null)
     {
+      assignFileState(scanned, FileState.New);
       return scanned;
     }
     final Directory merged = new Directory();
@@ -68,22 +84,30 @@ public class VolumeProcessor
   {
     if (scanned == null)
     {
-      // missing file
+      loaded.setState(FileState.Missing);
       return loaded;
     }
     if (loaded == null)
     {
-      // new file
+      scanned.setState(FileState.New);
       return scanned;
     }
     final File result = new File();
     result.setName(scanned.getName());
-    result.setLastModified(scanned.getLastModified());
-    final Long size = scanned.getByteSize();
-    result.setByteSize(size);
+    final Date scannedLastMod = scanned.getLastModified();
+    final Date loadedLastMod = loaded.getLastModified();
+    boolean modified = !scannedLastMod.equals(loadedLastMod);
+    result.setLastModified(scannedLastMod);
+    final Long scannedSize = scanned.getByteSize();
+    final Long loadedSize = loaded.getByteSize();
+    if (!modified)
+    {
+      modified = !scannedSize.equals(loadedSize);
+    }
+    result.setState(modified ? FileState.Modified : FileState.Identical);
+    result.setByteSize(scannedSize);
     final String fileType = loaded.getFileType();
     result.setFileType(fileType);
-    // changed: size, lastmod
     return result;
   }
 

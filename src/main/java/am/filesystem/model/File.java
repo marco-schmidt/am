@@ -16,6 +16,7 @@
 package am.filesystem.model;
 
 import java.util.Date;
+import am.processor.FileState;
 
 /**
  * Data model class for a file as part of a {@link Directory} in a {@link Volume}.
@@ -27,6 +28,7 @@ public class File
   private Long byteSize;
   private String fileType;
   private java.io.File entry;
+  private FileState state = FileState.Unknown;
 
   public String getName()
   {
@@ -76,5 +78,15 @@ public class File
   public void setEntry(java.io.File entry)
   {
     this.entry = entry;
+  }
+
+  public FileState getState()
+  {
+    return state;
+  }
+
+  public void setState(FileState state)
+  {
+    this.state = state;
   }
 }

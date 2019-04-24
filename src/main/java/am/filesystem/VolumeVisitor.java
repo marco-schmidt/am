@@ -54,6 +54,10 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
     final String name = fileName == null ? null : fileName.toString();
     if (config.getIgnoreDirNames().contains(name))
     {
+      if (LOGGER.isDebugEnabled())
+      {
+        LOGGER.debug(config.msg("scanner.debug.skipping_ignored", path.toAbsolutePath(), name));
+      }
       return FileVisitResult.SKIP_SUBTREE;
     }
     if (LOGGER.isDebugEnabled())

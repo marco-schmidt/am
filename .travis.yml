@@ -6,6 +6,19 @@ os:
 jdk:
   - openjdk8
   - oraclejdk8
+
+matrix:
+  include:
+  - os: linux
+    jdk: openjdk8
+  - os: linux
+    jdk: oraclejdk8
+  allow_failures:
+  - os: osx
+    jdk: openjdk8
+  - os: windows
+    jdk: openjdk8
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

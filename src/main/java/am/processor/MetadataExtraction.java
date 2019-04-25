@@ -95,6 +95,7 @@ public class MetadataExtraction
           fileType = UNKNOWN_FILE_TYPE;
         }
         file.setFileType(fileType);
+        LOGGER.info(config.msg("exiftool.info.examined_file", getNumExamined(), entry.getAbsolutePath(), fileType));
       }
       catch (final IOException e)
       {

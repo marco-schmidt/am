@@ -182,15 +182,15 @@ public class VolumeProcessor
       Volume merged;
       if (loaded == null)
       {
-        // new volume
         merged = scanned;
+        assignFileState(merged.getRoot(), FileState.New);
       }
       else
       {
         if (scanned == null)
         {
-          // missing volume
           merged = loaded;
+          assignFileState(merged.getRoot(), FileState.Missing);
         }
         else
         {

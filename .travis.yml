@@ -10,7 +10,7 @@ matrix:
     osx_image: xcode9.3
   - os: windows
     name: "Windows: oraclejdk8 Java"
-    language: bash  # language: java is not yet supported on Travis CI Windows
+    language: bash  # "language: java" is not yet supported on Travis CI Windows
     env: PATH="/c/Program Files/Java/jdk1.8.0_211/bin:$PATH"
     before_install: choco install jdk8
 

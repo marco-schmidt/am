@@ -8,7 +8,7 @@ plugins {
   id 'com.diffplug.gradle.spotless' version '3.22.0'
   id 'com.github.jk1.dependency-license-report' version '1.6'
   id 'com.github.spotbugs' version '2.0.0'
-  id 'org.owasp.dependencycheck' version '5.0.0-M2'
+  id 'org.owasp.dependencycheck' version '5.0.0-M3.1'
   id 'net.researchgate.release' version '2.6.0'
 }
 

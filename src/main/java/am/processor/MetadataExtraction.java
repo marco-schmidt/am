@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
 import com.thebuzzmedia.exiftool.ExifTool;
+import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 import am.app.AppConfig;
@@ -84,10 +85,26 @@ public class MetadataExtraction
       {
         LOGGER.trace(config.msg("exiftool.trace.examining_file", entry.getAbsolutePath()));
       }
-      final ExifTool exifTool = config.getExifTool();
+      ExifTool exifTool = config.getExifTool();
       try
       {
         setNumExamined(getNumExamined() + 1);
+        final Long exifToolMaxUsage = config.getExifToolMaxUsage();
+        if (exifToolMaxUsage != null && exifToolMaxUsage.longValue() > 0
+            && getNumExamined() % exifToolMaxUsage.longValue() == 0)
+        {
+          LOGGER.info(config.msg("exiftool.info.reopen"));
+          try
+          {
+            exifTool.close();
+          }
+          catch (final Exception e)
+          {
+            LOGGER.error(config.msg("exiftool.error.failed_to_close"), e);
+          }
+          exifTool = new ExifToolBuilder().withPath(config.getExifToolPath()).enableStayOpen().build();
+          config.setExifTool(exifTool);
+        }
         final Map<Tag, String> meta = exifTool.getImageMeta(entry, EXIFTOOL_TAGS);
         fileType = meta.get(StandardTag.FILE_TYPE);
         if (fileType == null)

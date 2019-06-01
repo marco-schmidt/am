@@ -61,6 +61,8 @@ public class AppConfig
   private File tsvDirectory;
   private Set<String> ignoreDirNames;
   private ExifTool exifTool;
+  private String exifToolPath;
+  private Long exifToolMaxUsage;
 
   public AppConfig()
   {
@@ -245,5 +247,25 @@ public class AppConfig
   public void setExifTool(ExifTool exifTool)
   {
     this.exifTool = exifTool;
+  }
+
+  public String getExifToolPath()
+  {
+    return exifToolPath;
+  }
+
+  public void setExifToolPath(String exifToolPath)
+  {
+    this.exifToolPath = exifToolPath;
+  }
+
+  public Long getExifToolMaxUsage()
+  {
+    return exifToolMaxUsage;
+  }
+
+  public void setExifToolMaxUsage(Long exifToolMaxUsage)
+  {
+    this.exifToolMaxUsage = exifToolMaxUsage;
   }
 }

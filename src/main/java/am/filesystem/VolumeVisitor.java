@@ -60,9 +60,9 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
       }
       return FileVisitResult.SKIP_SUBTREE;
     }
-    if (LOGGER.isDebugEnabled())
+    if (LOGGER.isTraceEnabled())
     {
-      LOGGER.debug(config.msg("scanner.debug.enter", path.toAbsolutePath()));
+      LOGGER.trace(config.msg("scanner.trace.enter", path.toAbsolutePath()));
     }
     Directory dir;
     if (dirStack.isEmpty())
@@ -115,9 +115,9 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
   @Override
   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
   {
-    if (LOGGER.isDebugEnabled())
+    if (LOGGER.isTraceEnabled())
     {
-      LOGGER.debug(config.msg("scanner.debug.exit", dir.toAbsolutePath()));
+      LOGGER.trace(config.msg("scanner.trace.exit", dir.toAbsolutePath()));
     }
     dirStack.pop();
     return FileVisitResult.CONTINUE;

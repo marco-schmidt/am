@@ -8,13 +8,24 @@ matrix:
     jdk: oraclejdk8
   - os: osx
     osx_image: xcode9.3
+  - os: windows
+    name: "Windows: oraclejdk8 Java"
+    language: bash  # "language: java" is not yet supported on Travis CI Windows
+    env: PATH="/c/Program Files/Java/jdk1.8.0_211/bin:$PATH"
+    before_install: choco install jdk8
+    # script: java -version
+  - os: windows
+    name: "Windows: AdoptOpenJDK8 Java"
+    language: bash  # "language: java" is not yet supported on Travis CI Windows
+    env: PATH="/c/Program Files/AdoptOpenJDK/jdk8u212-b03/bin:$PATH"
+    before_install: choco install adoptopenjdk8
+    # script: java -version
   allow_failures:
   - os: windows
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-sudo: false
 cache:
   directories:
     - $HOME/.gradle/caches/

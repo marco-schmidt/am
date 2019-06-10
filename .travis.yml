@@ -30,6 +30,6 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-script: ./gradlew
+script: ./gradlew --stacktrace --info
 after_success:
   - unzip -c build/libs/am-*.jar META-INF/MANIFEST.MF

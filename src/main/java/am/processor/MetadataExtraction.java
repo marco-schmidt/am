@@ -167,8 +167,7 @@ public class MetadataExtraction
     else
     {
       final String[] items = mimeType.split("/");
-      if (items != null && items.length == 2 && items[0] != null && !items[0].isEmpty() && items[1] != null
-          && !items[1].isEmpty())
+      if (items.length == 2 && items[0] != null && !items[0].isEmpty() && items[1] != null && !items[1].isEmpty())
       {
         final String fileGroup = items[0];
         file.setFileGroup(fileGroup);

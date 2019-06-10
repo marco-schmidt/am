@@ -108,6 +108,15 @@ public class VolumeProcessor
     result.setByteSize(scannedSize);
     final String fileType = loaded.getFileType();
     result.setFileType(fileType);
+    if (result.getState() == FileState.Identical)
+    {
+      // if loaded and scanned are identical copy metadata from loaded record
+      result.setDurationNanos(loaded.getDurationNanos());
+      result.setImageHeight(loaded.getImageHeight());
+      result.setImageWidth(loaded.getImageWidth());
+      result.setMimeType(loaded.getMimeType());
+      result.setFileGroup(loaded.getFileGroup());
+    }
     return result;
   }
 

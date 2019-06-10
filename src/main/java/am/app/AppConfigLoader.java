@@ -118,7 +118,7 @@ public final class AppConfigLoader
         LOGGER.info(config.msg("init.info.exiftool_setup", path, version.toString()));
         config.setExifTool(exifTool);
         config.setExifToolPath(path);
-        config.setExifToolMaxUsage(Long.valueOf(3072));
+        config.setExifToolMaxUsage(Long.valueOf(2048));
       }
       catch (final UnsupportedFeatureException ex)
       {

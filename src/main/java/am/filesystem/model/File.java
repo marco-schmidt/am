@@ -26,7 +26,12 @@ public class File
   private String name;
   private Date lastModified;
   private Long byteSize;
+  private String fileGroup;
   private String fileType;
+  private String mimeType;
+  private Long durationNanos;
+  private Long imageWidth;
+  private Long imageHeight;
   private java.io.File entry;
   private FileState state = FileState.Unknown;
 
@@ -88,5 +93,55 @@ public class File
   public void setState(FileState state)
   {
     this.state = state;
+  }
+
+  public String getFileGroup()
+  {
+    return fileGroup;
+  }
+
+  public void setFileGroup(String fileGroup)
+  {
+    this.fileGroup = fileGroup;
+  }
+
+  public String getMimeType()
+  {
+    return mimeType;
+  }
+
+  public void setMimeType(String mimeType)
+  {
+    this.mimeType = mimeType;
+  }
+
+  public Long getDurationNanos()
+  {
+    return durationNanos;
+  }
+
+  public void setDurationNanos(Long durationNanos)
+  {
+    this.durationNanos = durationNanos;
+  }
+
+  public Long getImageWidth()
+  {
+    return imageWidth;
+  }
+
+  public void setImageWidth(Long imageWidth)
+  {
+    this.imageWidth = imageWidth;
+  }
+
+  public Long getImageHeight()
+  {
+    return imageHeight;
+  }
+
+  public void setImageHeight(Long imageHeight)
+  {
+    this.imageHeight = imageHeight;
   }
 }

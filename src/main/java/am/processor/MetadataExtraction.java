@@ -16,6 +16,7 @@
 package am.processor;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
+import com.thebuzzmedia.exiftool.core.UnspecifiedTag;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
@@ -41,10 +43,11 @@ public class MetadataExtraction
   /**
    * Non-null value for examination result 'unknown file type', to be stored so that a file will not be examined again.
    */
-  public static final String UNKNOWN_FILE_TYPE = "?";
+  public static final String UNKNOWN = "?";
+  private static final UnspecifiedTag DURATION = new UnspecifiedTag("Duration");
   private static final List<Tag> EXIFTOOL_TAGS = Arrays.asList(new Tag[]
   {
-      StandardTag.FILE_TYPE
+      StandardTag.MIME_TYPE, StandardTag.IMAGE_WIDTH, StandardTag.IMAGE_HEIGHT, DURATION,
   });
   private long numExamined;
 
@@ -77,7 +80,7 @@ public class MetadataExtraction
 
   private void update(AppConfig config, File file)
   {
-    String fileType = file.getFileType();
+    final String fileType = file.getFileType();
     final java.io.File entry = file.getEntry();
     if (fileType == null && entry.isFile())
     {
@@ -106,19 +109,74 @@ public class MetadataExtraction
           config.setExifTool(exifTool);
         }
         final Map<Tag, String> meta = exifTool.getImageMeta(entry, EXIFTOOL_TAGS);
-        fileType = meta.get(StandardTag.FILE_TYPE);
-        if (fileType == null)
-        {
-          fileType = UNKNOWN_FILE_TYPE;
-        }
-        file.setFileType(fileType);
-        LOGGER.info(config.msg("exiftool.info.examined_file", getNumExamined(), entry.getAbsolutePath(), fileType));
+        extractType(meta, file);
+        extractImageResolution(meta, file);
+        extractDuration(meta, file);
+        LOGGER.info(
+            config.msg("exiftool.info.examined_file", getNumExamined(), entry.getAbsolutePath(), file.getFileType()));
       }
       catch (final IOException e)
       {
         LOGGER.error(config.msg("exiftool.error.failed_to_retrieve", entry.getAbsolutePath()), e);
       }
     }
+  }
+
+  private Long getAsLong(Map<Tag, String> meta, Tag tag)
+  {
+    final String value = meta.get(tag);
+    if (value == null)
+    {
+      return null;
+    }
+    try
+    {
+      return Long.valueOf(value);
+    }
+    catch (final NumberFormatException e)
+    {
+      return null;
+    }
+  }
+
+  private void extractDuration(Map<Tag, String> meta, File file)
+  {
+    final String s = meta.get(DURATION);
+    Long result = null;
+    if (s != null)
+    {
+      final BigDecimal d = new BigDecimal(s).scaleByPowerOfTen(9);
+      result = Long.valueOf(d.longValue());
+    }
+    file.setDurationNanos(result);
+  }
+
+  private void extractImageResolution(Map<Tag, String> meta, File file)
+  {
+    file.setImageHeight(getAsLong(meta, StandardTag.IMAGE_HEIGHT));
+    file.setImageWidth(getAsLong(meta, StandardTag.IMAGE_WIDTH));
+  }
+
+  private void extractType(final Map<Tag, String> meta, final File file)
+  {
+    String mimeType = meta.get(StandardTag.MIME_TYPE);
+    if (mimeType == null)
+    {
+      mimeType = UNKNOWN;
+    }
+    else
+    {
+      final String[] items = mimeType.split("/");
+      if (items != null && items.length == 2 && items[0] != null && !items[0].isEmpty() && items[1] != null
+          && !items[1].isEmpty())
+      {
+        final String fileGroup = items[0];
+        file.setFileGroup(fileGroup);
+        final String fileType = items[1];
+        file.setFileType(fileType);
+      }
+    }
+    file.setMimeType(mimeType);
   }
 
   public void update(final AppConfig config, final List<Volume> volumes)

@@ -101,7 +101,31 @@ public class TsvSerialization
     file.setByteSize(Long.valueOf(items[3]));
     file.setLastModified(new Date(Long.parseLong(items[4])));
     file.setFileType(items.length > 5 ? items[5] : "");
+    file.setFileGroup(items.length > 6 ? items[6] : "");
+    file.setMimeType(items.length > 7 ? items[7] : "");
+    file.setImageWidth(items.length > 8 ? getAsLong(items[8]) : null);
+    file.setImageHeight(items.length > 9 ? getAsLong(items[9]) : null);
+    file.setDurationNanos(items.length > 10 ? getAsLong(items[10]) : null);
     dir.add(file);
+  }
+
+  private Long getAsLong(String string)
+  {
+    if (string == null)
+    {
+      return null;
+    }
+    else
+    {
+      try
+      {
+        return Long.parseLong(string);
+      }
+      catch (final NumberFormatException nfe)
+      {
+        return null;
+      }
+    }
   }
 
   private Directory findOrCreateDirectory(Volume volume, String dirPath)
@@ -246,6 +270,17 @@ public class TsvSerialization
     }
   }
 
+  private void append(StringBuffer sb, String value)
+  {
+    sb.append(TAB);
+    sb.append(value == null ? "" : value);
+  }
+
+  private void append(StringBuffer sb, Long value)
+  {
+    append(sb, value == null ? (String) null : value.toString());
+  }
+
   private void save(Writer out, String volPath, String path, am.filesystem.model.File file) throws IOException
   {
     final StringBuffer sb = new StringBuffer();
@@ -258,9 +293,12 @@ public class TsvSerialization
     sb.append(file.getByteSize());
     sb.append(TAB);
     sb.append(file.getLastModified().getTime());
-    sb.append(TAB);
-    final String fileType = file.getFileType();
-    sb.append(fileType == null ? "" : fileType);
+    append(sb, file.getFileType());
+    append(sb, file.getFileGroup());
+    append(sb, file.getMimeType());
+    append(sb, file.getImageWidth());
+    append(sb, file.getImageHeight());
+    append(sb, file.getDurationNanos());
     out.write(sb.toString());
     out.write(END_OF_LINE);
   }

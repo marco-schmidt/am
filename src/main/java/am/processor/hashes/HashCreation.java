@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.processor;
+package am.processor.hashes;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,19 +29,19 @@ import am.filesystem.FileSystemHelper;
 import am.filesystem.model.File;
 
 /**
- * Create hash value from file input.
+ * Create hash values from input streams like files.
  *
  * @author Marco Schmidt
  */
-public class FileHashCreation
+public class HashCreation
 {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FileHashCreation.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HashCreation.class);
 
   public void update(final AppConfig config, final File file)
   {
     // create digest to be used to compute hash value
     MessageDigest digest;
-    final String algorithm = config.getHashAlgorithm();
+    final String algorithm = config.getHashConfig().getAlgorithm();
     try
     {
       digest = MessageDigest.getInstance(algorithm);

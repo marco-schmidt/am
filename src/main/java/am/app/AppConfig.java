@@ -16,7 +16,6 @@
 package am.app;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.Set;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.conversion.StrUtil;
 import am.filesystem.model.Volume;
+import am.processor.hashes.HashConfig;
 
 /**
  * Configuration for {@link App} application.
@@ -49,10 +49,6 @@ public class AppConfig
    */
   public static final int DEFAULT_NUMBER_OF_THREADS_PER_CPU = 4;
 
-  /**
-   * Default name of hash algorithm to be used in {@link MessageDigest#getInstance(String)}.
-   */
-  public static final String DEFAULT_HASH_ALGORITHM = "SHA-256";
   private boolean showEnvironment;
   private ResourceBundle bundle;
   private ProcessMode mode = ProcessMode.ShowHelp;
@@ -69,13 +65,14 @@ public class AppConfig
   private ExifTool exifTool;
   private String exifToolPath;
   private Long exifToolMaxUsage;
-  private String hashAlgorithm = DEFAULT_HASH_ALGORITHM;
+  private HashConfig hashConfig;
 
   public AppConfig()
   {
     volumes = new ArrayList<>();
     setProperties(new Properties());
     loggingHandler = new LoggingHandler();
+    hashConfig = new HashConfig();
   }
 
   public ResourceBundle getBundle()
@@ -276,13 +273,13 @@ public class AppConfig
     this.exifToolMaxUsage = exifToolMaxUsage;
   }
 
-  public String getHashAlgorithm()
+  public HashConfig getHashConfig()
   {
-    return hashAlgorithm;
+    return hashConfig;
   }
 
-  public void setHashAlgorithm(String hashAlgorithm)
+  public void setHashConfig(HashConfig hashConfig)
   {
-    this.hashAlgorithm = hashAlgorithm;
+    this.hashConfig = hashConfig;
   }
 }

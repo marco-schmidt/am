@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
+import am.filesystem.model.FileState;
 import am.filesystem.model.Volume;
 
 /**

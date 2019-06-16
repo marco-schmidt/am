@@ -101,7 +101,10 @@ public final class FileSystemHelper
   }
 
   /**
-   * Close argument {@link Closeable}, e.g. a file stream.
+   * Close a {@link Closeable}, e.g. a file stream.
+   *
+   * @param cl
+   *          object to be closed, possibly null
    */
   public static void close(Closeable cl)
   {

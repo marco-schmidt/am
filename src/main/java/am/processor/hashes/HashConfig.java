@@ -30,7 +30,7 @@ public class HashConfig
   public static final String DEFAULT_HASH_ALGORITHM = "SHA-256";
 
   /**
-   * Default percentage value when following hashing strategy {@link HashStrategy.Percentage}.
+   * Default percentage value when following hashing strategy {@link HashStrategy#Percentage}.
    */
   public static final Double DEFAULT_PERCENTAGE = Double.valueOf(3.33d);
 

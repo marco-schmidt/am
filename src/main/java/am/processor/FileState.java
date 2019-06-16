@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.filesystem.model;
+package am.processor;
 
 /**
  * Enumeration type for the current state of a file compared to its previous state.

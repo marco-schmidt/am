@@ -16,7 +16,6 @@
 package am.filesystem.model;
 
 import java.util.Date;
-import am.processor.FileState;
 
 /**
  * Data model class for a file as part of a {@link Directory} in a {@link Volume}.

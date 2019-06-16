@@ -16,6 +16,7 @@
 package am.app;
 
 import java.io.File;
+import java.security.MessageDigest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,11 @@ public class AppConfig
    * If no argument is specified, use this many threads per CPU as returned by {@link Runtime#availableProcessors()}.
    */
   public static final int DEFAULT_NUMBER_OF_THREADS_PER_CPU = 4;
+
+  /**
+   * Default name of hash algorithm to be used in {@link MessageDigest#getInstance(String)}.
+   */
+  public static final String DEFAULT_HASH_ALGORITHM = "SHA-256";
   private boolean showEnvironment;
   private ResourceBundle bundle;
   private ProcessMode mode = ProcessMode.ShowHelp;
@@ -63,6 +69,7 @@ public class AppConfig
   private ExifTool exifTool;
   private String exifToolPath;
   private Long exifToolMaxUsage;
+  private String hashAlgorithm = DEFAULT_HASH_ALGORITHM;
 
   public AppConfig()
   {
@@ -267,5 +274,15 @@ public class AppConfig
   public void setExifToolMaxUsage(Long exifToolMaxUsage)
   {
     this.exifToolMaxUsage = exifToolMaxUsage;
+  }
+
+  public String getHashAlgorithm()
+  {
+    return hashAlgorithm;
+  }
+
+  public void setHashAlgorithm(String hashAlgorithm)
+  {
+    this.hashAlgorithm = hashAlgorithm;
   }
 }

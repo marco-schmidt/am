@@ -34,6 +34,8 @@ public class File
   private Long imageHeight;
   private java.io.File entry;
   private FileState state = FileState.Unknown;
+  private String hashValue;
+  private Date hashCreated;
 
   public String getName()
   {
@@ -143,5 +145,25 @@ public class File
   public void setImageHeight(Long imageHeight)
   {
     this.imageHeight = imageHeight;
+  }
+
+  public String getHashValue()
+  {
+    return hashValue;
+  }
+
+  public void setHashValue(String hashValue)
+  {
+    this.hashValue = hashValue;
+  }
+
+  public Date getHashCreated()
+  {
+    return hashCreated == null ? null : new Date(hashCreated.getTime());
+  }
+
+  public void setHashCreated(Date newValue)
+  {
+    this.hashCreated = newValue == null ? null : new Date(newValue.getTime());
   }
 }

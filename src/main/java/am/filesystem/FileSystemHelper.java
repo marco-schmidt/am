@@ -15,10 +15,14 @@
  */
 package am.filesystem;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper routines to deal with the file system.
@@ -27,6 +31,8 @@ import java.util.Set;
  */
 public final class FileSystemHelper
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemHelper.class);
+
   private FileSystemHelper()
   {
     // prevent instantiation
@@ -92,5 +98,23 @@ public final class FileSystemHelper
     final String[] items = value.split(sep);
     result.addAll(Arrays.asList(items));
     return result;
+  }
+
+  /**
+   * Close argument {@link Closeable}, e.g. a file stream.
+   */
+  public static void close(Closeable cl)
+  {
+    if (cl != null)
+    {
+      try
+      {
+        cl.close();
+      }
+      catch (final IOException e)
+      {
+        // LOGGER.error(config.msg("filesystemhelper.error.closing_failed", cl.getClass().getName()), e);
+      }
+    }
   }
 }

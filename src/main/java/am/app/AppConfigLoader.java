@@ -32,6 +32,8 @@ import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
+import am.processor.hashes.HashConfig;
+import am.processor.hashes.HashStrategy;
 
 /**
  * Load configuration information from a properties file to an {@link AppConfig} object.
@@ -44,6 +46,7 @@ public final class AppConfigLoader
   private static final String TSV_DIR = "tsvDir";
   private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
   private static final String EXIFTOOL_PATH = "exiftoolPath";
+  private static final String CREATE_HASHES = "createHashes";
 
   private AppConfigLoader()
   {
@@ -102,7 +105,41 @@ public final class AppConfigLoader
     loadVolumes(config, props);
     initIgnoreDirNames(config, props);
     initExiftool(config, props);
+    initHashes(config, props);
     return initDatabase(config, props);
+  }
+
+  private static void initHashes(AppConfig config, Properties props)
+  {
+    if (props.containsKey(CREATE_HASHES))
+    {
+      final HashConfig hashConfig = config.getHashConfig();
+      final String s = props.remove(CREATE_HASHES).toString();
+      if ("always".equalsIgnoreCase(s))
+      {
+        hashConfig.setStrategy(HashStrategy.All);
+      }
+      if ("never".equalsIgnoreCase(s))
+      {
+        hashConfig.setStrategy(HashStrategy.None);
+      }
+      if (s.endsWith("%"))
+      {
+        final String perc = s.substring(0, s.length() - 1);
+        try
+        {
+          double d = Double.valueOf(perc);
+          d = Math.max(d, 0.0d);
+          d = Math.min(d, 100.0d);
+          hashConfig.setPercentage(Double.valueOf(d));
+          hashConfig.setStrategy(HashStrategy.Percentage);
+        }
+        catch (final NumberFormatException nfe)
+        {
+          LOGGER.error(config.msg("init.error.hash_percentage", s));
+        }
+      }
+    }
   }
 
   private static void initExiftool(AppConfig config, Properties props)

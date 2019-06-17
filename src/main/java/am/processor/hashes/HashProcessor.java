@@ -36,6 +36,11 @@ public class HashProcessor
 
   public void update(final AppConfig config, final List<Volume> volumes)
   {
+    final HashStrategy strategy = config.getHashConfig().getStrategy();
+    if (strategy == HashStrategy.None)
+    {
+      return;
+    }
     files.clear();
     fileSizeSum = 0;
     for (final Volume v : volumes)

@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper routines to deal with the file system.
@@ -31,8 +29,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class FileSystemHelper
 {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemHelper.class);
-
   private FileSystemHelper()
   {
     // prevent instantiation
@@ -116,7 +112,6 @@ public final class FileSystemHelper
       }
       catch (final IOException e)
       {
-        // LOGGER.error(config.msg("filesystemhelper.error.closing_failed", cl.getClass().getName()), e);
       }
     }
   }

@@ -1,8 +1,10 @@
 # am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am)
 asset manager
 
-## Purpose
+## Status
+As of June 2019, this tool is in an early development stage, to be used only by the very curious.
 
+## Purpose
 * Command-line asset manager, managing files, checking their integrity, extracting metadata. 
 * Scan one or more directory trees (called volumes) for new, modified and deleted files.
 * Extract metadata using command-line tool [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/).
@@ -11,7 +13,6 @@ asset manager
 * Log runs to files in a log directory.
 
 ## Prerequisites
-
 * Version 8 JDK installed and in path. Check: ``javac -version``
 * Version control tool git installed and in path. Check: ``git --version``
 * Configuration text file ``.am.properties`` (see section Configuration below).
@@ -20,11 +21,11 @@ asset manager
 ## Usage
 Clone am:
 ```
-> git clone https://github.com/marco-schmidt/am.git
+git clone https://github.com/marco-schmidt/am.git
 ```
 If you already have a copy that may be out of date, get the most recent changes:
 ```
-> git pull
+git pull
 ```
 
 Now build and run the tool:
@@ -33,7 +34,6 @@ Now build and run the tool:
 ```
 
 ## Configuration
-
 Application configuration information is read from a text file in [.properties format](https://en.wikipedia.org/wiki/.properties) named ``.am.properties`` in the current user's home directory.
 
 Note that backslashes must be escaped using a second backslash, e.g. to express Windows paths.

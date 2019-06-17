@@ -84,7 +84,13 @@ public class TsvSerialization
 
   private void parseLine(final List<Volume> list, final Map<String, Volume> map, final String line)
   {
-    final String[] items = line.split(TAB);
+    String[] items = line.split(TAB);
+    if (items.length < 13)
+    {
+      final String[] temp = new String[13];
+      System.arraycopy(items, 0, temp, 0, items.length);
+      items = temp;
+    }
     final String volumePath = items[0];
     Volume volume = map.get(volumePath);
     if (volume == null)
@@ -100,12 +106,14 @@ public class TsvSerialization
     file.setName(items[2]);
     file.setByteSize(Long.valueOf(items[3]));
     file.setLastModified(new Date(Long.parseLong(items[4])));
-    file.setFileType(items.length > 5 ? items[5] : "");
-    file.setFileGroup(items.length > 6 ? items[6] : "");
-    file.setMimeType(items.length > 7 ? items[7] : "");
-    file.setImageWidth(items.length > 8 ? getAsLong(items[8]) : null);
-    file.setImageHeight(items.length > 9 ? getAsLong(items[9]) : null);
-    file.setDurationNanos(items.length > 10 ? getAsLong(items[10]) : null);
+    file.setHashValue(items[5]);
+    file.setHashCreated(getAsDate(items[6]));
+    file.setFileType(items[7]);
+    file.setFileGroup(items[8]);
+    file.setMimeType(items[9]);
+    file.setImageWidth(getAsLong(items[10]));
+    file.setImageHeight(getAsLong(items[11]));
+    file.setDurationNanos(getAsLong(items[12]));
     dir.add(file);
   }
 
@@ -125,6 +133,19 @@ public class TsvSerialization
       {
         return null;
       }
+    }
+  }
+
+  private Date getAsDate(String string)
+  {
+    if (string == null || string.isEmpty())
+    {
+      return null;
+    }
+    else
+    {
+      final Long value = getAsLong(string);
+      return value == null ? null : new Date(value.longValue());
     }
   }
 
@@ -293,6 +314,9 @@ public class TsvSerialization
     sb.append(file.getByteSize());
     sb.append(TAB);
     sb.append(file.getLastModified().getTime());
+    append(sb, file.getHashValue());
+    final Date hashCreated = file.getHashCreated();
+    append(sb, hashCreated == null ? "" : Long.toString(hashCreated.getTime()));
     append(sb, file.getFileType());
     append(sb, file.getFileGroup());
     append(sb, file.getMimeType());

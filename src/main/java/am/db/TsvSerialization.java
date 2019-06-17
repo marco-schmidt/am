@@ -89,6 +89,11 @@ public class TsvSerialization
     {
       final String[] temp = new String[13];
       System.arraycopy(items, 0, temp, 0, items.length);
+      int i = items.length;
+      while (i < temp.length)
+      {
+        temp[i++] = "";
+      }
       items = temp;
     }
     final String volumePath = items[0];
@@ -106,7 +111,7 @@ public class TsvSerialization
     file.setName(items[2]);
     file.setByteSize(Long.valueOf(items[3]));
     file.setLastModified(new Date(Long.parseLong(items[4])));
-    file.setHashValue(items[5]);
+    file.setHashValue("".equals(items[5]) ? null : items[5]);
     file.setHashCreated(getAsDate(items[6]));
     file.setFileType(items[7]);
     file.setFileGroup(items[8]);

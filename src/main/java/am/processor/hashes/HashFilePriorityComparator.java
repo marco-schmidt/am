@@ -49,6 +49,27 @@ public class HashFilePriorityComparator implements Comparator<File>, Serializabl
 
   private int compareValues(String hashValue1, String hashValue2)
   {
-    return Objects.compare(hashValue1, hashValue2, String::compareTo);
+    if (hashValue1 == null)
+    {
+      if (hashValue2 == null)
+      {
+        return 0;
+      }
+      else
+      {
+        return -1;
+      }
+    }
+    else
+    {
+      if (hashValue2 == null)
+      {
+        return 1;
+      }
+      else
+      {
+        return hashValue1.compareTo(hashValue2);
+      }
+    }
   }
 }

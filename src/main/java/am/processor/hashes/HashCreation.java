@@ -73,7 +73,7 @@ public class HashCreation
   public void update(final AppConfig config, final File file, final MessageDigest digest, final InputStream input,
       final String inputName)
   {
-    final long timeMillis = System.currentTimeMillis();
+    long timeMillis = System.currentTimeMillis();
 
     // create buffer
     final byte[] buffer = new byte[1024 * 1024];
@@ -101,10 +101,15 @@ public class HashCreation
     // store hash value and time of its creation (now) in file object
     file.setHashValue(hashValue);
     file.setHashCreated(new Date());
+    timeMillis = System.currentTimeMillis() - timeMillis;
+    long mbPerSecond = 0;
+    if (timeMillis > 0 && file.getByteSize().longValue() > 0)
+    {
+      mbPerSecond = file.getByteSize().longValue() / timeMillis / 1000L;
+    }
     if (LOGGER.isDebugEnabled())
     {
-      LOGGER.debug(config.msg("hashcreation.debug.computed_value", hashValue, inputName,
-          System.currentTimeMillis() - timeMillis));
+      LOGGER.debug(config.msg("hashcreation.debug.computed_value", hashValue, inputName, timeMillis, mbPerSecond));
     }
   }
 

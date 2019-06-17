@@ -15,10 +15,13 @@
  */
 package am.processor.hashes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
+import am.filesystem.model.FileState;
 import am.filesystem.model.Volume;
 
 /**
@@ -28,34 +31,77 @@ import am.filesystem.model.Volume;
  */
 public class HashProcessor
 {
+  private final List<File> files = new ArrayList<>();
+  private long fileSizeSum;
+
   public void update(final AppConfig config, final List<Volume> volumes)
   {
+    files.clear();
+    fileSizeSum = 0;
     for (final Volume v : volumes)
     {
-      update(config, v);
+      find(config, v);
     }
+    Collections.sort(files, new HashFilePriorityComparator());
+    compute(config);
   }
 
-  public void update(final AppConfig config, final Volume volume)
+  private void find(final AppConfig config, final Volume volume)
   {
-    update(config, volume.getRoot());
+    find(config, volume.getRoot());
   }
 
-  private void update(final AppConfig config, Directory dir)
+  private void find(final AppConfig config, Directory dir)
   {
     for (final File f : dir.getFiles())
     {
-      update(config, f);
+      find(config, f);
     }
     for (final Directory d : dir.getSubdirectories())
     {
-      update(config, d);
+      find(config, d);
     }
   }
 
-  private void update(final AppConfig config, File file)
+  private void find(final AppConfig config, File file)
+  {
+    final FileState state = file.getState();
+    if (state != null && state != FileState.Missing)
+    {
+      files.add(file);
+      fileSizeSum += file.getByteSize().longValue();
+    }
+  }
+
+  private void compute(AppConfig config)
   {
     final HashCreation creator = new HashCreation();
-    creator.update(config, file);
+    final HashConfig hashConfig = config.getHashConfig();
+    final HashStrategy strategy = hashConfig.getStrategy();
+    final Double percentage = hashConfig.getPercentage();
+    long computedBytes = 0;
+    boolean done = false;
+    for (final File file : files)
+    {
+      creator.update(config, file);
+      computedBytes += file.getByteSize().longValue();
+      switch (strategy)
+      {
+      case Percentage:
+        if (fileSizeSum > 0 && percentage != null)
+        {
+          final double perc = 100d * computedBytes / fileSizeSum;
+          done = perc >= percentage.doubleValue();
+        }
+        break;
+
+      default:
+        break;
+      }
+      if (done)
+      {
+        break;
+      }
+    }
   }
 }

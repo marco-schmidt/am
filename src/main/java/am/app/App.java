@@ -27,6 +27,7 @@ import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
 import am.processor.MetadataExtraction;
 import am.processor.VolumeProcessor;
+import am.processor.hashes.HashProcessor;
 
 /**
  */
@@ -116,6 +117,8 @@ public class App
     final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
     final MetadataExtraction extraction = new MetadataExtraction();
     extraction.update(config, mergedVolumes);
+    final HashProcessor hashProcessor = new HashProcessor();
+    hashProcessor.update(config, mergedVolumes);
     tsv.save(config, mergedVolumes);
   }
 

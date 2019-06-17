@@ -41,12 +41,15 @@ public class HashProcessor
     {
       return;
     }
+    // put all files that are not missing in a list and add their sizes
     files.clear();
     fileSizeSum = 0;
     for (final Volume v : volumes)
     {
       find(config, v);
     }
+    // sort list by necessity to compute hash: files without any hash value first, then by age in descending order
+    // (oldest hashes first)
     Collections.sort(files, new HashFilePriorityComparator());
     compute(config);
   }

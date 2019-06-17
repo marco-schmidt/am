@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.File;
+import am.filesystem.model.FileState;
 
 /**
  * Create hash values from input streams like files.
@@ -97,19 +98,41 @@ public class HashCreation
 
     // convert byte array to string}
     final String hashValue = toString(result);
-
-    // store hash value and time of its creation (now) in file object
-    file.setHashValue(hashValue);
-    file.setHashCreated(new Date());
-    timeMillis = System.currentTimeMillis() - timeMillis;
-    long mbPerSecond = 0;
-    if (timeMillis > 0 && file.getByteSize().longValue() > 0)
-    {
-      mbPerSecond = file.getByteSize().longValue() / timeMillis / 1000L;
-    }
     if (LOGGER.isDebugEnabled())
     {
+      timeMillis = System.currentTimeMillis() - timeMillis;
+      long mbPerSecond = 0;
+      if (timeMillis > 0 && file.getByteSize().longValue() > 0)
+      {
+        mbPerSecond = file.getByteSize().longValue() / timeMillis / 1000L;
+      }
       LOGGER.debug(config.msg("hashcreation.debug.computed_value", hashValue, inputName, timeMillis, mbPerSecond));
+    }
+
+    final String oldHashValue = file.getHashValue();
+    if (oldHashValue == null)
+    {
+      // first time hash was computed: store value and time of its creation (now) in file object
+      file.setHashValue(hashValue);
+      file.setHashCreated(new Date());
+    }
+    else
+    {
+      // compare hash to existing value
+      if (oldHashValue.equals(hashValue))
+      {
+        if (LOGGER.isDebugEnabled())
+        {
+          LOGGER.debug(config.msg("hashcreation.debug.value_identical", hashValue, inputName));
+        }
+        file.setHashCreated(new Date());
+      }
+      else
+      {
+        // values differ, file was modified or corrupted, do not update value and date
+        LOGGER.warn(config.msg("hashcreation.warn.value_differs", inputName, oldHashValue, hashValue));
+        file.setState(FileState.Modified);
+      }
     }
   }
 

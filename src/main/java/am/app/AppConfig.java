@@ -62,6 +62,7 @@ public class AppConfig
   private String configFileName;
   private File tsvDirectory;
   private Set<String> ignoreDirNames;
+  private Set<String> ignoreFileNames;
   private ExifTool exifTool;
   private String exifToolPath;
   private Long exifToolMaxUsage;
@@ -241,6 +242,16 @@ public class AppConfig
   public void setIgnoreDirNames(Set<String> ignoreDirNames)
   {
     this.ignoreDirNames = ignoreDirNames;
+  }
+
+  public Set<String> getIgnoreFileNames()
+  {
+    return ignoreFileNames;
+  }
+
+  public void setIgnoreFileNames(Set<String> ignoreFileNames)
+  {
+    this.ignoreFileNames = ignoreFileNames;
   }
 
   public ExifTool getExifTool()

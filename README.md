@@ -61,4 +61,10 @@ exiftoolPath=/usr/local/bin/exiftool
 #  never:      do not compute hash values at all
 #  percentage: during each program run compute hash values for this percentage of the overall amount of data
 createHashes=0.5%
+
+# ignore files with a name from this comma-separated list of names
+ignoreFileNames=.DS_Store,Thumbs.db
+
+# ignore directory tree below a directory with a name from this comma-separated list of names
+ignoreDirNames=@eaDir
 ```

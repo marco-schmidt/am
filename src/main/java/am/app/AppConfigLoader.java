@@ -45,6 +45,7 @@ public final class AppConfigLoader
   private static final String LOG_DIR = "logDir";
   private static final String TSV_DIR = "tsvDir";
   private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
+  private static final String IGNORE_FILE_NAMES = "ignoreFileNames";
   private static final String EXIFTOOL_PATH = "exiftoolPath";
   private static final String CREATE_HASHES = "createHashes";
 
@@ -104,6 +105,7 @@ public final class AppConfigLoader
     initLogging(config, props);
     loadVolumes(config, props);
     initIgnoreDirNames(config, props);
+    initIgnoreFileNames(config, props);
     initExiftool(config, props);
     initHashes(config, props);
     return initDatabase(config, props);
@@ -181,6 +183,21 @@ public final class AppConfigLoader
       names = new HashSet<>();
     }
     config.setIgnoreDirNames(names);
+  }
+
+  private static void initIgnoreFileNames(final AppConfig config, final Properties props)
+  {
+    Set<String> names;
+    if (props.containsKey(IGNORE_FILE_NAMES))
+    {
+      final Object value = props.remove(IGNORE_FILE_NAMES);
+      names = FileSystemHelper.splitFileNames(value.toString(), ",");
+    }
+    else
+    {
+      names = new HashSet<>();
+    }
+    config.setIgnoreFileNames(names);
   }
 
   private static boolean initDatabase(AppConfig config, Properties props)

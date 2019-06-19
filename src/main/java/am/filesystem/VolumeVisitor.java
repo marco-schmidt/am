@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
+import java.util.Set;
 import java.util.Stack;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
@@ -39,12 +40,14 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
   private long numDirectories;
   private long numFiles;
   private long numBytes;
+  private final Set<String> ignoreFileNames;
 
   public VolumeVisitor(final VolumeScanner scanner, final AppConfig config)
   {
     dirStack = new Stack<Directory>();
     this.scanner = scanner;
     this.config = config;
+    ignoreFileNames = config.getIgnoreFileNames();
   }
 
   @Override
@@ -94,11 +97,20 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
     if (dir != null)
     {
       final java.io.File fileSystemFile = file.toFile();
+      final String name = fileSystemFile.getName();
+      if (ignoreFileNames.contains(name))
+      {
+        if (LOGGER.isTraceEnabled())
+        {
+          LOGGER.trace(config.msg("scanner.trace.skip_file", file.toAbsolutePath()));
+        }
+        return FileVisitResult.CONTINUE;
+      }
       final File model = new File();
       final long length = fileSystemFile.length();
       model.setByteSize(Long.valueOf(length));
       numBytes += length;
-      model.setName(fileSystemFile.getName());
+      model.setName(name);
       model.setLastModified(new Date(fileSystemFile.lastModified()));
       dir.add(model);
     }

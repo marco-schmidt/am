@@ -32,7 +32,7 @@ public class HashConfig
   /**
    * Default percentage value when following hashing strategy {@link HashStrategy#Percentage}.
    */
-  public static final Double DEFAULT_PERCENTAGE = Double.valueOf(0.06d);
+  public static final Double DEFAULT_PERCENTAGE = Double.valueOf(3d);
 
   /**
    * Default hashing strategy.

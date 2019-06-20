@@ -18,12 +18,15 @@ package am.app;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import com.thebuzzmedia.exiftool.ExifTool;
+import am.app.validators.AbstractValidator;
 import am.conversion.StrUtil;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
@@ -67,6 +70,7 @@ public class AppConfig
   private String exifToolPath;
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
+  private Map<String, AbstractValidator> validators;
 
   public AppConfig()
   {
@@ -74,6 +78,7 @@ public class AppConfig
     setProperties(new Properties());
     loggingHandler = new LoggingHandler();
     hashConfig = new HashConfig();
+    validators = new HashMap<>();
   }
 
   public ResourceBundle getBundle()
@@ -292,5 +297,15 @@ public class AppConfig
   public void setHashConfig(HashConfig hashConfig)
   {
     this.hashConfig = hashConfig;
+  }
+
+  public Map<String, AbstractValidator> getValidators()
+  {
+    return validators;
+  }
+
+  public void setValidators(Map<String, AbstractValidator> validators)
+  {
+    this.validators = validators;
   }
 }

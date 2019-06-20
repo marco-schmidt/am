@@ -41,9 +41,10 @@ Note that backslashes must be escaped using a second backslash, e.g. to express 
 ```.properties
 # define volumes, directory trees to be scanned
 # use key 'volume' with consecutive numbers 1, 2, 3, and so on
-# each directory must exist and be readable for user running am
-volume1=/home/johndoe/Pictures
-volume2=/home/johndoe/Music
+# specify a validator for a volume to check structure and names against a ruleset
+volume1=/home/johndoe/movies
+volumeValidator1=MovieValidator
+volume2=/home/johndoe/music
 
 # write collected information about files to tab-separated value files into this directory
 # directory must exist and be writable for user running am

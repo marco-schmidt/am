@@ -19,9 +19,11 @@ import java.io.File;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
+import am.app.validators.AbstractValidator;
 import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
@@ -117,9 +119,24 @@ public class App
     final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
     final MetadataExtraction extraction = new MetadataExtraction();
     extraction.update(config, mergedVolumes);
+    validate(config, mergedVolumes);
     final HashProcessor hashProcessor = new HashProcessor();
     hashProcessor.update(config, mergedVolumes);
     tsv.save(config, mergedVolumes);
+  }
+
+  private void validate(final AppConfig config, final List<Volume> volumes)
+  {
+    final Map<String, AbstractValidator> validators = config.getValidators();
+    for (final Volume vol : volumes)
+    {
+      final AbstractValidator validator = validators.get(vol.getPath());
+      if (validator != null)
+      {
+        validator.setConfig(config);
+        validator.validate(config, vol);
+      }
+    }
   }
 
   private void process(final AppConfig config)

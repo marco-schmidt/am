@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
+import am.app.validators.AbstractValidator;
+import am.app.validators.MovieValidator;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
@@ -72,11 +75,35 @@ public final class AppConfigLoader
         final Volume vol = new Volume();
         vol.setPath(value.toString());
         volumes.add(vol);
+        loadValidator(config, props, vol, volNr);
         volNr++;
       }
     }
     while (found);
     LOGGER.debug(config.msg("init.debug.loaded_volumes", volumes.size()));
+  }
+
+  private static void loadValidator(AppConfig config, final Properties props, Volume vol, int volNr)
+  {
+    final String key = "volumeValidator" + volNr;
+    final Object value = props.remove(key);
+    if (value == null)
+    {
+      return;
+    }
+    final String name = value.toString();
+    AbstractValidator validator;
+    switch (name)
+    {
+    case "MovieValidator":
+      validator = new MovieValidator();
+      break;
+    default:
+      LOGGER.error(config.msg("init.error.unknown_validator", name, volNr));
+      validator = null;
+    }
+    final Map<String, AbstractValidator> validators = config.getValidators();
+    validators.put(vol.getPath(), validator);
   }
 
   private static void initLogging(final AppConfig config, final Properties props)

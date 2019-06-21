@@ -15,12 +15,13 @@
  */
 package am.app.validators;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
@@ -47,10 +48,20 @@ import am.filesystem.model.Volume;
  */
 public class MovieValidator extends AbstractValidator
 {
-  private static final String VIOLATION_FILE_NO_EXTENSION = "nofileextension";
-  private static final String VIOLATION_FILE_EXTENSION_UNKNOWN = "fileextensionunknown";
-  private static final String VIOLATION_FILE_WRONG_DIRECTORY = "fileinwrongdirectory";
-  private static final String VIOLATION_DIRECTORY_TOO_DEEP = "directorytoodeep";
+  /**
+   * File name has no file extension.
+   */
+  public static final String VIOLATION_FILE_NO_EXTENSION = "no_file_extension";
+  private static final String VIOLATION_FILE_EXTENSION_UNKNOWN = "file_extension_unknown";
+  private static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
+  private static final String VIOLATION_DIRECTORY_TOO_DEEP = "directory_too_deep";
+  private static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
+  private static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";
+  private static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
+  private static final String VIOLATION_FILE_NO_YEAR = "file_no_year";
+  private static final String VIOLATION_FILE_DIRECTORY_YEAR_DIFFER = "file_dir_year_differ";
+  private static final String VIOLATION_TITLE_MISSING = "file_title_missing";
+  private static final String VIOLATION_FILE_NAME_STRUCTURE = "file_name_structure";
 
   /**
    * Smallest value allowed for the year a movie was created.
@@ -59,6 +70,10 @@ public class MovieValidator extends AbstractValidator
    *      "https://en.wikipedia.org/wiki/Sallie_Gardner_at_a_Gallop">https://en.wikipedia.org/wiki/Sallie_Gardner_at_a_Gallop</a>
    */
   private static final int MIN_MOVIE_YEAR = 1878;
+  private static final Set<String> VIDEO_METADATA_FILE_EXTENSIONS = new HashSet<>(Arrays.asList(new String[]
+  {
+      "vsmeta"
+  }));
 
   @Override
   public void validate(AppConfig config, Volume volume)
@@ -90,7 +105,7 @@ public class MovieValidator extends AbstractValidator
       }
       catch (final NumberFormatException nfe)
       {
-        // name invalid, not a number
+        addViolation(dir, VIOLATION_DIRECTORY_NOT_A_NUMBER);
         year = null;
       }
 
@@ -99,7 +114,7 @@ public class MovieValidator extends AbstractValidator
       {
         if (year < MIN_MOVIE_YEAR)
         {
-          // number too small
+          addViolation(dir, VIOLATION_DIRECTORY_YEAR_TOO_SMALL);
           year = null;
         }
         else
@@ -107,7 +122,7 @@ public class MovieValidator extends AbstractValidator
           final int maxYear = findMaxMovieYear();
           if (year > maxYear)
           {
-            // number too large
+            addViolation(dir, VIOLATION_DIRECTORY_YEAR_TOO_LARGE);
             year = null;
           }
         }
@@ -136,40 +151,158 @@ public class MovieValidator extends AbstractValidator
       addViolation(file, VIOLATION_FILE_WRONG_DIRECTORY);
     }
 
-    validateFileName(dir, file, year);
+    validateFileName(file, year);
   }
 
-  // null
-  // ""
-  // abcd
-  // abcd.mkv
-  // 1941.mkv
-  // 1941.1979.mkv
-  // A Movie Title.1979.mkv
-  // 1941.1979.neitheryearnorresolution.mkv
-  // 1941.1979.1080p.mkv
-  private void validateFileName(Directory dir, File file, Long dirYear)
+  private String last(List<String> list)
   {
-    final List<String> parts = Arrays.asList(file.getName().split("\\."));
-    Collections.reverse(parts);
-    final Iterator<String> iter = parts.iterator();
+    if (list == null || list.isEmpty())
+    {
+      return null;
+    }
+    else
+    {
 
-    // file extension
-    if (!iter.hasNext())
+      return list.remove(list.size() - 1);
+
+    }
+  }
+
+  public Long getAsLong(String s)
+  {
+    try
+    {
+      return Long.valueOf(s);
+    }
+    catch (final NumberFormatException nfe)
+    {
+      return null;
+    }
+  }
+
+  public Long getAsResolution(String s)
+  {
+    if (s != null && s.length() > 1 && (s.endsWith("p") || s.endsWith("P")))
+    {
+      s = s.substring(0, s.length() - 1);
+      return getAsLong(s);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public void validateFileName(File file, Long dirYear)
+  {
+    final String name = file.getName();
+    final String[] items = name.split("\\.");
+    if (items.length < 2)
     {
       addViolation(file, VIOLATION_FILE_NO_EXTENSION);
+      return;
     }
-    final String ext = iter.next();
-    if (!isValidVideoFileExtension(ext))
+
+    final List<String> list = new ArrayList<>(Arrays.asList(items));
+
+    if (isValidVideoMetadataExtension(list))
+    {
+      list.remove(list.size() - 1);
+    }
+    if (!isValidVideoFileExtension(last(list)))
     {
       addViolation(file, VIOLATION_FILE_EXTENSION_UNKNOWN);
     }
+
+    final VideoFileName videoFileName = new VideoFileName();
+    while (!list.isEmpty())
+    {
+      final String s = last(list);
+
+      final boolean consumed = consumeYear(list, videoFileName, s) || consumeResolution(list, videoFileName, s);
+
+      if (!consumed)
+      {
+        list.add(s);
+        break;
+      }
+    }
+    checkGeneralFileRules(file, list, videoFileName, dirYear);
+    videoFileName.setTitle(String.join(" ", list));
   }
 
-  private boolean isValidVideoFileExtension(String ext)
+  private void checkGeneralFileRules(File file, List<String> list, VideoFileName videoFileName, Long dirYear)
   {
-    // TODO: real implementation
-    return ext != null && ("mkv".equals(ext) || "mp4".equals(ext) || "avi".equals(ext));
+    final int listSize = list.size();
+    if (listSize == 0)
+    {
+      addViolation(file, VIOLATION_TITLE_MISSING);
+    }
+    else
+      if (listSize > 1)
+      {
+        addViolation(file, VIOLATION_FILE_NAME_STRUCTURE);
+      }
+    final Long year = videoFileName.getYear();
+    if (year == null)
+    {
+      addViolation(file, VIOLATION_FILE_NO_YEAR);
+    }
+    else
+    {
+      if (!year.equals(dirYear))
+      {
+        addViolation(file, VIOLATION_FILE_DIRECTORY_YEAR_DIFFER);
+      }
+    }
+  }
+
+  private boolean isValidVideoMetadataExtension(List<String> list)
+  {
+    final String elem = list != null && !list.isEmpty() ? list.get(list.size() - 1) : null;
+    return elem == null ? false : VIDEO_METADATA_FILE_EXTENSIONS.contains(elem);
+  }
+
+  private boolean consumeResolution(List<String> list, VideoFileName videoFileName, String s)
+  {
+    final Long res = getAsResolution(s);
+    if (res == null)
+    {
+      return false;
+    }
+    if (videoFileName.getResolution() == null)
+    {
+      videoFileName.setResolution(res);
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  private boolean consumeYear(List<String> list, VideoFileName videoFileName, String s)
+  {
+    final Long year = getAsLong(s);
+    if (year == null)
+    {
+      return false;
+    }
+    if (videoFileName.getYear() == null)
+    {
+      videoFileName.setYear(year);
+      return true;
+
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  public boolean isValidVideoFileExtension(String ext)
+  {
+    return ext != null && !"".equals(ext);
   }
 
   @Override

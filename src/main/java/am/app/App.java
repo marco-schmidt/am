@@ -116,6 +116,7 @@ public class App
     final List<Volume> loadedVolumes = tsv.load(config);
     LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
     final VolumeProcessor proc = new VolumeProcessor();
+    proc.setConfig(config);
     final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
     final MetadataExtraction extraction = new MetadataExtraction();
     extraction.update(config, mergedVolumes);

@@ -22,6 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.FileState;
@@ -35,6 +38,9 @@ import am.filesystem.model.Volume;
  */
 public class VolumeProcessor
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(VolumeProcessor.class);
+  private AppConfig config;
+
   private void assignFileState(Directory dir, FileState state)
   {
     for (final Directory sub : dir.getSubdirectories())
@@ -213,6 +219,74 @@ public class VolumeProcessor
       assignFileSystemEntries(merged);
     }
 
+    print(result);
+
     return result;
+  }
+
+  private void print(List<Volume> volumes)
+  {
+    for (final Volume vol : volumes)
+    {
+      print(vol);
+    }
+  }
+
+  private void print(Volume vol)
+  {
+    print(vol.getRoot());
+  }
+
+  private void print(Directory dir)
+  {
+    for (final Directory sd : dir.getSubdirectories())
+    {
+      print(sd);
+    }
+    for (final File file : dir.getFiles())
+    {
+      print(file);
+    }
+  }
+
+  private void print(File file)
+  {
+    final FileState state = file.getState();
+    if (state == null)
+    {
+      return;
+    }
+    switch (state)
+    {
+    case New:
+    {
+      LOGGER.info(config.msg("volumeprocessor.info.new_file", file.getEntry().getAbsolutePath()));
+      break;
+    }
+    case Missing:
+    {
+      LOGGER.warn(config.msg("volumeprocessor.warn.missing_file", file.getEntry().getAbsolutePath()));
+      break;
+    }
+    default:
+    {
+      if (LOGGER.isTraceEnabled())
+      {
+        LOGGER.trace(config.msg("volumeprocessor.trace.file_state", file.getEntry().getAbsolutePath(), state));
+
+      }
+      break;
+    }
+    }
+  }
+
+  public AppConfig getConfig()
+  {
+    return config;
+  }
+
+  public void setConfig(AppConfig config)
+  {
+    this.config = config;
   }
 }

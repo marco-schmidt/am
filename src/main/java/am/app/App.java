@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
-import am.app.validators.AbstractValidator;
 import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
 import am.processor.MetadataExtraction;
 import am.processor.VolumeProcessor;
 import am.processor.hashes.HashProcessor;
+import am.validators.AbstractValidator;
 
 /**
  */

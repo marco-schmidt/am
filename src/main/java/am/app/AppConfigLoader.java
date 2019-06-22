@@ -31,12 +31,12 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
-import am.app.validators.AbstractValidator;
-import am.app.validators.MovieValidator;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
 import am.processor.hashes.HashStrategy;
+import am.validators.AbstractValidator;
+import am.validators.MovieValidator;
 
 /**
  * Load configuration information from a properties file to an {@link AppConfig} object.

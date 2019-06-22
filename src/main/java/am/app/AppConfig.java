@@ -26,10 +26,10 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import com.thebuzzmedia.exiftool.ExifTool;
-import am.app.validators.AbstractValidator;
 import am.conversion.StrUtil;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
+import am.validators.AbstractValidator;
 
 /**
  * Configuration for {@link App} application.

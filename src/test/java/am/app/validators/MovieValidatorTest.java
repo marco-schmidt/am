@@ -23,6 +23,7 @@ import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.Volume;
+import am.validators.MovieValidator;
 
 /**
  * Test {@link MovieValidator} class.

@@ -273,7 +273,6 @@ public class VolumeProcessor
       if (LOGGER.isTraceEnabled())
       {
         LOGGER.trace(config.msg("volumeprocessor.trace.file_state", file.getEntry().getAbsolutePath(), state));
-
       }
       break;
     }

@@ -18,6 +18,8 @@ package am.processor.hashes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
@@ -31,6 +33,7 @@ import am.filesystem.model.Volume;
  */
 public class HashProcessor
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HashProcessor.class);
   private final List<File> files = new ArrayList<>();
   private long fileSizeSum;
 
@@ -87,8 +90,10 @@ public class HashProcessor
     final HashConfig hashConfig = config.getHashConfig();
     final HashStrategy strategy = hashConfig.getStrategy();
     final Double percentage = hashConfig.getPercentage();
+    final String strategyInfo = formatStrategyInfo(config, strategy, percentage);
     long computedBytes = 0;
     boolean done = false;
+    LOGGER.info(config.msg("hashcreation.info.strategy", strategyInfo));
     for (final File file : files)
     {
       creator.update(config, file);
@@ -102,7 +107,6 @@ public class HashProcessor
           done = perc >= percentage.doubleValue();
         }
         break;
-
       default:
         break;
       }
@@ -111,5 +115,16 @@ public class HashProcessor
         break;
       }
     }
+  }
+
+  private String formatStrategyInfo(AppConfig config, HashStrategy strategy, Double percentage)
+  {
+    final String name = config.msg("hashcreation.info.strategy." + strategy.toString());
+    String details = "";
+    if (strategy == HashStrategy.Percentage)
+    {
+      details = ", " + percentage.toString() + "%";
+    }
+    return name + details;
   }
 }

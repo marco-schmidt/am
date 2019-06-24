@@ -35,6 +35,7 @@ public class File
   private FileState state = FileState.Unknown;
   private String hashValue;
   private Date hashCreated;
+  private VideoFileName videoFileName;
 
   public String getName()
   {
@@ -164,5 +165,15 @@ public class File
   public void setHashCreated(Date newValue)
   {
     this.hashCreated = newValue == null ? null : new Date(newValue.getTime());
+  }
+
+  public VideoFileName getVideoFileName()
+  {
+    return videoFileName;
+  }
+
+  public void setVideoFileName(VideoFileName videoFileName)
+  {
+    this.videoFileName = videoFileName;
   }
 }

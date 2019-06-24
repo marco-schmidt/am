@@ -65,17 +65,6 @@ public class App
     return success;
   }
 
-  /*
-   * public static void wd() throws MediaWikiApiErrorException { final WikibaseDataFetcher wbdf =
-   * WikibaseDataFetcher.getWikidataDataFetcher(); final EntityDocument q42 = wbdf.getEntityDocument("Q42");
-   * System.out.println("The current revision of the data for entity Q42 is " + q42.getRevisionId()); final
-   * List<WbSearchEntitiesResult> list = wbdf.searchEntities("Wikidata Toolkit"); for (final WbSearchEntitiesResult res
-   * : list) { System.out.println(res.getTitle() + " " + res.getLabel()); final EntityDocument ent =
-   * wbdf.getEntityDocument(res.getEntityId()); if (ent instanceof ItemDocument) { final ItemDocument doc =
-   * (ItemDocument) ent; final Iterator<Statement> stats = doc.getAllStatements(); while (stats.hasNext()) { final
-   * Statement s = stats.next(); System.out.println(s.toString()); } } break; } }
-   */
-
   private void printVersion(final AppConfig config)
   {
     LOGGER.info(String.format("%s %s", SystemInfo.APP_NAME, config.getSystemInfo().getApplicationVersion()));

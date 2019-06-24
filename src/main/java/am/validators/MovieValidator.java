@@ -25,6 +25,7 @@ import java.util.Set;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
+import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 
 /**
@@ -229,6 +230,7 @@ public class MovieValidator extends AbstractValidator
     }
     checkGeneralFileRules(file, list, videoFileName, dirYear);
     videoFileName.setTitle(String.join(" ", list));
+    file.setVideoFileName(videoFileName);
   }
 
   private void checkGeneralFileRules(File file, List<String> list, VideoFileName videoFileName, Long dirYear)

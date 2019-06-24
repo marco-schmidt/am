@@ -85,9 +85,10 @@ public class TsvSerialization
   private void parseLine(final List<Volume> list, final Map<String, Volume> map, final String line)
   {
     String[] items = line.split(TAB);
-    if (items.length < 13)
+    final int numItems = 14;
+    if (items.length < numItems)
     {
-      final String[] temp = new String[13];
+      final String[] temp = new String[numItems];
       System.arraycopy(items, 0, temp, 0, items.length);
       int i = items.length;
       while (i < temp.length)
@@ -119,6 +120,7 @@ public class TsvSerialization
     file.setImageWidth(getAsLong(items[10]));
     file.setImageHeight(getAsLong(items[11]));
     file.setDurationNanos(getAsLong(items[12]));
+    file.setWikidataEntityId(items[13]);
     dir.add(file);
   }
 
@@ -328,6 +330,7 @@ public class TsvSerialization
     append(sb, file.getImageWidth());
     append(sb, file.getImageHeight());
     append(sb, file.getDurationNanos());
+    append(sb, file.getWikidataEntityId());
     out.write(sb.toString());
     out.write(END_OF_LINE);
   }

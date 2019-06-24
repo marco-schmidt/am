@@ -37,7 +37,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.5.0'
-    implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.9.0'
+    implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.10.0'
     // force two particular versions of transitive dependencies to fix security issues
     implementation('com.fasterxml.jackson.core:jackson-databind') {
       version {

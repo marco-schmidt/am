@@ -125,6 +125,7 @@ public class VolumeProcessor
       result.setImageWidth(loaded.getImageWidth());
       result.setMimeType(loaded.getMimeType());
       result.setFileGroup(loaded.getFileGroup());
+      result.setWikidataEntityId(loaded.getWikidataEntityId());
     }
     return result;
   }

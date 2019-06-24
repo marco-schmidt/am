@@ -22,6 +22,11 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
+import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
+import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
@@ -75,6 +80,10 @@ public class MovieValidator extends AbstractValidator
   {
       "vsmeta"
   }));
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MovieValidator.class);
+
+  private WikibaseDataFetcher fetcher;
 
   @Override
   public void validate(AppConfig config, Volume volume)
@@ -153,6 +162,65 @@ public class MovieValidator extends AbstractValidator
     }
 
     validateFileName(file, year);
+
+    if (config.isQueryWikidata())
+    {
+      assignWikidataEntity(file);
+    }
+  }
+
+  private void assignWikidataEntity(File file)
+  {
+    // if we already know the entity id we don't need to fetch it again
+    final String id = file.getWikidataEntityId();
+    if (id != null && !id.isEmpty())
+    {
+      return;
+    }
+
+    // use title and year
+    final VideoFileName videoFileName = file.getVideoFileName();
+    String query = videoFileName.getTitle();
+    if (query == null || query.isEmpty())
+    {
+      return;
+    }
+    final Long year = videoFileName.getYear();
+    if (year != null)
+    {
+      query += " " + year.toString();
+    }
+
+    // reuse fetcher if it already exists
+    if (fetcher == null)
+    {
+      fetcher = WikibaseDataFetcher.getWikidataDataFetcher();
+    }
+    try
+    {
+      final List<WbSearchEntitiesResult> list = fetcher.searchEntities(query, "en", Long.valueOf(1));
+      if (list.isEmpty())
+      {
+        LOGGER.warn(getConfig().msg("movievalidator.warn.wikidata_no_result", query));
+      }
+      else
+      {
+        final WbSearchEntitiesResult result = list.iterator().next();
+        assignWikidataEntity(file, query, result);
+      }
+    }
+    catch (final MediaWikiApiErrorException e)
+    {
+      LOGGER.error(getConfig().msg("movievalidator.error.connect_wikidata_failure"), e);
+    }
+  }
+
+  private void assignWikidataEntity(File file, String query, WbSearchEntitiesResult result)
+  {
+    final String entityId = result.getEntityId();
+    LOGGER.info(
+        getConfig().msg("movievalidator.info.wikidata_result", query, entityId, result.getTitle(), result.getLabel()));
+    file.setWikidataEntityId(entityId);
   }
 
   private String last(List<String> list)

@@ -71,6 +71,7 @@ public class AppConfig
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
   private Map<String, AbstractValidator> validators;
+  private boolean queryWikidata;
 
   public AppConfig()
   {
@@ -307,5 +308,15 @@ public class AppConfig
   public void setValidators(Map<String, AbstractValidator> validators)
   {
     this.validators = validators;
+  }
+
+  public boolean isQueryWikidata()
+  {
+    return queryWikidata;
+  }
+
+  public void setQueryWikidata(boolean queryWikidata)
+  {
+    this.queryWikidata = queryWikidata;
   }
 }

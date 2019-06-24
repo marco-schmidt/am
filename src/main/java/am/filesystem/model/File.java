@@ -36,6 +36,7 @@ public class File
   private String hashValue;
   private Date hashCreated;
   private VideoFileName videoFileName;
+  private String wikidataEntityId;
 
   public String getName()
   {
@@ -175,5 +176,15 @@ public class File
   public void setVideoFileName(VideoFileName videoFileName)
   {
     this.videoFileName = videoFileName;
+  }
+
+  public String getWikidataEntityId()
+  {
+    return wikidataEntityId;
+  }
+
+  public void setWikidataEntityId(String wikidataEntityId)
+  {
+    this.wikidataEntityId = wikidataEntityId;
   }
 }

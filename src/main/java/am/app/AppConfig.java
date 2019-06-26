@@ -71,7 +71,7 @@ public class AppConfig
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
   private Map<String, AbstractValidator> validators;
-  private boolean queryWikidata;
+  private boolean queryWikidata = true;
 
   public AppConfig()
   {

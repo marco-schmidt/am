@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -180,15 +181,10 @@ public class MovieValidator extends AbstractValidator
 
     // use title and year
     final VideoFileName videoFileName = file.getVideoFileName();
-    String query = videoFileName.getTitle();
+    final String query = videoFileName.getTitle();
     if (query == null || query.isEmpty())
     {
       return;
-    }
-    final Long year = videoFileName.getYear();
-    if (year != null)
-    {
-      query += " " + year.toString();
     }
 
     // reuse fetcher if it already exists
@@ -198,15 +194,19 @@ public class MovieValidator extends AbstractValidator
     }
     try
     {
-      final List<WbSearchEntitiesResult> list = fetcher.searchEntities(query, "en", Long.valueOf(1));
+      final List<WbSearchEntitiesResult> list = fetcher.searchEntities(query, "en", Long.valueOf(10));
+      boolean success = false;
       if (list.isEmpty())
       {
         LOGGER.warn(getConfig().msg("movievalidator.warn.wikidata_no_result", query));
       }
       else
       {
-        final WbSearchEntitiesResult result = list.iterator().next();
-        assignWikidataEntity(file, query, result);
+        success = parseResults(list, file, query, videoFileName.getYear());
+      }
+      if (!success)
+      {
+        file.setWikidataEntityId("?");
       }
     }
     catch (final MediaWikiApiErrorException e)
@@ -215,11 +215,27 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
+  private boolean parseResults(List<WbSearchEntitiesResult> list, File file, String query, Long year)
+  {
+    final Iterator<WbSearchEntitiesResult> iter = list.iterator();
+    while (iter.hasNext())
+    {
+      final WbSearchEntitiesResult result = iter.next();
+      final String description = result.getDescription();
+      if (year != null && description.contains(year.toString()))
+      {
+        assignWikidataEntity(file, query, result);
+        return true;
+      }
+    }
+    return false;
+  }
+
   private void assignWikidataEntity(File file, String query, WbSearchEntitiesResult result)
   {
     final String entityId = result.getEntityId();
-    LOGGER.info(
-        getConfig().msg("movievalidator.info.wikidata_result", query, entityId, result.getTitle(), result.getLabel()));
+    LOGGER.info(getConfig().msg("movievalidator.info.wikidata_result", query, entityId, result.getDescription(),
+        result.getLabel()));
     file.setWikidataEntityId(entityId);
   }
 

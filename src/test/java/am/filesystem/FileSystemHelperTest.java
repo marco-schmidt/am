@@ -97,4 +97,17 @@ public class FileSystemHelperTest
             fileSmall, fileLarge
         }));
   }
+
+  @Test
+  public void testNormalizeEmpty()
+  {
+    Assert.assertEquals("Empty path remains empty.", FileSystemHelper.normalizePath(""), "");
+  }
+
+  @Test
+  public void testNormalizeUnix()
+  {
+    final String path = "/home/bob/sub";
+    Assert.assertEquals("Unix path remains empty.", FileSystemHelper.normalizePath(path), path);
+  }
 }

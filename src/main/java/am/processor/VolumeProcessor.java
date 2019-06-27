@@ -25,6 +25,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
+import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.FileState;
@@ -142,7 +143,7 @@ public class VolumeProcessor
   public Volume mergeVolume(Volume scannedVolume, Volume loadedVolume)
   {
     final Volume result = new Volume();
-    result.setPath(scannedVolume.getPath());
+    result.setPath(FileSystemHelper.normalizePath(scannedVolume.getPath()));
     final Directory root = mergeDirectory(scannedVolume.getRoot(), loadedVolume.getRoot());
     result.setRoot(root);
     return result;

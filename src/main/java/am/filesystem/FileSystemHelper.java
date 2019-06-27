@@ -29,6 +29,11 @@ import java.util.Set;
  */
 public final class FileSystemHelper
 {
+  /**
+   * Directory separator to be used internally.
+   */
+  public static final String DIRECTORY_SEPARATOR = "/";
+
   private FileSystemHelper()
   {
     // prevent instantiation
@@ -113,6 +118,18 @@ public final class FileSystemHelper
       catch (final IOException e)
       {
       }
+    }
+  }
+
+  public static String normalizePath(final String path)
+  {
+    if (File.separator.equals(FileSystemHelper.DIRECTORY_SEPARATOR))
+    {
+      return path;
+    }
+    else
+    {
+      return path.replace(File.separator, FileSystemHelper.DIRECTORY_SEPARATOR);
     }
   }
 }

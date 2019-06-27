@@ -15,7 +15,6 @@
  */
 package am.filesystem;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,10 +29,6 @@ import am.filesystem.model.Volume;
  */
 public class VolumeScanner
 {
-  /**
-   * Directory separator to be used internally.
-   */
-  public static final String DIRECTORY_SEPARATOR = "/";
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(VolumeScanner.class);
   private final Volume volume;
   private final AppConfig config;
@@ -42,7 +37,6 @@ public class VolumeScanner
   {
     this.volume = v;
     this.config = config;
-
   }
 
   public void scan()
@@ -73,18 +67,6 @@ public class VolumeScanner
   public void setRootDirectory(Directory dir, Path path)
   {
     volume.setRoot(dir);
-    volume.setPath(normalizePath(path.toString()));
-  }
-
-  public String normalizePath(final String path)
-  {
-    if (File.separator.equals(DIRECTORY_SEPARATOR))
-    {
-      return path;
-    }
-    else
-    {
-      return path.replace(File.separator, DIRECTORY_SEPARATOR);
-    }
+    volume.setPath(FileSystemHelper.normalizePath(path.toString()));
   }
 }

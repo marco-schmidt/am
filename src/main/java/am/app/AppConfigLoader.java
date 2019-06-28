@@ -103,7 +103,7 @@ public final class AppConfigLoader
       validator = null;
     }
     final Map<String, AbstractValidator> validators = config.getValidators();
-    validators.put(vol.getPath(), validator);
+    validators.put(FileSystemHelper.normalizePath(vol.getPath()), validator);
   }
 
   private static void initLogging(final AppConfig config, final Properties props)

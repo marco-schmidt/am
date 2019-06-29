@@ -23,27 +23,44 @@ package am.filesystem.model;
 public enum FileState
 {
   /**
+   * The file's state is unknown, the default value in a newly-created {@link am.filesystem.model.File}.
+   */
+  Unknown(0),
+
+  /**
    * File was added to directory.
    */
-  New,
-
-  /**
-   * File no longer exists.
-   */
-  Missing,
-
-  /**
-   * File was changed, either its content or metadata.
-   */
-  Modified,
+  New(1),
 
   /**
    * File has remained the same.
    */
-  Identical,
+  Identical(2),
 
   /**
-   * The file's state is unknown, the default value in a newly-created {@link am.filesystem.model.File}.
+   * File was changed, either its content or metadata.
    */
-  Unknown;
+  Modified(3),
+
+  /**
+   * File no longer exists.
+   */
+  Missing(4),
+
+  /**
+   * There were errors reading from the file.
+   */
+  Corrupted(5);
+
+  private int numericValue;
+
+  FileState(int numericValue)
+  {
+    this.numericValue = numericValue;
+  }
+
+  public int getNumericValue()
+  {
+    return numericValue;
+  }
 }

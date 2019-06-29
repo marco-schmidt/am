@@ -39,12 +39,17 @@ public enum HashStrategy
 
   /**
    * Compute hashes until a given amount of data has been consumed. Note that the hash for the current file is computed
-   * even if this means that the amount of data is exceeded.
+   * even if this means that the amount of data is exceeded. Not yet implemented.
    */
   Data,
 
   /**
-   * Compute hashes until a given time has passed.
+   * Compute hashes until a given time has passed. Not yet implemented.
    */
-  Time
+  Time,
+
+  /**
+   * Compute hashes for a given number of files. Time may vary depending on their size. Not yet implemented.
+   */
+  Files
 }

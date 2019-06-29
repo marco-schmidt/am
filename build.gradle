@@ -38,6 +38,7 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.5.0'
     implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.10.0'
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.28.0'
     // force two particular versions of transitive dependencies to fix security issues
     implementation('com.fasterxml.jackson.core:jackson-databind') {
       version {

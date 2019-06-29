@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.conversion.StrUtil;
+import am.db.JdbcSerialization;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
 import am.validators.AbstractValidator;
@@ -72,6 +73,8 @@ public class AppConfig
   private HashConfig hashConfig;
   private Map<String, AbstractValidator> validators;
   private boolean queryWikidata = true;
+  private File databaseDirectory;
+  private JdbcSerialization databaseSerializer;
 
   public AppConfig()
   {
@@ -318,5 +321,25 @@ public class AppConfig
   public void setQueryWikidata(boolean queryWikidata)
   {
     this.queryWikidata = queryWikidata;
+  }
+
+  public File getDatabaseDirectory()
+  {
+    return databaseDirectory;
+  }
+
+  public void setDatabaseDirectory(File databaseDirectory)
+  {
+    this.databaseDirectory = databaseDirectory;
+  }
+
+  public JdbcSerialization getDatabaseSerializer()
+  {
+    return databaseSerializer;
+  }
+
+  public void setDatabaseSerializer(JdbcSerialization databaseSerializer)
+  {
+    this.databaseSerializer = databaseSerializer;
   }
 }

@@ -4,4 +4,8 @@
     <Class name="~.*Test"/>
     <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR" type="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
   </Match>
+  <Match>
+    <Class name="~.*JdbcSerialization*"/>
+    <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" type="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE"/>
+  </Match>
 </FindBugsFilter>

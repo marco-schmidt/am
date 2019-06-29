@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
+import am.db.JdbcSerialization;
 import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
@@ -148,6 +149,11 @@ public class App
       processVolumes(config);
       break;
     }
+    }
+    final JdbcSerialization io = config.getDatabaseSerializer();
+    if (io != null)
+    {
+      io.close();
     }
   }
 

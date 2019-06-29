@@ -31,6 +31,7 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
+import am.db.JdbcSerialization;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
@@ -47,6 +48,7 @@ public final class AppConfigLoader
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigLoader.class);
   private static final String LOG_DIR = "logDir";
   private static final String TSV_DIR = "tsvDir";
+  private static final String DATABASE_DIR = "databaseDir";
   private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
   private static final String IGNORE_FILE_NAMES = "ignoreFileNames";
   private static final String EXIFTOOL_PATH = "exiftoolPath";
@@ -241,6 +243,26 @@ public final class AppConfigLoader
       else
       {
         LOGGER.error(config.msg("init.error.tsv_dir_does_not_exist", dirName));
+        return false;
+      }
+    }
+    if (props.containsKey(DATABASE_DIR))
+    {
+      final Object obj = props.remove(DATABASE_DIR);
+      final String dirName = obj.toString();
+      final File dir = new File(dirName);
+      if (dir.isDirectory())
+      {
+        config.setDatabaseDirectory(dir);
+        final JdbcSerialization io = new JdbcSerialization();
+        io.setConfig(config);
+        io.connect(dir);
+        io.createTables();
+        config.setDatabaseSerializer(io);
+      }
+      else
+      {
+        LOGGER.error(config.msg("init.error.database_dir_does_not_exist", dirName));
         return false;
       }
     }

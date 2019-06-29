@@ -110,7 +110,9 @@
 <!--     <module name="DesignForExtension"/> -->
     <module name="MutableException" />
     <!-- <module name="UncommentedMain"/> -->
-    <module name="ClassFanOutComplexity" />
+    <module name="ClassFanOutComplexity">
+      <property name="max" value="25"/>
+    </module>
     <module name="CyclomaticComplexity">
       <property name="switchBlockAsSingleDecisionPoint" value="true"/>
       <property name="max" value="25"/>

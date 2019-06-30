@@ -22,13 +22,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.FileSystemHelper;
-import am.filesystem.model.Volume;
 
 /**
  * Connect to relational database with JDBC.
@@ -38,15 +35,10 @@ import am.filesystem.model.Volume;
 public class JdbcSerialization
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(JdbcSerialization.class);
-  private static final String ROWID = "rowid";
-  private static final String TABLE_VOLUMES = "volumes";
-  private static final String TABLE_VOLUMES_MAIN = "main";
-  private static final String TABLE_VOLUMES_MAIN_REF = "main_ref";
-  private static final String TABLE_VOLUMES_PATH = "path";
-  private static final String TABLE_VOLUMES_VALIDATOR = "validator";
   private AppConfig config;
   private Connection conn;
   private String uri;
+  private VolumeMapper volumeMapper = new VolumeMapper();
 
   public boolean isConnected()
   {
@@ -102,95 +94,50 @@ public class JdbcSerialization
 
   public void createTables()
   {
-    createTable(TABLE_VOLUMES, TABLE_VOLUMES_PATH + " text,\n" + TABLE_VOLUMES_MAIN + " int,\n" + TABLE_VOLUMES_MAIN_REF
-        + " bigint,\n" + TABLE_VOLUMES_VALIDATOR + " text\n");
+    createTable(getVolumeMapper());
+    // createTable(TABLE_DIRS,
+    // TABLE_DIRS_NAME + " text,\n" + TABLE_DIRS_PARENT_REF + " bigint,\n" + TABLE_DIRS_VOLUME_REF
+    // + " bigint not null,\n" + "constraint volume_ref_fk foreign key (" + TABLE_DIRS_VOLUME_REF + ") references "
+    // + TABLE_VOLUMES + "(" + ROWID + ")");
   }
 
-  private void createTable(String tableName, String definition)
+  private void createTable(ModelMapper<? extends Model> mapper)
   {
-    final String sql = "create table if not exists " + tableName + " (\n" + definition + ");\n";
-    executeUpdate(sql);
-  }
-
-  public List<Volume> loadVolumes()
-  {
-    final List<Volume> result = new ArrayList<>();
-    final PreparedStatement stat = createSelectAll(TABLE_VOLUMES);
-    ResultSet resultSet = null;
-    try
+    if (isConnected())
     {
-      resultSet = stat.executeQuery();
-      while (resultSet.next())
+      PreparedStatement stat = null;
+      try
       {
-        final int main = resultSet.getInt(TABLE_VOLUMES_MAIN);
-        final long mainRef = resultSet.getLong(TABLE_VOLUMES_MAIN_REF);
-        final String path = resultSet.getString(TABLE_VOLUMES_PATH);
-        final String validator = resultSet.getString(TABLE_VOLUMES_VALIDATOR);
-        final Volume vol = new Volume();
-        vol.setPath(path);
-        vol.setMain(main != 0);
-        vol.setMainRef(mainRef);
-        vol.setValidator(validator);
-        vol.setId(resultSet.getLong(ROWID));
-        result.add(vol);
+        stat = conn.prepareStatement(mapper.getCreateTableQuery());
+        stat.execute();
+      }
+      catch (final SQLException e)
+      {
+        LOGGER.error("failed creation", e);
+      }
+      finally
+      {
+        close(stat);
       }
     }
-    catch (final SQLException e)
-    {
-      result.clear();
-    }
-    finally
-    {
-      close(resultSet);
-      close(stat);
-    }
-    return result;
   }
 
-  private PreparedStatement createSelectAll(String tableName)
+  public PreparedStatement prepare(String query)
   {
     if (isConnected())
     {
       try
       {
-        return conn.prepareStatement("select " + ROWID + ", * from " + tableName);
+        return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       }
       catch (final SQLException e)
       {
-        LOGGER.error(config.msg(""), e);
-        return null;
       }
     }
-    else
-    {
-      return null;
-    }
+    return null;
   }
 
-  private String escape(String sql)
-  {
-    return sql.replace('\n', ' ');
-  }
-
-  private void executeUpdate(String sql)
-  {
-    Statement stat = null;
-    try
-    {
-      stat = conn.createStatement();
-      stat.executeUpdate(sql);
-    }
-    catch (final SQLException e)
-    {
-      LOGGER.error(config.msg("init.error.database_execute_update_failed", escape(sql)), e);
-    }
-    finally
-    {
-      close(stat);
-    }
-  }
-
-  private void close(ResultSet rs)
+  public void close(ResultSet rs)
   {
     if (rs != null)
     {
@@ -204,7 +151,7 @@ public class JdbcSerialization
     }
   }
 
-  private void close(Statement stat)
+  public void close(Statement stat)
   {
     if (stat != null)
     {
@@ -226,5 +173,15 @@ public class JdbcSerialization
   public void setConfig(AppConfig config)
   {
     this.config = config;
+  }
+
+  public VolumeMapper getVolumeMapper()
+  {
+    return volumeMapper;
+  }
+
+  public void setVolumeMapper(VolumeMapper volumeMapper)
+  {
+    this.volumeMapper = volumeMapper;
   }
 }

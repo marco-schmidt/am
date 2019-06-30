@@ -32,6 +32,7 @@ import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Version;
 import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
 import am.db.JdbcSerialization;
+import am.db.VolumeMapper;
 import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
@@ -258,7 +259,8 @@ public final class AppConfigLoader
         io.setConfig(config);
         io.connect(dir);
         io.createTables();
-        final List<Volume> vols = io.loadVolumes();
+        final VolumeMapper volMapper = new VolumeMapper();
+        final List<Volume> vols = volMapper.loadAll(io);
         LOGGER.info("loaded " + vols.size() + " vols.");
         config.setDatabaseSerializer(io);
       }

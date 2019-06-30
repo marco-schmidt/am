@@ -9,7 +9,7 @@
     <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" type="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE"/>
   </Match>
   <Match>
-    <Class name="~.*Serialization*"/>
+    <Class name="~.*"/>
     <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING" type="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
   </Match>
 </FindBugsFilter>

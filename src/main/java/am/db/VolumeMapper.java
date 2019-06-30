@@ -15,8 +15,10 @@
  */
 package am.db;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import am.filesystem.model.Volume;
 
 /**
@@ -31,6 +33,10 @@ public class VolumeMapper extends ModelMapper<Volume>
   private static final String TABLE_VOLUMES_MAIN_REF = "main_ref";
   private static final String TABLE_VOLUMES_PATH = "path";
   private static final String TABLE_VOLUMES_VALIDATOR = "validator";
+  private static final String[] COLUMNS =
+  {
+      TABLE_VOLUMES_PATH, TABLE_VOLUMES_MAIN, TABLE_VOLUMES_MAIN_REF, TABLE_VOLUMES_VALIDATOR
+  };
 
   @Override
   Volume create()
@@ -62,9 +68,40 @@ public class VolumeMapper extends ModelMapper<Volume>
   }
 
   @Override
+  public void to(PreparedStatement stat, Volume vol)
+  {
+    try
+    {
+      stat.setString(1, vol.getPath());
+      stat.setInt(2, vol.isMain() ? 1 : 0);
+      final Long mainRef = vol.getMainRef();
+      if (mainRef == null)
+      {
+        stat.setNull(3, Types.BIGINT);
+      }
+      else
+      {
+        stat.setLong(3, mainRef.longValue());
+      }
+      stat.setString(4, vol.getValidator());
+    }
+    catch (final SQLException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  @Override
   String getTableDefinition()
   {
     return TABLE_VOLUMES_PATH + " text,\n" + TABLE_VOLUMES_MAIN + " int,\n" + TABLE_VOLUMES_MAIN_REF + " bigint,\n"
         + TABLE_VOLUMES_VALIDATOR + " text\n";
+  }
+
+  @Override
+  public String getInsertQuery()
+  {
+    return getInsertQuery(COLUMNS);
   }
 }

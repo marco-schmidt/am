@@ -261,6 +261,10 @@ public final class AppConfigLoader
         io.createTables();
         final VolumeMapper volMapper = new VolumeMapper();
         final List<Volume> vols = volMapper.loadAll(io);
+        // final Volume vol = new Volume();
+        // vol.setPath("/Volumes/test");
+        // vol.setMain(true);
+        // volMapper.insert(io, vol);
         LOGGER.info("loaded " + vols.size() + " vols.");
         config.setDatabaseSerializer(io);
       }

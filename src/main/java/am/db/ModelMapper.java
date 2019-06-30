@@ -107,9 +107,89 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
+  private PreparedStatement createInsert(JdbcSerialization io)
+  {
+    if (io.isConnected())
+    {
+      return io.prepare(getInsertQuery());
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public abstract void to(PreparedStatement stat, T model);
+
+  public void insert(JdbcSerialization io, T model)
+  {
+    final PreparedStatement stat = createInsert(io);
+    ResultSet generatedKeys = null;
+    if (stat == null)
+    {
+      return;
+    }
+    try
+    {
+      to(stat, model);
+      stat.executeUpdate();
+      generatedKeys = stat.getGeneratedKeys();
+      if (generatedKeys.next())
+      {
+        final long key = generatedKeys.getLong(1);
+        model.setId(key);
+      }
+    }
+    catch (final SQLException e)
+    {
+      e.printStackTrace();
+    }
+    finally
+    {
+      io.close(generatedKeys);
+      io.close(stat);
+    }
+  }
+
   public String getSelectAllQuery()
   {
     return "select " + ROWID + ", * from " + getTableName() + ";";
+  }
+
+  public abstract String getInsertQuery();
+
+  public String getInsertQuery(String[] columnNames)
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("insert into ");
+    sb.append(getTableName());
+    sb.append('(');
+    boolean first = true;
+    for (final String col : columnNames)
+    {
+      if (first)
+      {
+        first = false;
+      }
+      else
+      {
+        sb.append(',');
+      }
+      sb.append(col);
+    }
+    sb.append(") values (");
+    int num = columnNames.length;
+    while (num > 0)
+    {
+      if (num != columnNames.length)
+      {
+        sb.append(',');
+      }
+      sb.append('?');
+      num--;
+    }
+    sb.append(')');
+    return sb.toString();
   }
 
   public String getCreateTableQuery()

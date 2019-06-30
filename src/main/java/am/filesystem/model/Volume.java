@@ -16,15 +16,21 @@
 package am.filesystem.model;
 
 import java.io.File;
+import am.db.Model;
 
 /**
  * Data model class for a volume, a directory tree mounted below a path.
+ *
+ * @author Marco Schmidt
  */
-public class Volume
+public class Volume extends Model
 {
   private String path;
   private Directory root;
   private File entry;
+  private String validator;
+  private boolean main;
+  private Long mainRef;
 
   public String getPath()
   {
@@ -54,5 +60,35 @@ public class Volume
   public void setEntry(File entry)
   {
     this.entry = entry;
+  }
+
+  public String getValidator()
+  {
+    return validator;
+  }
+
+  public void setValidator(String validator)
+  {
+    this.validator = validator;
+  }
+
+  public boolean isMain()
+  {
+    return main;
+  }
+
+  public void setMain(boolean main)
+  {
+    this.main = main;
+  }
+
+  public Long getMainRef()
+  {
+    return mainRef;
+  }
+
+  public void setMainRef(Long mainRef)
+  {
+    this.mainRef = mainRef;
   }
 }

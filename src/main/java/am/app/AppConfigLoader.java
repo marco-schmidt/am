@@ -258,6 +258,8 @@ public final class AppConfigLoader
         io.setConfig(config);
         io.connect(dir);
         io.createTables();
+        final List<Volume> vols = io.loadVolumes();
+        LOGGER.info("loaded " + vols.size() + " vols.");
         config.setDatabaseSerializer(io);
       }
       else

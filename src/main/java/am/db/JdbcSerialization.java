@@ -18,12 +18,17 @@ package am.db;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.FileSystemHelper;
+import am.filesystem.model.Volume;
 
 /**
  * Connect to relational database with JDBC.
@@ -33,13 +38,20 @@ import am.filesystem.FileSystemHelper;
 public class JdbcSerialization
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(JdbcSerialization.class);
+  private static final String ROWID = "rowid";
   private static final String TABLE_VOLUMES = "volumes";
-  private static final String TABLE_VOLUMES_PATH = "path";
   private static final String TABLE_VOLUMES_MAIN = "main";
   private static final String TABLE_VOLUMES_MAIN_REF = "main_ref";
+  private static final String TABLE_VOLUMES_PATH = "path";
   private static final String TABLE_VOLUMES_VALIDATOR = "validator";
   private AppConfig config;
   private Connection conn;
+  private String uri;
+
+  public boolean isConnected()
+  {
+    return conn != null;
+  }
 
   public void close()
   {
@@ -48,6 +60,7 @@ public class JdbcSerialization
       if (conn != null)
       {
         conn.close();
+        LOGGER.info(config.msg("init.info.database_connection_closed", uri));
       }
     }
     catch (final SQLException e)
@@ -57,12 +70,17 @@ public class JdbcSerialization
     finally
     {
       conn = null;
+      uri = null;
     }
   }
 
   public void connect(File dir)
   {
-    final String uri = createConnectorString(dir);
+    if (conn != null)
+    {
+      return;
+    }
+    uri = createConnectorString(dir);
     try
     {
       conn = DriverManager.getConnection(uri);
@@ -71,6 +89,7 @@ public class JdbcSerialization
     catch (final SQLException e)
     {
       LOGGER.error(config.msg("init.error.database_connection_attempt_failed", uri), e);
+      uri = null;
     }
   }
 
@@ -93,6 +112,61 @@ public class JdbcSerialization
     executeUpdate(sql);
   }
 
+  public List<Volume> loadVolumes()
+  {
+    final List<Volume> result = new ArrayList<>();
+    final PreparedStatement stat = createSelectAll(TABLE_VOLUMES);
+    ResultSet resultSet = null;
+    try
+    {
+      resultSet = stat.executeQuery();
+      while (resultSet.next())
+      {
+        final int main = resultSet.getInt(TABLE_VOLUMES_MAIN);
+        final long mainRef = resultSet.getLong(TABLE_VOLUMES_MAIN_REF);
+        final String path = resultSet.getString(TABLE_VOLUMES_PATH);
+        final String validator = resultSet.getString(TABLE_VOLUMES_VALIDATOR);
+        final Volume vol = new Volume();
+        vol.setPath(path);
+        vol.setMain(main != 0);
+        vol.setMainRef(mainRef);
+        vol.setValidator(validator);
+        vol.setId(resultSet.getLong(ROWID));
+        result.add(vol);
+      }
+    }
+    catch (final SQLException e)
+    {
+      result.clear();
+    }
+    finally
+    {
+      close(resultSet);
+      close(stat);
+    }
+    return result;
+  }
+
+  private PreparedStatement createSelectAll(String tableName)
+  {
+    if (isConnected())
+    {
+      try
+      {
+        return conn.prepareStatement("select " + ROWID + ", * from " + tableName);
+      }
+      catch (final SQLException e)
+      {
+        LOGGER.error(config.msg(""), e);
+        return null;
+      }
+    }
+    else
+    {
+      return null;
+    }
+  }
+
   private String escape(String sql)
   {
     return sql.replace('\n', ' ');
@@ -113,6 +187,20 @@ public class JdbcSerialization
     finally
     {
       close(stat);
+    }
+  }
+
+  private void close(ResultSet rs)
+  {
+    if (rs != null)
+    {
+      try
+      {
+        rs.close();
+      }
+      catch (final SQLException e)
+      {
+      }
     }
   }
 

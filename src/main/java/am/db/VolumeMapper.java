@@ -22,7 +22,7 @@ import java.sql.Types;
 import am.filesystem.model.Volume;
 
 /**
- * Mapper for the {@link Volume} class.
+ * {@link ModelMapper} for the {@link Volume} class.
  *
  * @author Marco Schmidt
  */

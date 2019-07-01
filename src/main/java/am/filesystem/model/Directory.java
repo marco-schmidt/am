@@ -20,12 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import am.db.Model;
 
 /**
  * Data model class representing a directory as part of a {@link Volume}. Has a name, contains subdirectories and files.
  */
-public class Directory
+public class Directory extends Model
 {
+  private Long volumeRef;
+  private Long parentRef;
   private String name;
   private final List<Directory> subdirectories = new ArrayList<>();
   private final List<File> files = new ArrayList<>();
@@ -106,5 +109,25 @@ public class Directory
   public void setEntry(java.io.File entry)
   {
     this.entry = entry;
+  }
+
+  public Long getVolumeRef()
+  {
+    return volumeRef;
+  }
+
+  public void setVolumeRef(Long volumeRef)
+  {
+    this.volumeRef = volumeRef;
+  }
+
+  public Long getParentRef()
+  {
+    return parentRef;
+  }
+
+  public void setParentRef(Long parentRef)
+  {
+    this.parentRef = parentRef;
   }
 }

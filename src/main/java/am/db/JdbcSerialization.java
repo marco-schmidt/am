@@ -39,6 +39,7 @@ public class JdbcSerialization
   private Connection conn;
   private String uri;
   private VolumeMapper volumeMapper = new VolumeMapper();
+  private DirectoryMapper directoryMapper = new DirectoryMapper();
 
   public boolean isConnected()
   {
@@ -95,10 +96,7 @@ public class JdbcSerialization
   public void createTables()
   {
     createTable(getVolumeMapper());
-    // createTable(TABLE_DIRS,
-    // TABLE_DIRS_NAME + " text,\n" + TABLE_DIRS_PARENT_REF + " bigint,\n" + TABLE_DIRS_VOLUME_REF
-    // + " bigint not null,\n" + "constraint volume_ref_fk foreign key (" + TABLE_DIRS_VOLUME_REF + ") references "
-    // + TABLE_VOLUMES + "(" + ROWID + ")");
+    createTable(getDirectoryMapper());
   }
 
   private void createTable(ModelMapper<? extends Model> mapper)
@@ -183,5 +181,15 @@ public class JdbcSerialization
   public void setVolumeMapper(VolumeMapper volumeMapper)
   {
     this.volumeMapper = volumeMapper;
+  }
+
+  public DirectoryMapper getDirectoryMapper()
+  {
+    return directoryMapper;
+  }
+
+  public void setDirectoryMapper(DirectoryMapper directoryMapper)
+  {
+    this.directoryMapper = directoryMapper;
   }
 }

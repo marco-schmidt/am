@@ -101,25 +101,20 @@ public class App
         LOGGER.error(config.msg("processor.error.directory_invalid", path));
       }
     }
-    // final TsvSerialization tsv = new TsvSerialization();
-    // final List<Volume> loadedVolumes = tsv.load(config);
     final JdbcSerialization io = config.getDatabaseSerializer();
-    final List<Volume> loadedVolumes = io.loadAll();
-    // final Volume vol = new Volume();
-    // vol.setPath("/Volumes/test");
-    // vol.setMain(true);
-    // volMapper.insert(io, vol);
-
-    final VolumeProcessor proc = new VolumeProcessor();
-    proc.setConfig(config);
-    final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
-    final MetadataExtraction extraction = new MetadataExtraction();
-    extraction.update(config, mergedVolumes);
-    validate(config, mergedVolumes);
-    final HashProcessor hashProcessor = new HashProcessor();
-    hashProcessor.update(config, mergedVolumes);
-    // tsv.save(config, mergedVolumes);
-    io.saveAll(mergedVolumes);
+    if (io != null)
+    {
+      final List<Volume> loadedVolumes = io.loadAll();
+      final VolumeProcessor proc = new VolumeProcessor();
+      proc.setConfig(config);
+      final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
+      final MetadataExtraction extraction = new MetadataExtraction();
+      extraction.update(config, mergedVolumes);
+      validate(config, mergedVolumes);
+      final HashProcessor hashProcessor = new HashProcessor();
+      hashProcessor.update(config, mergedVolumes);
+      io.saveAll(mergedVolumes);
+    }
   }
 
   private void validate(final AppConfig config, final List<Volume> volumes)

@@ -243,10 +243,12 @@ public class JdbcSerialization
 
   public void saveAll(List<Volume> vols)
   {
+    final long millis = System.currentTimeMillis();
     for (final Volume vol : vols)
     {
       save(vol);
     }
+    LOGGER.debug(config.msg("init.debug.database_saved", System.currentTimeMillis() - millis));
   }
 
   private void save(Volume vol)

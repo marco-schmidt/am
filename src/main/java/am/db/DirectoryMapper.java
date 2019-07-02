@@ -18,7 +18,6 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import am.filesystem.model.Directory;
 
 /**
@@ -56,7 +55,8 @@ public class DirectoryMapper extends ModelMapper<Directory>
     try
     {
       dir.setVolumeRef(rs.getLong(TABLE_DIRS_VOLUME_REF));
-      dir.setParentRef(rs.getLong(TABLE_DIRS_PARENT_REF));
+      final long parentRef = rs.getLong(TABLE_DIRS_PARENT_REF);
+      dir.setParentRef(parentRef < 1 ? null : Long.valueOf(parentRef));
       dir.setName(rs.getString(TABLE_DIRS_NAME));
     }
     catch (final SQLException e)
@@ -66,21 +66,18 @@ public class DirectoryMapper extends ModelMapper<Directory>
   }
 
   @Override
-  public void to(PreparedStatement stat, Directory dir)
+  public void to(PreparedStatement stat, Directory dir, boolean appendModelId)
   {
     try
     {
       stat.setLong(1, dir.getVolumeRef());
-      final Long parentRef = dir.getParentRef();
-      if (parentRef == null)
-      {
-        stat.setNull(2, Types.BIGINT);
-      }
-      else
-      {
-        stat.setLong(2, parentRef.longValue());
-      }
+      ModelMapper.setLong(stat, 2, dir.getParentRef());
       stat.setString(3, dir.getName());
+      if (appendModelId)
+      {
+        stat.setLong(4, dir.getId());
+      }
+
     }
     catch (final SQLException e)
     {
@@ -99,5 +96,11 @@ public class DirectoryMapper extends ModelMapper<Directory>
   public String getInsertQuery()
   {
     return getInsertQuery(COLUMNS);
+  }
+
+  @Override
+  public String getUpdateQuery()
+  {
+    return getUpdateQuery(COLUMNS);
   }
 }

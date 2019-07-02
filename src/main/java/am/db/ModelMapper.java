@@ -20,9 +20,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import am.app.AppConfig;
 
 /**
  * Abstract base class for converting between {@link Model} objects on the one hand and {@link ResultSet} and
@@ -43,6 +46,16 @@ public abstract class ModelMapper<T extends Model>
   abstract String getTableDefinition();
 
   abstract String getTableName();
+
+  public Map<Long, T> toMap(List<T> list)
+  {
+    final Map<Long, T> result = new HashMap<>();
+    for (final T t : list)
+    {
+      result.put(t.getId(), t);
+    }
+    return result;
+  }
 
   /**
    * Convert from a {@link ResultSet} to a {@link Model} object.
@@ -68,7 +81,9 @@ public abstract class ModelMapper<T extends Model>
 
   public List<T> loadAll(JdbcSerialization io)
   {
+    final AppConfig config = io.getConfig();
     final List<T> result = new ArrayList<>();
+    final long timeMillis = System.currentTimeMillis();
     final PreparedStatement stat = createSelectAll(io);
     if (stat == null)
     {
@@ -83,9 +98,15 @@ public abstract class ModelMapper<T extends Model>
         final T model = from(resultSet);
         result.add(model);
       }
+      if (LOGGER.isDebugEnabled())
+      {
+        LOGGER.debug(config.msg("init.debug.database_loaded", result.size(), this.getClass().getSimpleName(),
+            System.currentTimeMillis() - timeMillis));
+      }
     }
     catch (final SQLException e)
     {
+      e.printStackTrace();
       result.clear();
     }
     finally
@@ -120,7 +141,32 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
-  public abstract void to(PreparedStatement stat, T model);
+  private PreparedStatement createUpdate(JdbcSerialization io)
+  {
+    if (io.isConnected())
+    {
+      return io.prepare(getUpdateQuery());
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public abstract void to(PreparedStatement stat, T model, boolean appendModelId);
+
+  public void upsert(JdbcSerialization io, T model)
+  {
+    final Long id = model.getId();
+    if (id == null)
+    {
+      insert(io, model);
+    }
+    else
+    {
+      update(io, model);
+    }
+  }
 
   public void insert(JdbcSerialization io, T model)
   {
@@ -132,7 +178,7 @@ public abstract class ModelMapper<T extends Model>
     }
     try
     {
-      to(stat, model);
+      to(stat, model, false);
       stat.executeUpdate();
       generatedKeys = stat.getGeneratedKeys();
       if (generatedKeys.next())
@@ -152,12 +198,36 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
+  public void update(JdbcSerialization io, T model)
+  {
+    final PreparedStatement stat = createUpdate(io);
+    if (stat == null)
+    {
+      return;
+    }
+    try
+    {
+      to(stat, model, true);
+      stat.executeUpdate();
+    }
+    catch (final SQLException e)
+    {
+      e.printStackTrace();
+    }
+    finally
+    {
+      io.close(stat);
+    }
+  }
+
   public String getSelectAllQuery()
   {
     return "select " + ROWID + ", * from " + getTableName() + ";";
   }
 
   public abstract String getInsertQuery();
+
+  public abstract String getUpdateQuery();
 
   public static void setString(PreparedStatement stat, int index, String value) throws SQLException
   {
@@ -214,6 +284,32 @@ public abstract class ModelMapper<T extends Model>
       num--;
     }
     sb.append(')');
+    return sb.toString();
+  }
+
+  public String getUpdateQuery(String[] columnNames)
+  {
+    final StringBuilder sb = new StringBuilder();
+    sb.append("update ");
+    sb.append(getTableName());
+    sb.append(" set ");
+    boolean first = true;
+    for (final String col : columnNames)
+    {
+      if (first)
+      {
+        first = false;
+      }
+      else
+      {
+        sb.append(',');
+      }
+      sb.append(col);
+      sb.append("=?");
+    }
+    sb.append(" where ");
+    sb.append(ROWID);
+    sb.append(" =?");
     return sb.toString();
   }
 

@@ -85,7 +85,7 @@ public class FileMapper extends ModelMapper<File>
   }
 
   @Override
-  public void to(PreparedStatement stat, File file)
+  public void to(PreparedStatement stat, File file, boolean appendModelId)
   {
     try
     {
@@ -101,6 +101,11 @@ public class FileMapper extends ModelMapper<File>
       ModelMapper.setString(stat, 10, file.getHashValue());
       final Date hashCreated = file.getHashCreated();
       ModelMapper.setLong(stat, 11, hashCreated == null ? null : hashCreated.getTime());
+      if (appendModelId)
+      {
+        stat.setLong(12, file.getId());
+      }
+
     }
     catch (final SQLException e)
     {
@@ -120,5 +125,11 @@ public class FileMapper extends ModelMapper<File>
   public String getInsertQuery()
   {
     return getInsertQuery(COLUMNS);
+  }
+
+  @Override
+  public String getUpdateQuery()
+  {
+    return getUpdateQuery(COLUMNS);
   }
 }

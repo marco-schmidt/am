@@ -222,7 +222,7 @@ public class MovieValidator extends AbstractValidator
     {
       final WbSearchEntitiesResult result = iter.next();
       final String description = result.getDescription();
-      if (year != null && description.contains(year.toString()))
+      if (year != null && description != null && description.contains(year.toString()))
       {
         assignWikidataEntity(file, query, result);
         return true;

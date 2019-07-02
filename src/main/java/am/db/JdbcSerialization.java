@@ -22,10 +22,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.FileSystemHelper;
+import am.filesystem.model.Directory;
+import am.filesystem.model.Volume;
 
 /**
  * Connect to relational database with JDBC.
@@ -133,6 +137,7 @@ public class JdbcSerialization
       }
       catch (final SQLException e)
       {
+        e.printStackTrace();
       }
     }
     return null;
@@ -204,5 +209,69 @@ public class JdbcSerialization
   public void setFileMapper(FileMapper fileMapper)
   {
     this.fileMapper = fileMapper;
+  }
+
+  public List<Volume> loadAll()
+  {
+    final List<Volume> vols = volumeMapper.loadAll(this);
+    final Map<Long, Volume> volMap = volumeMapper.toMap(vols);
+    final List<Directory> dirs = directoryMapper.loadAll(this);
+    final Map<Long, Directory> dirMap = directoryMapper.toMap(dirs);
+    for (final Directory d : dirs)
+    {
+      final Long parentRef = d.getParentRef();
+      if (parentRef == null)
+      {
+        final Volume volume = volMap.get(d.getVolumeRef());
+        volume.setRoot(d);
+      }
+      else
+      {
+        final Directory parent = dirMap.get(parentRef);
+        parent.add(d);
+      }
+    }
+    final List<am.filesystem.model.File> files = fileMapper.loadAll(this);
+    for (final am.filesystem.model.File f : files)
+    {
+      final Long directoryRef = f.getDirectoryRef();
+      final Directory directory = dirMap.get(directoryRef);
+      directory.add(f);
+    }
+    return vols;
+  }
+
+  public void saveAll(List<Volume> vols)
+  {
+    for (final Volume vol : vols)
+    {
+      save(vol);
+    }
+  }
+
+  private void save(Volume vol)
+  {
+    final Directory root = vol.getRoot();
+    root.setVolumeRef(vol.getId());
+    save(root, null);
+  }
+
+  private void save(Directory dir, Long parentRef)
+  {
+    dir.setParentRef(parentRef);
+    directoryMapper.upsert(this, dir);
+
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      sub.setVolumeRef(dir.getVolumeRef());
+      save(sub, dir.getId());
+    }
+
+    for (final am.filesystem.model.File file : dir.getFiles())
+    {
+      file.setDirectoryRef(dir.getId());
+      file.setVolumeRef(dir.getVolumeRef());
+      fileMapper.upsert(this, file);
+    }
   }
 }

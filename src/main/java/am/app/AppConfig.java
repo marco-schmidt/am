@@ -72,7 +72,7 @@ public class AppConfig
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
   private Map<String, AbstractValidator> validators;
-  private boolean queryWikidata = true;
+  private boolean queryWikidata;
   private File databaseDirectory;
   private JdbcSerialization databaseSerializer;
 

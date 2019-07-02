@@ -18,7 +18,6 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import am.filesystem.model.Volume;
 
 /**
@@ -68,22 +67,18 @@ public class VolumeMapper extends ModelMapper<Volume>
   }
 
   @Override
-  public void to(PreparedStatement stat, Volume vol)
+  public void to(PreparedStatement stat, Volume vol, boolean appendModelId)
   {
     try
     {
       stat.setString(1, vol.getPath());
       stat.setInt(2, vol.isMain() ? 1 : 0);
-      final Long mainRef = vol.getMainRef();
-      if (mainRef == null)
-      {
-        stat.setNull(3, Types.BIGINT);
-      }
-      else
-      {
-        stat.setLong(3, mainRef.longValue());
-      }
+      ModelMapper.setLong(stat, 3, vol.getMainRef());
       stat.setString(4, vol.getValidator());
+      if (appendModelId)
+      {
+        stat.setLong(5, vol.getId());
+      }
     }
     catch (final SQLException e)
     {
@@ -103,5 +98,11 @@ public class VolumeMapper extends ModelMapper<Volume>
   public String getInsertQuery()
   {
     return getInsertQuery(COLUMNS);
+  }
+
+  @Override
+  public String getUpdateQuery()
+  {
+    return getUpdateQuery(COLUMNS);
   }
 }

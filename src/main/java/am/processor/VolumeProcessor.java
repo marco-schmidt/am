@@ -67,6 +67,8 @@ public class VolumeProcessor
       return scanned;
     }
     final Directory merged = new Directory();
+    merged.setId(loaded.getId());
+
     merged.setName(scanned.getName());
 
     final Set<String> names = new HashSet<>();
@@ -101,6 +103,7 @@ public class VolumeProcessor
       return scanned;
     }
     final File result = new File();
+    result.setId(loaded.getId());
     result.setName(scanned.getName());
     final Date scannedLastMod = scanned.getLastModified();
     final Date loadedLastMod = loaded.getLastModified();
@@ -143,6 +146,7 @@ public class VolumeProcessor
   public Volume mergeVolume(Volume scannedVolume, Volume loadedVolume)
   {
     final Volume result = new Volume();
+    result.setId(loadedVolume.getId());
     result.setPath(FileSystemHelper.normalizePath(scannedVolume.getPath()));
     final Directory root = mergeDirectory(scannedVolume.getRoot(), loadedVolume.getRoot());
     result.setRoot(root);

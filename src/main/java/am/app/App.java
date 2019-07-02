@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
 import am.db.JdbcSerialization;
-import am.db.TsvSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
 import am.processor.MetadataExtraction;
@@ -102,9 +101,15 @@ public class App
         LOGGER.error(config.msg("processor.error.directory_invalid", path));
       }
     }
-    final TsvSerialization tsv = new TsvSerialization();
-    final List<Volume> loadedVolumes = tsv.load(config);
-    LOGGER.info(config.msg("init.info.loaded_volumes", loadedVolumes.size()));
+    // final TsvSerialization tsv = new TsvSerialization();
+    // final List<Volume> loadedVolumes = tsv.load(config);
+    final JdbcSerialization io = config.getDatabaseSerializer();
+    final List<Volume> loadedVolumes = io.loadAll();
+    // final Volume vol = new Volume();
+    // vol.setPath("/Volumes/test");
+    // vol.setMain(true);
+    // volMapper.insert(io, vol);
+
     final VolumeProcessor proc = new VolumeProcessor();
     proc.setConfig(config);
     final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
@@ -113,7 +118,8 @@ public class App
     validate(config, mergedVolumes);
     final HashProcessor hashProcessor = new HashProcessor();
     hashProcessor.update(config, mergedVolumes);
-    tsv.save(config, mergedVolumes);
+    // tsv.save(config, mergedVolumes);
+    io.saveAll(mergedVolumes);
   }
 
   private void validate(final AppConfig config, final List<Volume> volumes)

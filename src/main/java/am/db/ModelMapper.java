@@ -18,6 +18,7 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -157,6 +158,30 @@ public abstract class ModelMapper<T extends Model>
   }
 
   public abstract String getInsertQuery();
+
+  public static void setString(PreparedStatement stat, int index, String value) throws SQLException
+  {
+    if (value == null)
+    {
+      stat.setNull(index, Types.VARCHAR);
+    }
+    else
+    {
+      stat.setString(index, value);
+    }
+  }
+
+  public static void setLong(PreparedStatement stat, int index, Long value) throws SQLException
+  {
+    if (value == null)
+    {
+      stat.setNull(index, Types.BIGINT);
+    }
+    else
+    {
+      stat.setLong(index, value);
+    }
+  }
 
   public String getInsertQuery(String[] columnNames)
   {

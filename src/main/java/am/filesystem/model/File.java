@@ -16,12 +16,15 @@
 package am.filesystem.model;
 
 import java.util.Date;
+import am.db.Model;
 
 /**
  * Data model class for a file as part of a {@link Directory} in a {@link Volume}.
  */
-public class File
+public class File extends Model
 {
+  private Long volumeRef;
+  private Long directoryRef;
   private String name;
   private Date lastModified;
   private Long byteSize;
@@ -186,5 +189,25 @@ public class File
   public void setWikidataEntityId(String wikidataEntityId)
   {
     this.wikidataEntityId = wikidataEntityId;
+  }
+
+  public Long getVolumeRef()
+  {
+    return volumeRef;
+  }
+
+  public void setVolumeRef(Long volumeRef)
+  {
+    this.volumeRef = volumeRef;
+  }
+
+  public Long getDirectoryRef()
+  {
+    return directoryRef;
+  }
+
+  public void setDirectoryRef(Long directoryRef)
+  {
+    this.directoryRef = directoryRef;
   }
 }

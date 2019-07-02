@@ -40,6 +40,7 @@ public class JdbcSerialization
   private String uri;
   private VolumeMapper volumeMapper = new VolumeMapper();
   private DirectoryMapper directoryMapper = new DirectoryMapper();
+  private FileMapper fileMapper = new FileMapper();
 
   public boolean isConnected()
   {
@@ -97,21 +98,23 @@ public class JdbcSerialization
   {
     createTable(getVolumeMapper());
     createTable(getDirectoryMapper());
+    createTable(getFileMapper());
   }
 
   private void createTable(ModelMapper<? extends Model> mapper)
   {
     if (isConnected())
     {
+      final String query = mapper.getCreateTableQuery();
       PreparedStatement stat = null;
       try
       {
-        stat = conn.prepareStatement(mapper.getCreateTableQuery());
+        stat = conn.prepareStatement(query);
         stat.execute();
       }
       catch (final SQLException e)
       {
-        LOGGER.error("failed creation", e);
+        LOGGER.error("failed creation: " + query, e);
       }
       finally
       {
@@ -191,5 +194,15 @@ public class JdbcSerialization
   public void setDirectoryMapper(DirectoryMapper directoryMapper)
   {
     this.directoryMapper = directoryMapper;
+  }
+
+  public FileMapper getFileMapper()
+  {
+    return fileMapper;
+  }
+
+  public void setFileMapper(FileMapper fileMapper)
+  {
+    this.fileMapper = fileMapper;
   }
 }

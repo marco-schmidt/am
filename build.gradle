@@ -183,6 +183,9 @@ publishing {
 dependencyCheck {
   cveValidForHours=24
   failBuildOnCVSS=0
+  analyzers {
+    assemblyEnabled=false
+  }
 }
 
 check.dependsOn dependencyCheckAnalyze

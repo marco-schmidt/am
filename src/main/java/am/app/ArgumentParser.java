@@ -15,14 +15,12 @@
  */
 package am.app;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -131,6 +129,21 @@ public class ArgumentParser
         {
           config.setConfigFileName(nextArg);
         };
+      }, new AbstractParameter("args.add_volume", "add-volume", null, ParameterType.Directory)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setMode(ProcessMode.AddVolume);
+          config.setAddVolumePath(nextArg);
+        };
+      }, new AbstractParameter("args.set_volume_validator", "set-validator", null, ParameterType.String)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setAddVolumeValidator(nextArg);
+        };
       }
   };
   private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentParser.class);
@@ -199,34 +212,6 @@ public class ArgumentParser
     return success;
   }
 
-  public void removeFilesWithUnknownExtensions(final List<String> fileNames, final Set<String> lowerExtensions)
-  {
-    final Iterator<String> iter = fileNames.iterator();
-    while (iter.hasNext())
-    {
-      final File file = new File(iter.next());
-      final String name = file.getName();
-      final int lastDot = name.lastIndexOf('.');
-      boolean doRemove = false;
-      if (lastDot >= 0)
-      {
-        final String ext = name.substring(lastDot + 1).toLowerCase(Locale.ENGLISH);
-        if (!lowerExtensions.contains(ext))
-        {
-          doRemove = true;
-        }
-      }
-      else
-      {
-        doRemove = true;
-      }
-      if (doRemove)
-      {
-        iter.remove();
-      }
-    }
-  }
-
   private boolean processParameter(final AppConfig config, final String arg, final Iterator<String> iterator)
   {
     boolean success = true;
@@ -271,7 +256,7 @@ public class ArgumentParser
         {
           if (nextArg != null)
           {
-            config.msg("args.error.superfluous_switch_argument", name);
+            LOGGER.error(config.msg("args.error.superfluous_switch_argument", name));
             success = false;
           }
         }
@@ -283,7 +268,7 @@ public class ArgumentParser
           }
           else
           {
-            config.msg("args.error.missing_argument", name);
+            LOGGER.error(config.msg("args.error.missing_argument", name));
             success = false;
           }
         }

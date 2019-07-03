@@ -40,6 +40,7 @@ public abstract class ModelMapper<T extends Model>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelMapper.class);
   protected static final String ROWID = "rowid";
+  private AppConfig config;
 
   abstract T create();
 
@@ -168,13 +169,13 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
-  public void insert(JdbcSerialization io, T model)
+  public boolean insert(JdbcSerialization io, T model)
   {
     final PreparedStatement stat = createInsert(io);
     ResultSet generatedKeys = null;
     if (stat == null)
     {
-      return;
+      return false;
     }
     try
     {
@@ -186,10 +187,12 @@ public abstract class ModelMapper<T extends Model>
         final long key = generatedKeys.getLong(1);
         model.setId(key);
       }
+      return true;
     }
     catch (final SQLException e)
     {
       e.printStackTrace();
+      return false;
     }
     finally
     {
@@ -316,5 +319,15 @@ public abstract class ModelMapper<T extends Model>
   public String getCreateTableQuery()
   {
     return "create table if not exists " + getTableName() + " (\n" + getTableDefinition() + ");\n";
+  }
+
+  public AppConfig getConfig()
+  {
+    return config;
+  }
+
+  public void setConfig(AppConfig config)
+  {
+    this.config = config;
   }
 }

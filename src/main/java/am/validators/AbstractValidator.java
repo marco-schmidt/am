@@ -15,7 +15,9 @@
  */
 package am.validators;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,25 @@ public abstract class AbstractValidator
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractValidator.class);
   private AppConfig config;
   private final Set<String> ids = new HashSet<>();
+  private static List<Class<? extends AbstractValidator>> validatorClasses = new ArrayList<>();
+
+  public static void register(Class<? extends AbstractValidator> cl)
+  {
+    validatorClasses.add(cl);
+  }
+
+  public static Class<? extends AbstractValidator> findByName(String name)
+  {
+    for (final Class<? extends AbstractValidator> cl : validatorClasses)
+    {
+      final String simpleName = cl.getSimpleName();
+      if (simpleName.equals(name))
+      {
+        return cl;
+      }
+    }
+    return null;
+  }
 
   public void addViolation(File file, String id)
   {

@@ -75,6 +75,8 @@ public class AppConfig
   private boolean queryWikidata;
   private File databaseDirectory;
   private JdbcSerialization databaseSerializer;
+  private String addVolumePath;
+  private String addVolumeValidator;
 
   public AppConfig()
   {
@@ -341,5 +343,25 @@ public class AppConfig
   public void setDatabaseSerializer(JdbcSerialization databaseSerializer)
   {
     this.databaseSerializer = databaseSerializer;
+  }
+
+  public String getAddVolumePath()
+  {
+    return addVolumePath;
+  }
+
+  public void setAddVolumePath(String addVolumePath)
+  {
+    this.addVolumePath = addVolumePath;
+  }
+
+  public String getAddVolumeValidator()
+  {
+    return addVolumeValidator;
+  }
+
+  public void setAddVolumeValidator(String addVolumeValidator)
+  {
+    this.addVolumeValidator = addVolumeValidator;
   }
 }

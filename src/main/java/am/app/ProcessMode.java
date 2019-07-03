@@ -34,5 +34,10 @@ public enum ProcessMode
   /**
    * Check current file system state against catalog.
    */
-  Check
+  Check,
+
+  /**
+   * Add a volume.
+   */
+  AddVolume
 }

@@ -18,6 +18,8 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import am.filesystem.model.Directory;
 
 /**
@@ -27,6 +29,7 @@ import am.filesystem.model.Directory;
  */
 public class DirectoryMapper extends ModelMapper<Directory>
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMapper.class);
   private static final String TABLE_DIRS = "dirs";
   private static final String TABLE_DIRS_VOLUME_REF = "volume_ref";
   private static final String TABLE_DIRS_PARENT_REF = "parent_ref";
@@ -61,6 +64,7 @@ public class DirectoryMapper extends ModelMapper<Directory>
     }
     catch (final SQLException e)
     {
+      LOGGER.error(getConfig().msg("database.error.convert_from_result_set", this.getClass().getSimpleName()), e);
     }
     return dir;
   }
@@ -77,12 +81,10 @@ public class DirectoryMapper extends ModelMapper<Directory>
       {
         stat.setLong(4, dir.getId());
       }
-
     }
     catch (final SQLException e)
     {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOGGER.error(getConfig().msg("database.error.convert_to_prepared_statement", this.getClass().getSimpleName()), e);
     }
   }
 

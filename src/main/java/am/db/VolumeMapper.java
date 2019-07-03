@@ -18,6 +18,8 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import am.filesystem.model.Volume;
 
 /**
@@ -27,6 +29,7 @@ import am.filesystem.model.Volume;
  */
 public class VolumeMapper extends ModelMapper<Volume>
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(VolumeMapper.class);
   private static final String TABLE_VOLUMES = "volumes";
   private static final String TABLE_VOLUMES_MAIN = "main";
   private static final String TABLE_VOLUMES_MAIN_REF = "main_ref";
@@ -62,6 +65,7 @@ public class VolumeMapper extends ModelMapper<Volume>
     }
     catch (final SQLException e)
     {
+      LOGGER.error(getConfig().msg("database.error.convert_from_result_set", this.getClass().getSimpleName()), e);
     }
     return vol;
   }
@@ -82,8 +86,7 @@ public class VolumeMapper extends ModelMapper<Volume>
     }
     catch (final SQLException e)
     {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOGGER.error(getConfig().msg("database.error.convert_to_prepared_statement", this.getClass().getSimpleName()), e);
     }
   }
 

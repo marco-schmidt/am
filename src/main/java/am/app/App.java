@@ -135,6 +135,11 @@ public class App
   {
     switch (config.getMode())
     {
+    case AddVolume:
+    {
+      new DatabaseService().addVolume(config);
+      break;
+    }
     case ShowHelp:
     {
       printHelp(config);

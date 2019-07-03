@@ -69,6 +69,10 @@ public class MovieValidator extends AbstractValidator
   private static final String VIOLATION_FILE_DIRECTORY_YEAR_DIFFER = "file_dir_year_differ";
   private static final String VIOLATION_TITLE_MISSING = "file_title_missing";
   private static final String VIOLATION_FILE_NAME_STRUCTURE = "file_name_structure";
+  static
+  {
+    AbstractValidator.register(MovieValidator.class);
+  }
 
   /**
    * Smallest value allowed for the year a movie was created.

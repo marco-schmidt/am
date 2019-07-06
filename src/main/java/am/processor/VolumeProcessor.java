@@ -214,7 +214,16 @@ public class VolumeProcessor
         if (scanned == null)
         {
           merged = loaded;
-          assignFileState(merged.getRoot(), FileState.Missing);
+          Directory root = merged.getRoot();
+          if (root == null)
+          {
+            root = new Directory();
+            root.setName("");
+            root.setVolumeRef(loaded.getId());
+            root.setEntry(new java.io.File(merged.getPath()));
+            merged.setRoot(root);
+          }
+          assignFileState(root, FileState.Missing);
         }
         else
         {

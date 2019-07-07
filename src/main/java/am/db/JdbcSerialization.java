@@ -181,6 +181,9 @@ public class JdbcSerialization
   public void setConfig(AppConfig config)
   {
     this.config = config;
+    fileMapper.setConfig(config);
+    directoryMapper.setConfig(config);
+    volumeMapper.setConfig(config);
   }
 
   public VolumeMapper getVolumeMapper()

@@ -47,6 +47,7 @@ public final class AppConfigLoader
   private static final String IGNORE_FILE_NAMES = "ignoreFileNames";
   private static final String EXIFTOOL_PATH = "exiftoolPath";
   private static final String CREATE_HASHES = "createHashes";
+  private static final String WIKIDATA = "wikidata";
 
   private AppConfigLoader()
   {
@@ -73,6 +74,16 @@ public final class AppConfigLoader
     }
   }
 
+  private static void initWikidata(final AppConfig config, final Properties props)
+  {
+    if (props.containsKey(WIKIDATA))
+    {
+      final Object obj = props.remove(WIKIDATA);
+      final Boolean wikidata = Boolean.valueOf(obj.toString());
+      config.setQueryWikidata(wikidata.booleanValue());
+    }
+  }
+
   public static boolean interpretProperties(final AppConfig config)
   {
     final Properties props = config.getProperties();
@@ -81,6 +92,7 @@ public final class AppConfigLoader
     initIgnoreFileNames(config, props);
     initExiftool(config, props);
     initHashes(config, props);
+    initWikidata(config, props);
     return initDatabase(config, props);
   }
 

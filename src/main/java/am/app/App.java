@@ -137,6 +137,14 @@ public class App
     }
   }
 
+  private static void registerValidators()
+  {
+    if (!AbstractValidator.hasRegisteredValidators())
+    {
+      AbstractValidator.register(MovieValidator.class);
+    }
+  }
+
   private AbstractValidator createValidator(final AppConfig config, String validatorName, Long volNr)
   {
     if (validatorName == null)
@@ -195,6 +203,7 @@ public class App
     final LoggingHandler log = new LoggingHandler();
     config.setLoggingHandler(log);
     log.initialize(config);
+    registerValidators();
     if (app.initialize(config, args))
     {
       app.process(config);

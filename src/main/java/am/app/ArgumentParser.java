@@ -144,6 +144,13 @@ public class ArgumentParser
         {
           config.setAddVolumeValidator(nextArg);
         };
+      }, new AbstractParameter("args.wikidata", "wikidata", null, ParameterType.Boolean)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setQueryWikidata(Boolean.parseBoolean(nextArg));
+        };
       }
   };
   private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentParser.class);

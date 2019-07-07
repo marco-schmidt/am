@@ -38,6 +38,11 @@ public abstract class AbstractValidator
   private final Set<String> ids = new HashSet<>();
   private static List<Class<? extends AbstractValidator>> validatorClasses = new ArrayList<>();
 
+  public static boolean hasRegisteredValidators()
+  {
+    return !validatorClasses.isEmpty();
+  }
+
   public static void register(Class<? extends AbstractValidator> cl)
   {
     validatorClasses.add(cl);

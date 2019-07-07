@@ -69,10 +69,6 @@ public class MovieValidator extends AbstractValidator
   private static final String VIOLATION_FILE_DIRECTORY_YEAR_DIFFER = "file_dir_year_differ";
   private static final String VIOLATION_TITLE_MISSING = "file_title_missing";
   private static final String VIOLATION_FILE_NAME_STRUCTURE = "file_name_structure";
-  static
-  {
-    AbstractValidator.register(MovieValidator.class);
-  }
 
   /**
    * Smallest value allowed for the year a movie was created.
@@ -198,15 +194,17 @@ public class MovieValidator extends AbstractValidator
     }
     try
     {
+      long millis = System.currentTimeMillis();
       final List<WbSearchEntitiesResult> list = fetcher.searchEntities(query, "en", Long.valueOf(10));
+      millis = System.currentTimeMillis() - millis;
       boolean success = false;
       if (list.isEmpty())
       {
-        LOGGER.warn(getConfig().msg("movievalidator.warn.wikidata_no_result", query));
+        LOGGER.warn(getConfig().msg("movievalidator.warn.wikidata_no_result", query, millis));
       }
       else
       {
-        success = parseResults(list, file, query, videoFileName.getYear());
+        success = parseResults(list, file, query, videoFileName.getYear(), millis);
       }
       if (!success)
       {
@@ -219,7 +217,7 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
-  private boolean parseResults(List<WbSearchEntitiesResult> list, File file, String query, Long year)
+  private boolean parseResults(List<WbSearchEntitiesResult> list, File file, String query, Long year, long millis)
   {
     final Iterator<WbSearchEntitiesResult> iter = list.iterator();
     while (iter.hasNext())
@@ -228,18 +226,18 @@ public class MovieValidator extends AbstractValidator
       final String description = result.getDescription();
       if (year != null && description != null && description.contains(year.toString()))
       {
-        assignWikidataEntity(file, query, result);
+        assignWikidataEntity(file, query, result, millis);
         return true;
       }
     }
     return false;
   }
 
-  private void assignWikidataEntity(File file, String query, WbSearchEntitiesResult result)
+  private void assignWikidataEntity(File file, String query, WbSearchEntitiesResult result, long millis)
   {
     final String entityId = result.getEntityId();
     LOGGER.info(getConfig().msg("movievalidator.info.wikidata_result", query, entityId, result.getDescription(),
-        result.getLabel()));
+        result.getLabel(), millis));
     file.setWikidataEntityId(entityId);
   }
 

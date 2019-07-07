@@ -44,10 +44,11 @@ public class FileMapper extends ModelMapper<File>
   private static final String COL_STATE = "state";
   private static final String COL_HASH_VALUE = "hash_value";
   private static final String COL_HASH_CREATED = "hash_created";
+  private static final String COL_WIKIDATA_ENT_ID = "wikidata_ent_id";
   private static final String[] COLUMNS =
   {
       COL_VOLUME_REF, COL_DIR_REF, COL_NAME, COL_SIZE, COL_LAST_MODIFIED, COL_MIME_TYPE, COL_FILE_GROUP, COL_FILE_TYPE,
-      COL_STATE, COL_HASH_VALUE, COL_HASH_CREATED
+      COL_STATE, COL_HASH_VALUE, COL_HASH_CREATED, COL_WIKIDATA_ENT_ID
   };
 
   @Override
@@ -79,6 +80,7 @@ public class FileMapper extends ModelMapper<File>
       file.setState(FileState.values()[rs.getInt(COL_STATE)]);
       file.setHashValue(rs.getString(COL_HASH_VALUE));
       file.setHashCreated(rs.getDate(COL_HASH_CREATED));
+      file.setWikidataEntityId(rs.getString(COL_WIKIDATA_ENT_ID));
     }
     catch (final SQLException e)
     {
@@ -104,9 +106,10 @@ public class FileMapper extends ModelMapper<File>
       ModelMapper.setString(stat, 10, file.getHashValue());
       final Date hashCreated = file.getHashCreated();
       ModelMapper.setLong(stat, 11, hashCreated == null ? null : hashCreated.getTime());
+      ModelMapper.setString(stat, 12, file.getWikidataEntityId());
       if (appendModelId)
       {
-        stat.setLong(12, file.getId());
+        stat.setLong(13, file.getId());
       }
 
     }
@@ -121,7 +124,8 @@ public class FileMapper extends ModelMapper<File>
   {
     return COL_VOLUME_REF + " bigint,\n" + COL_DIR_REF + " bigint,\n" + COL_NAME + " text,\n" + COL_SIZE + " bigint,\n"
         + COL_LAST_MODIFIED + " integer,\n" + COL_MIME_TYPE + " text,\n" + COL_FILE_GROUP + " text,\n" + COL_FILE_TYPE
-        + " text,\n" + COL_STATE + " int,\n" + COL_HASH_VALUE + " text,\n" + COL_HASH_CREATED + " integer\n";
+        + " text,\n" + COL_STATE + " int,\n" + COL_HASH_VALUE + " text,\n" + COL_HASH_CREATED + " integer,\n"
+        + COL_WIKIDATA_ENT_ID + " text\n";
   }
 
   @Override

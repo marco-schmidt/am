@@ -44,11 +44,12 @@ public class VolumeScanner
     final String dirName = volume.getPath();
     try
     {
-      LOGGER.info(config.msg("scanner.info.start", dirName));
+      final long millis = System.currentTimeMillis();
+      LOGGER.debug(config.msg("scanner.debug.start", dirName));
       final VolumeVisitor visitor = new VolumeVisitor(this, config);
       Files.walkFileTree(Paths.get(dirName), visitor);
-      LOGGER.info(config.msg("scanner.info.end", dirName, visitor.getNumDirectories(), visitor.getNumFiles(),
-          visitor.getNumBytes()));
+      LOGGER.debug(config.msg("scanner.debug.end", dirName, visitor.getNumDirectories(), visitor.getNumFiles(),
+          visitor.getNumBytes(), System.currentTimeMillis() - millis));
     }
     catch (final IOException e)
     {

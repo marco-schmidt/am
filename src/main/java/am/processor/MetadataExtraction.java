@@ -80,9 +80,9 @@ public class MetadataExtraction
 
   private void update(AppConfig config, File file)
   {
-    final String fileType = file.getFileType();
+    final String mimeType = file.getMimeType();
     final java.io.File entry = file.getEntry();
-    if (fileType == null && entry.isFile())
+    if (mimeType == null && entry.isFile())
     {
       if (LOGGER.isTraceEnabled())
       {

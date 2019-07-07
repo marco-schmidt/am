@@ -17,9 +17,9 @@ package am.app;
 
 import java.io.File;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
@@ -30,6 +30,7 @@ import am.processor.MetadataExtraction;
 import am.processor.VolumeProcessor;
 import am.processor.hashes.HashProcessor;
 import am.validators.AbstractValidator;
+import am.validators.MovieValidator;
 
 /**
  */
@@ -80,34 +81,40 @@ public class App
 
   private void processVolumes(final AppConfig config)
   {
-    for (final Volume vol : config.getVolumes())
-    {
-      final String path = vol.getPath();
-      final File dir = new File(path);
-      if (dir.exists())
-      {
-        if (dir.isDirectory())
-        {
-          final VolumeScanner scanner = new VolumeScanner(config, vol);
-          scanner.scan();
-        }
-        else
-        {
-          LOGGER.error(config.msg("processor.error.not_a_directory", path));
-        }
-      }
-      else
-      {
-        LOGGER.error(config.msg("processor.error.directory_invalid", path));
-      }
-    }
     final JdbcSerialization io = config.getDatabaseSerializer();
     if (io != null)
     {
       final List<Volume> loadedVolumes = io.loadAll();
+      final List<Volume> scannedVolumes = new ArrayList<>();
+      for (final Volume loadedVol : loadedVolumes)
+      {
+        final String path = loadedVol.getPath();
+        final File dir = new File(path);
+        if (dir.exists())
+        {
+          if (dir.isDirectory())
+          {
+            final Volume vol = new Volume();
+            vol.setPath(loadedVol.getPath());
+            vol.setEntry(dir);
+            scannedVolumes.add(vol);
+            final VolumeScanner scanner = new VolumeScanner(config, vol);
+            scanner.scan();
+          }
+          else
+          {
+            LOGGER.error(config.msg("processor.error.not_a_directory", path));
+          }
+        }
+        else
+        {
+          LOGGER.error(config.msg("processor.error.directory_invalid", path));
+        }
+      }
+
       final VolumeProcessor proc = new VolumeProcessor();
       proc.setConfig(config);
-      final List<Volume> mergedVolumes = proc.processVolumes(config.getVolumes(), loadedVolumes);
+      final List<Volume> mergedVolumes = proc.processVolumes(scannedVolumes, loadedVolumes);
       final MetadataExtraction extraction = new MetadataExtraction();
       extraction.update(config, mergedVolumes);
       validate(config, mergedVolumes);
@@ -119,15 +126,30 @@ public class App
 
   private void validate(final AppConfig config, final List<Volume> volumes)
   {
-    final Map<String, AbstractValidator> validators = config.getValidators();
     for (final Volume vol : volumes)
     {
-      final AbstractValidator validator = validators.get(vol.getPath());
+      final AbstractValidator validator = createValidator(config, vol.getValidator(), vol.getId());
       if (validator != null)
       {
         validator.setConfig(config);
         validator.validate(config, vol);
       }
+    }
+  }
+
+  private AbstractValidator createValidator(final AppConfig config, String validatorName, Long volNr)
+  {
+    if (validatorName == null)
+    {
+      return null;
+    }
+    switch (validatorName)
+    {
+    case "MovieValidator":
+      return new MovieValidator();
+    default:
+      LOGGER.error(config.msg("init.error.unknown_validator", validatorName, volNr));
+      return null;
     }
   }
 

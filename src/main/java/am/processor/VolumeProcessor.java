@@ -148,6 +148,7 @@ public class VolumeProcessor
     final Volume result = new Volume();
     result.setId(loadedVolume.getId());
     result.setPath(FileSystemHelper.normalizePath(scannedVolume.getPath()));
+    result.setValidator(loadedVolume.getValidator());
     final Directory root = mergeDirectory(scannedVolume.getRoot(), loadedVolume.getRoot());
     result.setRoot(root);
     return result;

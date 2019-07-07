@@ -17,20 +17,14 @@ package am.app;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.conversion.StrUtil;
 import am.db.JdbcSerialization;
-import am.filesystem.model.Volume;
 import am.processor.hashes.HashConfig;
-import am.validators.AbstractValidator;
 
 /**
  * Configuration for {@link App} application.
@@ -61,7 +55,6 @@ public class AppConfig
   private Locale locale;
   private boolean quiet;
   private Properties properties;
-  private final List<Volume> volumes;
   private LoggingHandler loggingHandler;
   private String configFileName;
   private File tsvDirectory;
@@ -71,7 +64,6 @@ public class AppConfig
   private String exifToolPath;
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
-  private Map<String, AbstractValidator> validators;
   private boolean queryWikidata;
   private File databaseDirectory;
   private JdbcSerialization databaseSerializer;
@@ -80,11 +72,9 @@ public class AppConfig
 
   public AppConfig()
   {
-    volumes = new ArrayList<>();
     setProperties(new Properties());
     loggingHandler = new LoggingHandler();
     hashConfig = new HashConfig();
-    validators = new HashMap<>();
   }
 
   public ResourceBundle getBundle()
@@ -210,11 +200,6 @@ public class AppConfig
     this.properties = properties;
   }
 
-  public List<Volume> getVolumes()
-  {
-    return volumes;
-  }
-
   public LoggingHandler getLoggingHandler()
   {
     return loggingHandler;
@@ -303,16 +288,6 @@ public class AppConfig
   public void setHashConfig(HashConfig hashConfig)
   {
     this.hashConfig = hashConfig;
-  }
-
-  public Map<String, AbstractValidator> getValidators()
-  {
-    return validators;
-  }
-
-  public void setValidators(Map<String, AbstractValidator> validators)
-  {
-    this.validators = validators;
   }
 
   public boolean isQueryWikidata()

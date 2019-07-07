@@ -185,17 +185,20 @@ public final class AppConfigLoader
         config.setDatabaseDirectory(dir);
         final JdbcSerialization io = new JdbcSerialization();
         io.setConfig(config);
-        io.connect(dir);
+        if (!io.connect(dir))
+        {
+          return false;
+        }
         io.createTables();
         config.setDatabaseSerializer(io);
+        return true;
       }
       else
       {
         LOGGER.error(config.msg("init.error.database_dir_does_not_exist", dirName));
-        return false;
       }
     }
-    return true;
+    return false;
   }
 
   public static void loadConfig(final AppConfig config)

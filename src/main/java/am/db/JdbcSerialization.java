@@ -72,22 +72,24 @@ public class JdbcSerialization
     }
   }
 
-  public void connect(File dir)
+  public boolean connect(File dir)
   {
     if (conn != null)
     {
-      return;
+      return true;
     }
     uri = createConnectorString(dir);
     try
     {
       conn = DriverManager.getConnection(uri);
       LOGGER.info(config.msg("init.info.database_connection_attempt_succeeded", uri));
+      return true;
     }
     catch (final SQLException e)
     {
       LOGGER.error(config.msg("init.error.database_connection_attempt_failed", uri), e);
       uri = null;
+      return false;
     }
   }
 

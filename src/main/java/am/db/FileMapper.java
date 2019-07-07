@@ -19,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import am.filesystem.model.File;
 import am.filesystem.model.FileState;
 
@@ -29,6 +31,7 @@ import am.filesystem.model.FileState;
  */
 public class FileMapper extends ModelMapper<File>
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileMapper.class);
   private static final String TABLE_FILES = "files";
   private static final String COL_VOLUME_REF = "volume_ref";
   private static final String COL_DIR_REF = "dir_ref";
@@ -79,7 +82,7 @@ public class FileMapper extends ModelMapper<File>
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(getConfig().msg("database.error.convert_from_result_set", this.getClass().getSimpleName()), e);
     }
     return file;
   }
@@ -109,7 +112,7 @@ public class FileMapper extends ModelMapper<File>
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(getConfig().msg("database.error.convert_to_prepared_statement", this.getClass().getSimpleName()), e);
     }
   }
 

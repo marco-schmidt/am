@@ -250,7 +250,7 @@ public class JdbcSerialization
     {
       save(vol);
     }
-    LOGGER.debug(config.msg("init.debug.database_saved", System.currentTimeMillis() - millis));
+    LOGGER.debug(config.msg("database.debug.database_saved", System.currentTimeMillis() - millis));
   }
 
   private void save(Volume vol)

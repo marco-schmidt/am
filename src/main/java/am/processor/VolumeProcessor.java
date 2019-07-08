@@ -159,7 +159,7 @@ public class VolumeProcessor
     final Map<String, Volume> result = new HashMap<>();
     for (final Volume vol : volumes)
     {
-      result.put(vol.getPath(), vol);
+      result.put(FileSystemHelper.normalizePath(vol.getPath()), vol);
     }
     return result;
   }

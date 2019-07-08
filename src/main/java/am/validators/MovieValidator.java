@@ -84,8 +84,6 @@ public class MovieValidator extends AbstractValidator
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MovieValidator.class);
 
-  private WikibaseDataFetcher fetcher;
-
   @Override
   public void validate(AppConfig config, Volume volume)
   {
@@ -188,9 +186,12 @@ public class MovieValidator extends AbstractValidator
     }
 
     // reuse fetcher if it already exists
+    final AppConfig config = getConfig();
+    WikibaseDataFetcher fetcher = config.getFetcher();
     if (fetcher == null)
     {
       fetcher = WikibaseDataFetcher.getWikidataDataFetcher();
+      config.setFetcher(fetcher);
     }
     try
     {

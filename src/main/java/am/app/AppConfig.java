@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.conversion.StrUtil;
 import am.db.JdbcSerialization;
@@ -69,6 +70,7 @@ public class AppConfig
   private JdbcSerialization databaseSerializer;
   private String addVolumePath;
   private String addVolumeValidator;
+  private WikibaseDataFetcher fetcher;
 
   public AppConfig()
   {
@@ -338,5 +340,15 @@ public class AppConfig
   public void setAddVolumeValidator(String addVolumeValidator)
   {
     this.addVolumeValidator = addVolumeValidator;
+  }
+
+  public WikibaseDataFetcher getFetcher()
+  {
+    return fetcher;
+  }
+
+  public void setFetcher(WikibaseDataFetcher fetcher)
+  {
+    this.fetcher = fetcher;
   }
 }

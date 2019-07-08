@@ -101,4 +101,14 @@ public class LoggingHandler
   {
     this.logDirectory = logDirectory;
   }
+
+  public LoggerContext getLoggerContext()
+  {
+    return loggerContext;
+  }
+
+  public void setLoggerContext(LoggerContext loggerContext)
+  {
+    this.loggerContext = loggerContext;
+  }
 }

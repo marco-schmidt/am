@@ -46,6 +46,7 @@ exiftoolPath=/usr/local/bin/exiftool
 createHashes=1%
 ignoreDirNames=@eaDir
 ignoreFileNames=.DS_Store,Thumbs.db
+wikidata=true
 EOL
 ```
 
@@ -59,7 +60,7 @@ Define a movie volume (leave out the last two arguments if your media files are 
 ./am --add-volume /home/johndoe/movies --set-validator MovieValidator
 ```
 
-Have am scan the new volume, run exiftool on files, create some hash values:
+The previous call just added a single record about a new volume to the database. Now have am scan that new volume, run exiftool on files, create some hash values:
 ```
 ./am
 ```
@@ -92,4 +93,7 @@ ignoreFileNames=.DS_Store,Thumbs.db
 
 # ignore directory tree below a directory with a name from this comma-separated list of names
 ignoreDirNames=@eaDir
+
+# query Wikidata to find entity id values in combination with the movie validator
+wikidata=true
 ```

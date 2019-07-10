@@ -93,7 +93,13 @@ public final class AppConfigLoader
     initExiftool(config, props);
     initHashes(config, props);
     initWikidata(config, props);
-    return initDatabase(config, props);
+    boolean success = initDatabase(config, props);
+    if (success && !props.isEmpty())
+    {
+      LOGGER.error(config.msg("init.error.unknown_config_key", props.keys().nextElement().toString()));
+      success = false;
+    }
+    return success;
   }
 
   private static void initHashes(AppConfig config, Properties props)

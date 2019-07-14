@@ -201,7 +201,7 @@ public class MovieValidator extends AbstractValidator
       boolean success = false;
       if (list.isEmpty())
       {
-        LOGGER.warn(getConfig().msg("movievalidator.warn.wikidata_no_result", query, millis));
+        LOGGER.warn(config.msg("movievalidator.warn.wikidata_no_result", query, millis));
       }
       else
       {
@@ -250,9 +250,7 @@ public class MovieValidator extends AbstractValidator
     }
     else
     {
-
       return list.remove(list.size() - 1);
-
     }
   }
 
@@ -381,7 +379,6 @@ public class MovieValidator extends AbstractValidator
     {
       videoFileName.setYear(year);
       return true;
-
     }
     else
     {

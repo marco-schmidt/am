@@ -228,11 +228,6 @@ public class App
       break;
     }
     }
-    // final JdbcSerialization io = config.getDatabaseSerializer();
-    // if (io != null)
-    // {
-    // io.close();
-    // }
   }
 
   public static void main(String[] args) throws Exception

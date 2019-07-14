@@ -97,3 +97,28 @@ ignoreDirNames=@eaDir
 # query Wikidata to find entity id values in combination with the movie validator
 wikidata=true
 ```
+
+## Development
+
+### Setup of Integrated Development Environment Eclipse
+
+Make sure a version 8 JDK is in the path and [Eclipse](https://www.eclipse.org/downloads/) is installed on the system.
+
+Open a shell and change to the directory where you checked out am (see Usage above).
+
+Make gradle create an Eclipse workspace:
+```
+./gradlew eclipse
+```
+
+Open Eclipse and choose ``File | Import...`` from the menu. The ``Import``dialog should pop up with heading ``Select`.
+
+Choose ``General | Existing Projects into Workspace`` and press button ``Next >``. The dialog should switch  the heading to ``Import``.
+
+Make sure that the radio button ``Select root directory:`` is selected. Either type in the directory where you just generated Eclipse workspace files, or pick it with the dialog behind the ``Browse`` button.
+
+Press the tab key. Under ``Projects`` am should now show up. Check the box next to it.
+
+Press button ``Next``.
+
+TODO

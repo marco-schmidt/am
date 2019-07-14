@@ -279,6 +279,11 @@ public class VolumeProcessor
       LOGGER.info(config.msg("volumeprocessor.info.new_file", file.getEntry().getAbsolutePath()));
       break;
     }
+    case Modified:
+    {
+      LOGGER.warn(config.msg("volumeprocessor.warn.modified_file", file.getEntry().getAbsolutePath()));
+      break;
+    }
     case Missing:
     {
       LOGGER.warn(config.msg("volumeprocessor.warn.missing_file", file.getEntry().getAbsolutePath()));

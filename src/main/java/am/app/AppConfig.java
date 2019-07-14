@@ -17,6 +17,8 @@ package am.app;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -71,12 +73,22 @@ public class AppConfig
   private String addVolumePath;
   private String addVolumeValidator;
   private WikibaseDataFetcher fetcher;
+  private final List<String> fileSystemItems;
 
   public AppConfig()
   {
     setProperties(new Properties());
     loggingHandler = new LoggingHandler();
     hashConfig = new HashConfig();
+    fileSystemItems = new ArrayList<>();
+  }
+
+  public void addFileSystemItem(String item)
+  {
+    if (!fileSystemItems.contains(item))
+    {
+      fileSystemItems.add(item);
+    }
   }
 
   public ResourceBundle getBundle()

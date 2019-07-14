@@ -21,7 +21,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.db.JdbcSerialization;
+import am.db.SearchResult;
 import am.db.VolumeMapper;
+import am.filesystem.FileSystemHelper;
 import am.filesystem.model.Volume;
 import am.validators.AbstractValidator;
 
@@ -132,6 +134,39 @@ public class DatabaseService
       }
       vol.setValidator(validator);
     }
+    return true;
+  }
+
+  public boolean find(String name, List<Volume> volumes, SearchResult result)
+  {
+    result.clear();
+    File entry = new File(name);
+    try
+    {
+      entry = entry.getCanonicalFile();
+    }
+    catch (final IOException e)
+    {
+      return false;
+    }
+    String query = entry.getAbsolutePath();
+    query = FileSystemHelper.normalizePath(query);
+    for (final Volume vol : volumes)
+    {
+      final String path = vol.getPath();
+      if (query.startsWith(path))
+      {
+        final String local = query.substring(path.length());
+        result.setVolume(vol);
+        find(local, vol, result);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean find(String name, Volume volume, SearchResult result)
+  {
     return true;
   }
 }

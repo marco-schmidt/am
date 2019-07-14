@@ -157,11 +157,15 @@ public class App
       final VolumeProcessor proc = new VolumeProcessor();
       proc.setConfig(config);
       final List<Volume> mergedVolumes = proc.processVolumes(scannedVolumes, loadedVolumes);
+
       final MetadataExtraction extraction = new MetadataExtraction();
       extraction.update(config, mergedVolumes);
+
       validate(config, mergedVolumes);
+
       final HashProcessor hashProcessor = new HashProcessor();
       hashProcessor.update(config, mergedVolumes);
+
       io.saveAll(mergedVolumes);
     }
   }

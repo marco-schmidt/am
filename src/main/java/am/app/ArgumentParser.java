@@ -144,6 +144,14 @@ public class ArgumentParser
         {
           config.setAddVolumeValidator(nextArg);
         };
+      }, new AbstractParameter("args.check", "check", "c", ParameterType.String)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setMode(ProcessMode.Check);
+          config.addFileSystemItem(nextArg);
+        };
       }, new AbstractParameter("args.wikidata", "wikidata", null, ParameterType.Boolean)
       {
         @Override

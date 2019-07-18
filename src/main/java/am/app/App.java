@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import org.slf4j.LoggerFactory;
-import com.thebuzzmedia.exiftool.ExifTool;
 import am.db.JdbcSerialization;
 import am.filesystem.VolumeScanner;
 import am.filesystem.model.Volume;
@@ -32,52 +31,15 @@ import am.processor.VolumeProcessor;
 import am.processor.hashes.HashProcessor;
 import am.validators.AbstractValidator;
 import am.validators.MovieValidator;
-import ch.qos.logback.classic.LoggerContext;
 
 /**
+ * Application's main class.
+ *
+ * @author Marco Schmidt
  */
 public class App
 {
   private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(App.class);
-
-  static class ShutdownThread extends Thread
-  {
-    private final AppConfig config;
-
-    ShutdownThread(AppConfig c)
-    {
-      super("shutdn");
-      config = c;
-    }
-
-    @Override
-    public void run()
-    {
-      LOGGER.info(config.msg("shutdown.info.shutting_down"));
-      final JdbcSerialization io = config.getDatabaseSerializer();
-      if (io != null)
-      {
-        io.close();
-        config.setDatabaseSerializer(null);
-      }
-      final ExifTool exifTool = config.getExifTool();
-      if (exifTool != null)
-      {
-        try
-        {
-          exifTool.close();
-        }
-        catch (final Exception e)
-        {
-          LOGGER.error(config.msg("exiftool.error.failed_to_close"), e);
-        }
-        config.setExifTool(null);
-      }
-      final LoggingHandler loggingHandler = config.getLoggingHandler();
-      final LoggerContext loggerContext = loggingHandler.getLoggerContext();
-      loggerContext.stop();
-    }
-  }
 
   private boolean initialize(final AppConfig config, final String... args)
   {

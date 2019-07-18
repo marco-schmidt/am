@@ -36,7 +36,7 @@ public class DatabaseService
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseService.class);
 
-  private boolean isDuplicate(AppConfig config, String path)
+  private Volume findVolumeByPath(AppConfig config, String path)
   {
     final JdbcSerialization io = config.getDatabaseSerializer();
     final VolumeMapper volumeMapper = io.getVolumeMapper();
@@ -46,11 +46,10 @@ public class DatabaseService
       final String volPath = v.getPath();
       if (path.equals(volPath))
       {
-        LOGGER.error(config.msg("addvolume.error.path_already_used", path, v.getId()));
-        return true;
+        return v;
       }
     }
-    return false;
+    return null;
   }
 
   public void addVolume(AppConfig config)
@@ -84,8 +83,10 @@ public class DatabaseService
     }
 
     // is this path already assigned to a volume?
-    if (isDuplicate(config, path))
+    final Volume duplicate = findVolumeByPath(config, path);
+    if (duplicate != null)
     {
+      LOGGER.error(config.msg("addvolume.error.path_already_used", path, duplicate.getId()));
       return;
     }
 

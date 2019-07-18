@@ -122,7 +122,7 @@ public class ArgumentParser
         {
           config.setQuiet(true);
         };
-      }, new AbstractParameter("args.config_file", "config", "c", ParameterType.File)
+      }, new AbstractParameter("args.config_file", "config", null, ParameterType.File)
       {
         @Override
         public void process(final AppConfig config, final String nextArg)

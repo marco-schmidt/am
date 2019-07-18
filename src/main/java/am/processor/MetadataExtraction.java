@@ -91,6 +91,7 @@ public class MetadataExtraction
       ExifTool exifTool = config.getExifTool();
       try
       {
+        final long millis = System.currentTimeMillis();
         setNumExamined(getNumExamined() + 1);
         final Long exifToolMaxUsage = config.getExifToolMaxUsage();
         if (exifToolMaxUsage != null && exifToolMaxUsage.longValue() > 0
@@ -112,8 +113,8 @@ public class MetadataExtraction
         extractType(meta, file);
         extractImageResolution(meta, file);
         extractDuration(meta, file);
-        LOGGER.info(
-            config.msg("exiftool.info.examined_file", getNumExamined(), entry.getAbsolutePath(), file.getFileType()));
+        LOGGER.info(config.msg("exiftool.info.examined_file", getNumExamined(), entry.getAbsolutePath(),
+            file.getFileType(), System.currentTimeMillis() - millis));
       }
       catch (final IOException e)
       {

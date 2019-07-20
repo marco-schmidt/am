@@ -143,9 +143,11 @@ public final class AppConfigLoader
       final String path = exiftoolPath.toString();
       try
       {
+        final long millis = System.currentTimeMillis();
         final ExifTool exifTool = new ExifToolBuilder().withPath(path).enableStayOpen().build();
         final Version version = exifTool.getVersion();
-        LOGGER.info(config.msg("init.info.exiftool_setup", path, version.toString()));
+        LOGGER.debug(
+            config.msg("init.debug.exiftool_setup", path, version.toString(), System.currentTimeMillis() - millis));
         config.setExifTool(exifTool);
         config.setExifToolPath(path);
         config.setExifToolMaxUsage(Long.valueOf(2048));

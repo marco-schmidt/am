@@ -81,8 +81,10 @@ public class JdbcSerialization
     uri = createConnectorString(dir);
     try
     {
+      final long millis = System.currentTimeMillis();
       conn = DriverManager.getConnection(uri);
-      LOGGER.info(config.msg("init.info.database_connection_attempt_succeeded", uri));
+      LOGGER.debug(
+          config.msg("init.debug.database_connection_attempt_succeeded", uri, System.currentTimeMillis() - millis));
       return true;
     }
     catch (final SQLException e)

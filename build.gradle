@@ -42,7 +42,7 @@ dependencies {
     // force two particular versions of transitive dependencies to fix security issues
     implementation('com.fasterxml.jackson.core:jackson-databind') {
       version {
-        strictly '2.9.9.1'
+        strictly '2.9.9.3'
       }
     }
     implementation('org.apache.commons:commons-compress') {

@@ -90,6 +90,7 @@ jar {
     attributes(
       'Implementation-Title': project.name,
       'Implementation-Version': project.version,
+      'Implementation-URL': 'https://github.com/marco-schmidt/am/',
       'Created-By': 'Gradle ' + getProject().getGradle().getGradleVersion(),
       'Build-Date': new Date(),
       'License': licenseName,

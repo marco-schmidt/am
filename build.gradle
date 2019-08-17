@@ -54,7 +54,7 @@ dependencies {
 }
 
 wrapper {
-  gradleVersion = '5.6-rc-2'
+  gradleVersion = '5.6'
 }
 
 tasks.withType(JavaCompile) {

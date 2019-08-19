@@ -12,8 +12,11 @@ matrix:
   - os: windows
     name: "Windows: oraclejdk8 Java"
     language: bash  # "language: java" is not yet supported on Travis CI Windows
-    env: PATH="/c/Program Files/Java/jdk1.8.0_211/bin:$PATH"
-    before_install: choco install jdk8
+    env:
+      - PATH="/c/jdk/bin:$PATH"
+      - JAVA_HOME="/c/jdk"
+    before_install:
+      - choco install jdk8 -params 'installdir=c:\\jdk' -y
     # script: java -version
   - os: windows
     name: "Windows: AdoptOpenJDK8 Java"

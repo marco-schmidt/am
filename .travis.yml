@@ -20,9 +20,6 @@ matrix:
   - os: windows
     name: "Windows: AdoptOpenJDK8 Java"
     language: bash  # "language: java" is not yet supported on Travis CI Windows
-    env:
-      - PATH="/c/jdk/bin:$PATH"
-      - JAVA_HOME="/c/jdk/"
     before_install: choco install adoptopenjdk8 -params 'installdir=c:\\jdk' -y
   allow_failures:
   - os: windows

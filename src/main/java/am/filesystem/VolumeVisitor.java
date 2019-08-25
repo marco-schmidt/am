@@ -97,7 +97,8 @@ public class VolumeVisitor extends SimpleFileVisitor<Path>
     if (dir != null)
     {
       final java.io.File fileSystemFile = file.toFile();
-      final String name = fileSystemFile.getName();
+      final Path fileName = file.getFileName();
+      final String name = fileName == null ? fileSystemFile.getName() : fileName.toString();
       if (ignoreFileNames.contains(name))
       {
         if (LOGGER.isTraceEnabled())

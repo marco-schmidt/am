@@ -15,10 +15,10 @@
  */
 package am.processor.hashes;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -61,10 +61,14 @@ public class HashCreation
     final java.io.File entry = file.getEntry();
     try
     {
-      input = new FileInputStream(entry);
+      input = Files.newInputStream(entry.toPath());
       update(config, file, digest, input, entry.getAbsolutePath());
     }
-    catch (final FileNotFoundException e)
+    catch (final InvalidPathException ipe)
+    {
+      LOGGER.error(config.msg("hashcreation.error.path_conversion_failed", entry.getAbsolutePath()), ipe);
+    }
+    catch (final IOException e)
     {
       LOGGER.error(config.msg("hashcreation.error.file_open_failed", entry.getAbsolutePath()), e);
     }

@@ -93,9 +93,12 @@ public class HashProcessor
     final String strategyInfo = formatStrategyInfo(config, strategy, percentage);
     long computedBytes = 0;
     boolean done = false;
-    LOGGER.info(config.msg("hashcreation.info.strategy", strategyInfo));
+    LOGGER.info(config.msg("hashcreation.info.strategy", strategyInfo, files.size()));
     for (final File file : files)
     {
+      // LOGGER.debug(config.msg("hashcreation.debug.file_info", file.getEntry().getAbsolutePath(), file.getByteSize(),
+      // file.getHashValue() == null ? '-' : file.getHashValue(),
+      // file.getHashCreated() == null ? "-" : file.getHashCreated().toString()));
       creator.update(config, file);
       computedBytes += file.getByteSize().longValue();
       switch (strategy)

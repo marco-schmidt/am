@@ -386,9 +386,12 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
+  // private static final Set<String> EXT = new HashSet<>(
+  // Arrays.asList("mkv", "mp4", "m4v", "mpg", "mpeg", "avi", "flv", "ts"));
+
   public boolean isValidVideoFileExtension(String ext)
   {
-    return ext != null && !"".equals(ext);
+    return ext != null && !"".equals(ext); // EXT.contains(ext);
   }
 
   @Override

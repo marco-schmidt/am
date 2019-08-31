@@ -44,18 +44,24 @@ dependencies {
     implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.5.0'
     implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.10.0'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.28.0'
-    // force two particular versions of transitive dependencies to fix security issues
-    implementation('com.fasterxml.jackson.core:jackson-databind') {
-      version {
-        strictly '2.9.9.3'
-      }
-    }
-    implementation('org.apache.commons:commons-compress') {
-      version {
-        strictly '1.18'
-      }
-    }
     testImplementation 'junit:junit:4.12'
+}
+
+configurations.all {
+  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
+      details.useVersion '2.9.9.3'
+      details.because 'CVE-2019-12814'
+    }
+    if (details.requested.group == 'commons-beanutils' && details.requested.name == 'commons-beanutils') {
+      details.useVersion '1.9.4'
+      details.because 'CVE-2019-10086'
+    }
+    if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-compress') {
+      details.useVersion '1.18'
+      details.because 'CVE-2018-11771'
+    }
+  }
 }
 
 wrapper {

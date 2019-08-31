@@ -31,7 +31,10 @@ public class DirectoryMapper extends ModelMapper<Directory>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryMapper.class);
   private static final String TABLE_DIRS = "dirs";
-  private static final String TABLE_DIRS_VOLUME_REF = "volume_ref";
+  /**
+   * Name of column referencing volume.
+   */
+  public static final String TABLE_DIRS_VOLUME_REF = "volume_ref";
   private static final String TABLE_DIRS_PARENT_REF = "parent_ref";
   private static final String TABLE_DIRS_NAME = "name";
   private static final String[] COLUMNS =

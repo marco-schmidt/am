@@ -137,6 +137,14 @@ public class ArgumentParser
           config.setMode(ProcessMode.AddVolume);
           config.setAddVolumePath(nextArg);
         };
+      }, new AbstractParameter("args.delete_volume", "delete-volume", null, ParameterType.Directory)
+      {
+        @Override
+        public void process(final AppConfig config, final String nextArg)
+        {
+          config.setMode(ProcessMode.DeleteVolume);
+          config.setDeleteVolumePath(nextArg);
+        };
       }, new AbstractParameter("args.set_volume_validator", "set-validator", null, ParameterType.String)
       {
         @Override

@@ -178,6 +178,11 @@ public class App
       new DatabaseService().addVolume(config);
       break;
     }
+    case DeleteVolume:
+    {
+      new DatabaseService().deleteVolume(config);
+      break;
+    }
     case ShowHelp:
     {
       printHelp(config);

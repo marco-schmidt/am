@@ -39,7 +39,10 @@ import am.app.AppConfig;
 public abstract class ModelMapper<T extends Model>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelMapper.class);
-  protected static final String ROWID = "rowid";
+  /**
+   * Name of column with mandatory row id.
+   */
+  public static final String ROWID = "rowid";
   private AppConfig config;
 
   abstract T create();
@@ -118,6 +121,82 @@ public abstract class ModelMapper<T extends Model>
     return result;
   }
 
+  public List<T> loadByField(JdbcSerialization io, String fieldName, Object fieldValue)
+  {
+    final AppConfig config = io.getConfig();
+    final List<T> result = new ArrayList<>();
+    final long timeMillis = System.currentTimeMillis();
+    final PreparedStatement stat = createSelectByField(io, fieldName, fieldValue);
+    if (stat == null)
+    {
+      return null;
+    }
+    if (!setParam(stat, fieldValue))
+    {
+      io.close(stat);
+      return result;
+    }
+    ResultSet resultSet = null;
+    try
+    {
+      resultSet = stat.executeQuery();
+      while (resultSet.next())
+      {
+        final T model = from(resultSet);
+        result.add(model);
+      }
+      if (LOGGER.isDebugEnabled())
+      {
+        LOGGER.debug(config.msg("init.debug.database_loaded", result.size(), this.getClass().getSimpleName(),
+            System.currentTimeMillis() - timeMillis));
+      }
+    }
+    catch (final SQLException e)
+    {
+      e.printStackTrace();
+      result.clear();
+    }
+    finally
+    {
+      io.close(resultSet);
+      io.close(stat);
+    }
+    return result;
+  }
+
+  public int deleteByField(JdbcSerialization io, String fieldName, Object fieldValue)
+  {
+    final AppConfig config = io.getConfig();
+    final long timeMillis = System.currentTimeMillis();
+    final PreparedStatement stat = createDeleteByField(io, fieldName, fieldValue);
+    try
+    {
+      if (stat == null)
+      {
+        return 0;
+      }
+      else
+      {
+        final int numRows = stat.executeUpdate();
+        if (LOGGER.isDebugEnabled())
+        {
+          LOGGER.debug(config.msg("database.debug.rows_deleted", numRows, this.getClass().getSimpleName(),
+              System.currentTimeMillis() - timeMillis));
+        }
+        return numRows;
+      }
+    }
+    catch (final SQLException e)
+    {
+      LOGGER.error(config.msg("database.error.failed_deleting_rows"), e);
+      return 0;
+    }
+    finally
+    {
+      io.close(stat);
+    }
+  }
+
   private PreparedStatement createSelectAll(JdbcSerialization io)
   {
     if (io.isConnected())
@@ -127,6 +206,69 @@ public abstract class ModelMapper<T extends Model>
     else
     {
       return null;
+    }
+  }
+
+  private PreparedStatement createSelectByField(JdbcSerialization io, String fieldName, Object fieldValue)
+  {
+    if (io.isConnected())
+    {
+      return io.prepare(getSelectByFieldValueQuery(fieldName));
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  private PreparedStatement createDeleteByField(JdbcSerialization io, String fieldName, Object fieldValue)
+  {
+    if (io.isConnected())
+    {
+      final PreparedStatement stat = io.prepare(getDeleteByFieldValue(fieldName));
+      if (setParam(stat, fieldValue))
+      {
+        return stat;
+      }
+      else
+      {
+        io.close(stat);
+        return null;
+      }
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  private boolean setParam(PreparedStatement stat, Object fieldValue)
+  {
+    if (stat == null)
+    {
+      return false;
+    }
+    try
+    {
+      if (fieldValue instanceof String)
+      {
+        setString(stat, 1, fieldValue.toString());
+      }
+      else
+        if (fieldValue instanceof Long)
+        {
+          setLong(stat, 1, (Long) fieldValue);
+        }
+        else
+        {
+          return false;
+        }
+      return true;
+    }
+    catch (final SQLException e)
+    {
+      LOGGER.error(config.msg("database.error.prep_statement_set_string"), e);
+      return false;
     }
   }
 
@@ -226,6 +368,16 @@ public abstract class ModelMapper<T extends Model>
   public String getSelectAllQuery()
   {
     return "select " + ROWID + ", * from " + getTableName() + ";";
+  }
+
+  public String getSelectByFieldValueQuery(String fieldName)
+  {
+    return "select " + ROWID + ", * from " + getTableName() + " where " + fieldName + "=?;";
+  }
+
+  public String getDeleteByFieldValue(String fieldName)
+  {
+    return "delete from " + getTableName() + " where " + fieldName + "=?;";
   }
 
   public abstract String getInsertQuery();

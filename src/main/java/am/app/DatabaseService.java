@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import am.db.DirectoryMapper;
+import am.db.FileMapper;
 import am.db.JdbcSerialization;
+import am.db.ModelMapper;
 import am.db.SearchResult;
 import am.db.VolumeMapper;
 import am.filesystem.FileSystemHelper;
@@ -111,6 +114,47 @@ public class DatabaseService
     {
       LOGGER.error(config.msg("addvolume.error.added_volume_failure", path, validator));
     }
+  }
+
+  public void deleteVolume(AppConfig config)
+  {
+    // get normalized version of directory path to identify duplicates
+    String path = config.getDeleteVolumePath();
+    final File dir = new File(path);
+    try
+    {
+      path = dir.getCanonicalPath();
+    }
+    catch (final IOException e)
+    {
+      LOGGER.error(config.msg("deletevolume.error.cannot_get_canonical_directory_name", path), e);
+      return;
+    }
+
+    // this only works with a database connection
+    final JdbcSerialization io = config.getDatabaseSerializer();
+    if (io == null)
+    {
+      LOGGER.error(config.msg("deletevolume.error.no_database_connection"));
+      return;
+    }
+
+    // find volume
+    final VolumeMapper volumeMapper = io.getVolumeMapper();
+    final Volume volume = volumeMapper.loadByPath(io, path);
+    if (volume == null)
+    {
+      LOGGER.error(config.msg("deletevolume.error.unknown_path", path));
+      return;
+    }
+
+    // delete files and directories referencing the volume and then the volume itself
+    final FileMapper fileMapper = io.getFileMapper();
+    final int numFiles = fileMapper.deleteByField(io, FileMapper.COL_VOLUME_REF, volume.getId());
+    final DirectoryMapper dirMapper = io.getDirectoryMapper();
+    final int numDirs = dirMapper.deleteByField(io, DirectoryMapper.TABLE_DIRS_VOLUME_REF, volume.getId());
+    final int numVolumes = volumeMapper.deleteByField(io, ModelMapper.ROWID, volume.getId());
+    LOGGER.info(config.msg("database.info.deleted_volume", numFiles, numDirs, numVolumes));
   }
 
   /**

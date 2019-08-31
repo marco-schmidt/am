@@ -18,6 +18,7 @@ package am.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.filesystem.model.Volume;
@@ -107,5 +108,11 @@ public class VolumeMapper extends ModelMapper<Volume>
   public String getUpdateQuery()
   {
     return getUpdateQuery(COLUMNS);
+  }
+
+  public Volume loadByPath(JdbcSerialization io, final String path)
+  {
+    final List<Volume> list = loadByField(io, TABLE_VOLUMES_PATH, path);
+    return list != null && !list.isEmpty() ? list.get(0) : null;
   }
 }

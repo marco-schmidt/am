@@ -33,7 +33,10 @@ public class FileMapper extends ModelMapper<File>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(FileMapper.class);
   private static final String TABLE_FILES = "files";
-  private static final String COL_VOLUME_REF = "volume_ref";
+  /**
+   * Name of column referencing volume.
+   */
+  public static final String COL_VOLUME_REF = "volume_ref";
   private static final String COL_DIR_REF = "dir_ref";
   private static final String COL_NAME = "name";
   private static final String COL_SIZE = "size";

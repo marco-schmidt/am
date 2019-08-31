@@ -71,6 +71,7 @@ public class AppConfig
   private File databaseDirectory;
   private JdbcSerialization databaseSerializer;
   private String addVolumePath;
+  private String deleteVolumePath;
   private String addVolumeValidator;
   private WikibaseDataFetcher fetcher;
   private final List<String> fileSystemItems;
@@ -362,5 +363,15 @@ public class AppConfig
   public void setFetcher(WikibaseDataFetcher fetcher)
   {
     this.fetcher = fetcher;
+  }
+
+  public String getDeleteVolumePath()
+  {
+    return deleteVolumePath;
+  }
+
+  public void setDeleteVolumePath(String deleteVolumePath)
+  {
+    this.deleteVolumePath = deleteVolumePath;
   }
 }

@@ -39,5 +39,10 @@ public enum ProcessMode
   /**
    * Add a volume.
    */
-  AddVolume
+  AddVolume,
+
+  /**
+   * Delete a volume.
+   */
+  DeleteVolume
 }

@@ -58,14 +58,14 @@ configurations.all {
       details.because 'CVE-2019-10086'
     }
     if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-compress') {
-      details.useVersion '1.18'
-      details.because 'CVE-2018-11771'
+      details.useVersion '1.19'
+      details.because 'CVE-2019-12402'
     }
   }
 }
 
 wrapper {
-  gradleVersion = '5.6'
+  gradleVersion = '5.6.1'
 }
 
 tasks.withType(JavaCompile) {

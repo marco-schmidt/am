@@ -21,6 +21,7 @@ plugins {
 repositories {
   jcenter()
   mavenCentral()
+  google()
 }
 
 apply plugin: 'java'

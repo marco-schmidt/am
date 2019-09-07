@@ -45,6 +45,11 @@ public class MetadataExtraction
    */
   public static final String UNKNOWN = "?";
   private static final UnspecifiedTag DURATION = new UnspecifiedTag("Duration");
+  // audio codec: -AudioCodecID -AudioFormat
+  // video codec: -VideoCodecID -CompressorID -VideoCodec
+  // video frames per second: -VideoFrameRate
+  // audio channels: -AudioChannels -NumChannels
+  // number of pages: -PageCount
   private static final List<Tag> EXIFTOOL_TAGS = Arrays.asList(new Tag[]
   {
       StandardTag.MIME_TYPE, StandardTag.IMAGE_WIDTH, StandardTag.IMAGE_HEIGHT, DURATION,

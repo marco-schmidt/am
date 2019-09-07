@@ -12,6 +12,10 @@
   <module name="SuppressionFilter">
     <property name="file" value="config/checkstyle/suppressions.xml" />
   </module>
+  <module name="LineLength">
+    <property name="max" value="160" />
+  </module>
+  
   <module name="TreeWalker">
     <module name="SuppressWarningsHolder" />
 
@@ -33,9 +37,6 @@
     <module name="Indentation">
       <property name="basicOffset" value="2" />
       <property name="caseIndent" value="0" />
-    </module>
-    <module name="LineLength">
-      <property name="max" value="160" />
     </module>
     <module name="MethodParamPad" />
     <module name="NoWhitespaceAfter" />

@@ -170,7 +170,7 @@ public class MovieValidator extends AbstractValidator
 
   private void assignWikidataEntity(File file)
   {
-    // if we already know the entity id we don't need to fetch it again
+    // if we already know the entity id or we failed to retrieve it in the past ("?") we don't need to fetch it again
     final String id = file.getWikidataEntityId();
     if (id != null && !id.isEmpty())
     {

@@ -5,7 +5,7 @@ buildscript {
   // force jgit version to avoid mingw bug: https://github.com/diffplug/spotless/issues/410
   configurations.classpath {
     resolutionStrategy {
-      force 'org.eclipse.jgit:org.eclipse.jgit:5.3.1.201904271842-r'
+      force 'org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r'
     }
   }
 }

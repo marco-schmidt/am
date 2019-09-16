@@ -202,5 +202,9 @@ dependencyCheck {
     assemblyEnabled=false
   }
 }
-
 check.dependsOn dependencyCheckAnalyze
+
+licenseReport {
+  allowedLicensesFile = new File("$projectDir/config/licenseReport/allowed-licenses.json")
+}
+check.dependsOn checkLicense

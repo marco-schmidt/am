@@ -112,7 +112,7 @@ jar {
       'Java-Version': targetCompatibility,
       'Git-Revision': retrieveGitRevision(),
       'Git-Modified': retrieveGitModification(),
-      'Class-Path': configurations.compile.collect { it.getName() }.join(' '))
+      'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '))
   }
   from ('.') {
     include 'LICENSE'

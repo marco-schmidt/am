@@ -103,4 +103,12 @@ public abstract class AbstractValidator
   {
     return ids.contains(id) && ids.size() == 1;
   }
+
+  protected void markFilesInvalid(Directory dir, String violationId)
+  {
+    for (final File file : dir.getFiles())
+    {
+      addViolation(file, violationId);
+    }
+  }
 }

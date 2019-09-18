@@ -2,7 +2,7 @@
 asset manager
 
 ## Status
-As of July 2019, this tool is in an early development stage, to be used only by the very curious.
+As of September 2019, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
 * Command-line asset manager, managing files, checking their integrity, extracting metadata.
@@ -60,7 +60,12 @@ Define a movie volume (leave out the last two arguments if your media files are 
 ./am --add-volume /home/johndoe/movies --set-validator MovieValidator
 ```
 
-The previous call just added a single record about a new volume to the database. Now have am scan that new volume, run exiftool on files, create some hash values:
+Alternatively, define a television series volume:
+```
+./am --add-volume /home/johndoe/tv --set-validator TvSeriesValidator
+```
+
+The previous calls just added a single record about a new volume to the database. Now have am scan that new volume, run exiftool on files, create some hash values:
 ```
 ./am
 ```

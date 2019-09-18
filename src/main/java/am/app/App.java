@@ -31,6 +31,7 @@ import am.processor.VolumeProcessor;
 import am.processor.hashes.HashProcessor;
 import am.validators.AbstractValidator;
 import am.validators.MovieValidator;
+import am.validators.TvSeriesValidator;
 
 /**
  * Application's main class.
@@ -150,6 +151,7 @@ public class App
     if (!AbstractValidator.hasRegisteredValidators())
     {
       AbstractValidator.register(MovieValidator.class);
+      AbstractValidator.register(TvSeriesValidator.class);
     }
   }
 
@@ -163,6 +165,8 @@ public class App
     {
     case "MovieValidator":
       return new MovieValidator();
+    case "TvSeriesValidator":
+      return new TvSeriesValidator();
     default:
       LOGGER.error(config.msg("init.error.unknown_validator", validatorName, volNr));
       return null;

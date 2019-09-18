@@ -150,7 +150,7 @@ public final class AppConfigLoader
             config.msg("init.debug.exiftool_setup", path, version.toString(), System.currentTimeMillis() - millis));
         config.setExifTool(exifTool);
         config.setExifToolPath(path);
-        config.setExifToolMaxUsage(Long.valueOf(2048));
+        config.setExifToolMaxUsage(Long.valueOf(512));
       }
       catch (final UnsupportedFeatureException ex)
       {

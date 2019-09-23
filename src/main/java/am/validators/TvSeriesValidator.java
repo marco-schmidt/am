@@ -15,12 +15,16 @@
  */
 package am.validators;
 
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 import am.filesystem.model.Volume;
 
 /**
@@ -53,6 +57,9 @@ public class TvSeriesValidator extends AbstractValidator
   private static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";
   private static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
   private static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
+  private static final String VIOLATION_DUPLICATE_SEASON_DIRECTORY = "duplicate_season_directory";
+  private static final String VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER = "season_directory_not_a_number";
+  private static final String VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL = "season_directory_number_too_small";
   private static final Logger LOGGER = LoggerFactory.getLogger(TvSeriesValidator.class);
 
   @Override
@@ -86,6 +93,8 @@ public class TvSeriesValidator extends AbstractValidator
 
   private void validateYearEntries(AppConfig config, Directory dir)
   {
+    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_year_directory", dir.getEntry().getAbsolutePath()));
+
     Long year;
     try
     {
@@ -118,6 +127,74 @@ public class TvSeriesValidator extends AbstractValidator
 
     markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
 
-    LOGGER.debug("Year=" + (year == null ? "?" : year.toString()));
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      validateShowEntries(config, sub, year);
+    }
+  }
+
+  private BigInteger getAsNumber(String s)
+  {
+    try
+    {
+      return new BigInteger(s);
+    }
+    catch (final NumberFormatException nfe)
+    {
+      return null;
+    }
+  }
+
+  private void validateShowEntries(AppConfig config, Directory dir, Long year)
+  {
+    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_show_directory", dir.getEntry().getAbsolutePath()));
+
+    markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+
+    final Map<BigInteger, Directory> mapSeasonNumberToDirectory = new HashMap<>();
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      final BigInteger number = getAsNumber(sub.getName());
+      if (number == null)
+      {
+        addViolation(dir, VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER);
+      }
+      else
+      {
+        if (number.compareTo(BigInteger.ZERO) < 1)
+        {
+          addViolation(dir, VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL);
+        }
+        else
+        {
+          if (mapSeasonNumberToDirectory.containsKey(number))
+          {
+            addViolation(dir, VIOLATION_DUPLICATE_SEASON_DIRECTORY);
+          }
+          else
+          {
+            mapSeasonNumberToDirectory.put(number, sub);
+          }
+          validateSeasonEntries(config, sub, number);
+        }
+      }
+    }
+  }
+
+  private void validateSeasonEntries(AppConfig config, Directory dir, BigInteger seasonNumber)
+  {
+    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_season_directory", dir.getEntry().getAbsolutePath()));
+
+    markDirectoriesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+
+    for (final File file : dir.getFiles())
+    {
+      validateEpisodeEntry(config, file, seasonNumber);
+    }
+  }
+
+  private void validateEpisodeEntry(AppConfig config, File file, BigInteger seasonNumber)
+  {
+    LOGGER.debug(config.msg("tvseriesvalidator.debug.checking_episode_file", file.getEntry().getAbsolutePath()));
   }
 }

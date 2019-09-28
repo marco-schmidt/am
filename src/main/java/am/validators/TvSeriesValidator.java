@@ -20,11 +20,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
+import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 
 /**
@@ -60,6 +63,8 @@ public class TvSeriesValidator extends AbstractValidator
   private static final String VIOLATION_DUPLICATE_SEASON_DIRECTORY = "duplicate_season_directory";
   private static final String VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER = "season_directory_not_a_number";
   private static final String VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL = "season_directory_number_too_small";
+  private static final String VIOLATION_EPISODE_SEASON_AND_SEASON_DIRECTORY_DIFFER = "episode_season_and_season_directory_differ";
+  private static final Pattern FILE_NAME_PATTERN = Pattern.compile("(.+)[sS](\\d+)[eE](\\d+)(.*)\\.(.*)");
   private static final Logger LOGGER = LoggerFactory.getLogger(TvSeriesValidator.class);
 
   @Override
@@ -152,6 +157,7 @@ public class TvSeriesValidator extends AbstractValidator
     markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
 
     final Map<BigInteger, Directory> mapSeasonNumberToDirectory = new HashMap<>();
+    final String showName = dir.getName();
     for (final Directory sub : dir.getSubdirectories())
     {
       final BigInteger number = getAsNumber(sub.getName());
@@ -175,26 +181,68 @@ public class TvSeriesValidator extends AbstractValidator
           {
             mapSeasonNumberToDirectory.put(number, sub);
           }
-          validateSeasonEntries(config, sub, number);
+          validateSeasonEntries(config, sub, showName, number);
         }
       }
     }
   }
 
-  private void validateSeasonEntries(AppConfig config, Directory dir, BigInteger seasonNumber)
+  private void validateSeasonEntries(AppConfig config, Directory dir, String showName, BigInteger seasonNumber)
   {
-    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_season_directory", dir.getEntry().getAbsolutePath()));
+    LOGGER.trace(config.msg("tvseriesvalidator.trace.entering_season_directory", dir.getEntry().getAbsolutePath()));
 
     markDirectoriesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
 
     for (final File file : dir.getFiles())
     {
-      validateEpisodeEntry(config, file, seasonNumber);
+      validateEpisodeEntry(config, file, showName, seasonNumber);
     }
   }
 
-  private void validateEpisodeEntry(AppConfig config, File file, BigInteger seasonNumber)
+  private void validateEpisodeEntry(AppConfig config, File file, String showName, BigInteger seasonNumber)
   {
-    LOGGER.debug(config.msg("tvseriesvalidator.debug.checking_episode_file", file.getEntry().getAbsolutePath()));
+    LOGGER.trace(config.msg("tvseriesvalidator.trace.checking_episode_file", file.getEntry().getAbsolutePath()));
+    final VideoFileName videoFileName = parseFileName(file.getName());
+    file.setVideoFileName(videoFileName);
+    if (seasonNumber != null)
+    {
+      final Long nameSeason = videoFileName.getSeason();
+      if (nameSeason == null || !BigInteger.valueOf(nameSeason).equals(seasonNumber))
+      {
+        addViolation(file, VIOLATION_EPISODE_SEASON_AND_SEASON_DIRECTORY_DIFFER);
+      }
+    }
+  }
+
+  public VideoFileName parseFileName(final String name)
+  {
+    final VideoFileName result = new VideoFileName();
+    if (name == null)
+    {
+      return result;
+    }
+    final Matcher matcher = FILE_NAME_PATTERN.matcher(name);
+    if (matcher.matches())
+    {
+      String showTitle = matcher.group(1);
+      if (showTitle != null)
+      {
+        showTitle = showTitle.trim();
+      }
+      final String seasonString = matcher.group(2);
+      final String episodeString = matcher.group(3);
+      String episodeTitle = matcher.group(4);
+      if (episodeTitle != null)
+      {
+        episodeTitle = episodeTitle.trim();
+      }
+
+      result.setTitle(showTitle);
+      result.setSeason(Long.valueOf(seasonString));
+      result.setFirstEpisode(Long.valueOf(episodeString));
+      result.setLastEpisode(result.getFirstEpisode());
+      result.setEpisodeTitle(episodeTitle);
+    }
+    return result;
   }
 }

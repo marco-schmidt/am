@@ -28,6 +28,7 @@ public class VideoFileName
   private Long season;
   private String title;
   private Long year;
+  private String episodeTitle;
 
   public Long getFirstEpisode()
   {
@@ -87,5 +88,15 @@ public class VideoFileName
   public void setYear(Long year)
   {
     this.year = year;
+  }
+
+  public String getEpisodeTitle()
+  {
+    return episodeTitle;
+  }
+
+  public void setEpisodeTitle(String episodeTitle)
+  {
+    this.episodeTitle = episodeTitle;
   }
 }

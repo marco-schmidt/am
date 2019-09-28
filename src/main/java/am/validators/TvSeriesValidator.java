@@ -157,19 +157,19 @@ public class TvSeriesValidator extends AbstractValidator
       final BigInteger number = getAsNumber(sub.getName());
       if (number == null)
       {
-        addViolation(dir, VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER);
+        addViolation(sub, VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER);
       }
       else
       {
         if (number.compareTo(BigInteger.ZERO) < 1)
         {
-          addViolation(dir, VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL);
+          addViolation(sub, VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL);
         }
         else
         {
           if (mapSeasonNumberToDirectory.containsKey(number))
           {
-            addViolation(dir, VIOLATION_DUPLICATE_SEASON_DIRECTORY);
+            addViolation(sub, VIOLATION_DUPLICATE_SEASON_DIRECTORY);
           }
           else
           {

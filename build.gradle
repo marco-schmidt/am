@@ -101,6 +101,9 @@ def retrieveGitRevision = { ->
   return baos.toString().trim()
 }
 
+def timeZone = java.util.TimeZone.getTimeZone(java.time.ZoneOffset.UTC)
+def dateFormatter = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.ENGLISH)
+dateFormatter.setTimeZone(timeZone)
 jar {
   manifest {
     attributes(
@@ -108,7 +111,7 @@ jar {
       'Implementation-Version': project.version,
       'Implementation-URL': 'https://github.com/marco-schmidt/am/',
       'Created-By': 'Gradle ' + getProject().getGradle().getGradleVersion(),
-      'Build-Date': new Date(),
+      'Build-Date': dateFormatter.format(new Date()),
       'License': licenseName,
       'Main-Class': mainClassName,
       'Java-Version': targetCompatibility,

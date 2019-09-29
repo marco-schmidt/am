@@ -188,7 +188,9 @@ publishing {
         asNode().appendNode('developers').appendNode('developer').
           appendNode('id', 'marco-schmidt').parent().
           appendNode('name', 'Marco Schmidt').parent().
-          appendNode('email', 'mschmidtgit@protonmail.com')
+          appendNode('email', 'mschmidtgit@protonmail.com').parent().
+          appendNode('organization', 'private').parent().
+          appendNode('organizationUrl', 'https://github.com/marco-schmidt')
         asNode().appendNode('licenses').appendNode('license').
           appendNode('name', licenseName).parent().
           appendNode('url', 'https://www.apache.org/licenses/LICENSE-2.0.html')

@@ -221,6 +221,7 @@ bintray {
     }
   }
 }
+afterReleaseBuild.dependsOn = [bintrayUpload]
 
 dependencyCheck {
   cveValidForHours=24

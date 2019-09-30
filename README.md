@@ -20,6 +20,20 @@ As of September 2019, this tool is in an early development stage, to be used onl
 * Configuration text file ``.am.properties`` in home directory (see section Configuration below).
 * Optional but highly recommended: command-line tool [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) installed and  path to executable defined in configuration file. Check: ``exiftool -ver``
 
+## Tools and Services
+* Hosted at [github](https://github.com/)
+* Built with [gradle](https://gradle.org/)
+  * Code analysis with the [checkstyle plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
+  * Code analysis with the [spotbugs plugin](https://spotbugs.readthedocs.io/en/stable/introduction.html)
+  * Releases with the [release plugin](https://github.com/researchgate/gradle-release)
+  * Code formatting with the [spotless plugin](https://github.com/diffplug/spotless)
+  * Check against the National Vulnerability Database with the [OWASP dependency check plugin](https://github.com/jeremylong/dependency-check-gradle)
+  * Report and check licenses with the [gradle license report plugin](https://github.com/jk1/Gradle-License-Report)
+* Continuous integration by [Travis](https://travis-ci.org/marco-schmidt/am)
+* Binaries hosted at [jcenter](https://jcenter.bintray.com/com/github/marco-schmidt/am/)
+* Developed with [Eclipse](https://www.eclipse.org/)
+* Java provided by [AdoptOpenJDK](https://adoptopenjdk.net/)
+
 ## Usage
 Clone am:
 ```
@@ -39,7 +53,7 @@ Create directories for log files and database as well as a minimal configuration
 ```
 > mkdir -p ~/am/logs
 > mkdir ~/am/database
-> cat >~/.am.properties <<EOL
+> cat >~/.am.properties <<EOF
 logDir=/home/johndoe/am/logs
 databaseDir=/home/johndoe/am/database
 exiftoolPath=/usr/local/bin/exiftool
@@ -47,7 +61,7 @@ createHashes=1%
 ignoreDirNames=@eaDir
 ignoreFileNames=.DS_Store,Thumbs.db
 wikidata=true
-EOL
+EOF
 ```
 
 Go to the installation directory:
@@ -116,7 +130,7 @@ Make gradle create an Eclipse workspace:
 ./gradlew eclipse
 ```
 
-Open Eclipse and choose ``File | Import...`` from the menu. The ``Import``dialog should pop up with heading ``Select`.
+Open Eclipse and choose ``File | Import...`` from the menu. The ``Import``dialog should pop up with heading ``Select``.
 
 Choose ``General | Existing Projects into Workspace`` and press button ``Next >``. The dialog should switch  the heading to ``Import``.
 

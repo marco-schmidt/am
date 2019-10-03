@@ -94,23 +94,28 @@ def retrieveGitRevision = { ->
   }
   return baos.toString().trim()
 }
+def revision = retrieveGitRevision()
+def modified = retrieveGitModification()
+modified = !(modified == null || modified.trim().length() == 0)
 
 def timeZone = java.util.TimeZone.getTimeZone(java.time.ZoneOffset.UTC)
 def dateFormatter = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.ENGLISH)
 dateFormatter.setTimeZone(timeZone)
+def now = dateFormatter.format(new Date())
+def gradleVersion = getProject().getGradle().getGradleVersion()
 jar {
   manifest {
     attributes(
       'Implementation-Title': project.name,
       'Implementation-Version': project.version,
       'Implementation-URL': 'https://github.com/marco-schmidt/am/',
-      'Created-By': 'Gradle ' + getProject().getGradle().getGradleVersion(),
-      'Build-Date': dateFormatter.format(new Date()),
+      'Created-By': 'Gradle ' + gradleVersion,
+      'Build-Date': now,
       'License': licenseName,
       'Main-Class': mainClassName,
       'Java-Version': targetCompatibility,
-      'Git-Revision': retrieveGitRevision(),
-      'Git-Modified': retrieveGitModification(),
+      'Git-Revision': revision,
+      'Git-Modified': modified,
       'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '))
   }
   from ('.') {
@@ -178,6 +183,12 @@ publishing {
       pom.withXml {
         asNode().appendNode('url', 'https://github.com/marco-schmidt/am')
         asNode().appendNode('description', "${description}")
+        asNode().appendNode('properties').
+          appendNode('gitrevision', revision).parent().
+          appendNode('gitmodified', modified).parent().
+          appendNode('buildtime', now).parent().
+          appendNode('gradleversion', gradleVersion).parent().
+          appendNode('java', targetCompatibility)
         asNode().appendNode('scm').
           appendNode('connection', 'scm:git:git@github.com:marco-schmidt/am.git').parent().
           appendNode('developerConnection', 'scm:git:git@github.com:marco-schmidt/am.git').parent().

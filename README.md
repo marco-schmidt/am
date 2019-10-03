@@ -1,4 +1,4 @@
-# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am)
+# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am) [ ![Download](https://api.bintray.com/packages/marco-schmidt/am/maven/images/download.svg) ](https://bintray.com/marco-schmidt/am/maven/)
 asset manager
 
 ## Status

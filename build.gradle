@@ -181,8 +181,10 @@ publishing {
       artifact packageJavadoc
       groupId 'com.github.marco-schmidt'
       pom.withXml {
+        asNode().appendNode('name', project.name)
         asNode().appendNode('url', 'https://github.com/marco-schmidt/am')
-        asNode().appendNode('description', "${description}")
+        asNode().appendNode('description', description)
+        asNode().appendNode('packaging', 'jar')
         asNode().appendNode('properties').
           appendNode('gitrevision', revision).parent().
           appendNode('gitmodified', modified).parent().

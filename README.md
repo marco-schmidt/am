@@ -2,7 +2,7 @@
 asset manager
 
 ## Status
-As of September 2019, this tool is in an early development stage, to be used only by the very curious.
+As of October 2019, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
 * Command-line asset manager, managing files, checking their integrity, extracting metadata.
@@ -21,6 +21,9 @@ As of September 2019, this tool is in an early development stage, to be used onl
 * Optional but highly recommended: command-line tool [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) installed and  path to executable defined in configuration file. Check: ``exiftool -ver``
 
 ## Tools and Services
+* Java provided by [AdoptOpenJDK](https://adoptopenjdk.net/)
+* Integrated development environment [Eclipse](https://www.eclipse.org/)
+* Version control system [git](https://git-scm.com)
 * Hosted at [github](https://github.com/)
 * Built with [gradle](https://gradle.org/)
   * Code analysis with the [checkstyle plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
@@ -29,10 +32,8 @@ As of September 2019, this tool is in an early development stage, to be used onl
   * Code formatting with the [spotless plugin](https://github.com/diffplug/spotless)
   * Check against the National Vulnerability Database with the [OWASP dependency check plugin](https://github.com/jeremylong/dependency-check-gradle)
   * Report and check licenses with the [gradle license report plugin](https://github.com/jk1/Gradle-License-Report)
-* Continuous integration by [Travis](https://travis-ci.org/marco-schmidt/am)
-* Binaries hosted at [jcenter](https://jcenter.bintray.com/com/github/marco-schmidt/am/)
-* Developed with [Eclipse](https://www.eclipse.org/)
-* Java provided by [AdoptOpenJDK](https://adoptopenjdk.net/)
+* Continuous integration at [Travis CI](https://travis-ci.org/marco-schmidt/am)
+* Binaries hosted at [Bintray JCenter](https://jcenter.bintray.com/com/github/marco-schmidt/am/)
 
 ## Usage
 Clone am:

@@ -185,6 +185,7 @@ publishing {
         asNode().appendNode('url', 'https://github.com/marco-schmidt/am')
         asNode().appendNode('description', description)
         asNode().appendNode('packaging', 'jar')
+        asNode().appendNode('inceptionYear', '2019')
         asNode().appendNode('properties').
           appendNode('gitrevision', revision).parent().
           appendNode('gitmodified', modified).parent().

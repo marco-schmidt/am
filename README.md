@@ -1,4 +1,4 @@
-# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am) [ ![Download](https://api.bintray.com/packages/marco-schmidt/am/maven/images/download.svg) ](https://bintray.com/marco-schmidt/am/maven/) [![Javadocs](https://javadoc.io/badge/com.github.marco-schmidt/am.svg)](https://javadoc.io/doc/com.github.marco-schmidt/am)
+# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am) [ ![Download](https://api.bintray.com/packages/marco-schmidt/am/maven/images/download.svg) ](https://bintray.com/marco-schmidt/am/maven/) [ ![Download](https://maven-badges.herokuapp.com/maven-central/com.github.marco-schmidt/am/badge.svg) ](https://repo1.maven.org/maven2/com/github/marco-schmidt/am/) [![Javadocs](https://javadoc.io/badge/com.github.marco-schmidt/am.svg)](https://javadoc.io/doc/com.github.marco-schmidt/am)
 asset manager
 
 ## Status

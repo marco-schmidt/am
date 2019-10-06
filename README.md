@@ -143,3 +143,12 @@ Press the tab key. Under ``Projects`` am should now show up. Check the box next 
 Press button ``Next``.
 
 TODO
+
+### Release a New Version
+
+* Make sure that the working copy of master is clean (no unversioned, modified or deleted files).
+* Try building that version: ``./gradlew clean build``
+* Have properties bintrayUser and bintrayApiKey defined in ``~/.gradle/gradle.properties`` (when logged in at bintray, the API key can be found under ``Edit Profile`` / ``API Key``).
+* Run ``./gradlew release`` It will prompt twice to confirm the release version (current version minus ``-SNAPSHOT``) and the next snapshot version (typically the right-most version number part increased by one, plus ``-SNAPSHOT``).
+* Log into bintray, go the page of the new version. There should be a link to Maven Central. Follow that link. (As of October 2019, make sure that the Old Look is enabled as shown in the green menu bar at the top, otherwise that link is missing.)
+* Enter your Sonatype OSS credentials if you have not provided them in the profile's ``Accounts`` section. Press the Sync button.

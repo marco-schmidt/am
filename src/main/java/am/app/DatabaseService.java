@@ -210,6 +210,20 @@ public class DatabaseService
     return false;
   }
 
+  public boolean updateWikidataEntityId(AppConfig config, am.filesystem.model.File file)
+  {
+    // this only works with a database connection
+    final JdbcSerialization io = config.getDatabaseSerializer();
+    if (io == null)
+    {
+      LOGGER.error(config.msg("deletevolume.error.no_database_connection"));
+      return false;
+    }
+    final FileMapper fileMapper = io.getFileMapper();
+    fileMapper.update(io, file);
+    return true;
+  }
+
   public boolean find(String name, Volume volume, SearchResult result)
   {
     return true;

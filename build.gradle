@@ -242,8 +242,6 @@ publishing {
   }
 }
 
-// https://github.com/bintray/bintray-examples/tree/master/gradle-bintray-plugin-examples/publications-example
-// usage: ./gradlew -PbintrayUser=marco-schmidt -PbintrayApiKey=... bintrayUpload
 bintray {
   user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
   key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')

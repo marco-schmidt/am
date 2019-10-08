@@ -164,6 +164,13 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
   }
 }
 
+javadoc {
+  options {
+    windowTitle = "am (asset manager) API documentation"
+    docTitle = '<a target="_top" href="https://github.com/marco-schmidt/am">am: asset manager</a>'
+  }
+}
+
 task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
     from javadoc.destinationDir
     classifier = 'javadoc'

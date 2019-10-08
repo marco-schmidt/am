@@ -174,12 +174,36 @@ task packageSources(type: Jar, dependsOn: 'classes') {
     classifier = 'sources'
 }
 
+task packageLicenseReport(type: Zip, dependsOn: 'generateLicenseReport') {
+  description "create a zip archive with license report information"
+  from licenseReport.outputDir
+  classifier = 'licensereport'
+}
+
+dependencyCheck {
+  cveValidForHours=24
+  failBuildOnCVSS=0
+  analyzers {
+    assemblyEnabled=false
+  }
+}
+check.dependsOn dependencyCheckAnalyze
+
+task packageDependencyCheckReport(type: Zip, dependsOn: 'dependencyCheckAnalyze') {
+  description "create a zip archive with report on security issues"
+  from dependencyCheck.outputDirectory
+  include 'dependency-check-report.html'
+  classifier = 'securityreport'
+}
+
 publishing {
   publications {
     library(MavenPublication) {
       from components.java
       artifact packageSources
       artifact packageJavadoc
+      artifact packageDependencyCheckReport
+      artifact packageLicenseReport
       groupId 'com.github.marco-schmidt'
       pom.withXml {
         asNode().appendNode('name', project.name)
@@ -231,15 +255,6 @@ bintray {
   }
 }
 afterReleaseBuild.dependsOn = [bintrayUpload]
-
-dependencyCheck {
-  cveValidForHours=24
-  failBuildOnCVSS=0
-  analyzers {
-    assemblyEnabled=false
-  }
-}
-check.dependsOn dependencyCheckAnalyze
 
 licenseReport {
   allowedLicensesFile = new File("$projectDir/config/licenseReport/allowed-licenses.json")

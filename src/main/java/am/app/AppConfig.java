@@ -25,9 +25,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import com.thebuzzmedia.exiftool.ExifTool;
-import am.conversion.StrUtil;
 import am.db.JdbcSerialization;
 import am.processor.hashes.HashConfig;
+import am.util.StrUtil;
 
 /**
  * Configuration for {@link App} application.

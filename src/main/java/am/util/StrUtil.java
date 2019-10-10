@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.conversion;
+package am.util;
 
 /**
  * Static helper methods to deal with strings.

@@ -168,6 +168,7 @@ javadoc {
   options {
     windowTitle = "am ${project.version} (asset manager) API documentation"
     docTitle = '<a target="_top" href="https://github.com/marco-schmidt/am">am ' + project.version + ': asset manager</a>'
+    linksOffline 'https://docs.oracle.com/javase/8/docs/api/', 'config/javadoc/'
   }
 }
 

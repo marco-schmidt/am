@@ -29,11 +29,12 @@ As of October 2019, this tool is in an early development stage, to be used only 
   * Code analysis with the [spotbugs plugin](https://spotbugs.readthedocs.io/en/stable/introduction.html)
   * Releases with the [release plugin](https://github.com/researchgate/gradle-release)
   * Code formatting with the [spotless plugin](https://github.com/diffplug/spotless)
+  * Coverage report with the [JaCoCo](https://www.eclemma.org/jacoco/) plugin
   * Check against the National Vulnerability Database (NVD) with the [OWASP dependency check plugin](https://github.com/jeremylong/dependency-check-gradle)
-  * Report and check licenses with the [gradle license report plugin](https://github.com/jk1/Gradle-License-Report)
+  * Create report and check licenses against whitelist with the [gradle license report plugin](https://github.com/jk1/Gradle-License-Report)
 
 ## Services
-* Hosted at [github](https://github.com/)
+* Hosted at [GitHub](https://github.com/)
 * Continuous integration at [Travis CI](https://travis-ci.org/marco-schmidt/am)
 * Dependency version update checks by [Dependabot](https://github.com/marketplace/dependabot-preview)
 * Binaries hosted at [Bintray JCenter](https://jcenter.bintray.com/com/github/marco-schmidt/am/) and [Maven Central](https://repo.maven.apache.org/maven2/com/github/marco-schmidt/am/)

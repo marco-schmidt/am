@@ -17,7 +17,6 @@ package am.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import am.util.StrUtil;
 
 /**
  * Test class {@link StrUtil}.

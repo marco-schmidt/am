@@ -15,7 +15,10 @@
  */
 package am.filesystem;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,6 +27,8 @@ import org.junit.Test;
  */
 public class FileSystemHelperTest
 {
+  private static final Set<String> EMPTY = new HashSet<String>();
+
   @Test
   public void testFindNewestNull()
   {
@@ -108,6 +113,71 @@ public class FileSystemHelperTest
   public void testNormalizeUnix()
   {
     final String path = "/home/bob/sub";
-    Assert.assertEquals("Unix path remains empty.", FileSystemHelper.normalizePath(path), path);
+    Assert.assertEquals("Unix path always remains identical.", FileSystemHelper.normalizePath(path), path);
+  }
+
+  @Test
+  public void testSplitFileNamesNullNull()
+  {
+    Assert.assertEquals("Null value and separator lead to empty set.", EMPTY,
+        FileSystemHelper.splitFileNames(null, null));
+  }
+
+  @Test
+  public void testSplitFileNamesNullNonNull()
+  {
+    Assert.assertEquals("Null value and non-null separator lead to empty set.", EMPTY,
+        FileSystemHelper.splitFileNames(null, "/"));
+  }
+
+  @Test
+  public void testSplitFileNamesNonNullNull()
+  {
+    final String value = "value";
+    final Set<String> result = FileSystemHelper.splitFileNames(value, null);
+    Assert.assertNotNull("Non-null value and null separator lead to non-null set.", result);
+    if (result != null)
+    {
+      final int size = result.size();
+      Assert.assertEquals("Non-null value and null separator lead to set of size one.", 1, size);
+      if (size == 1)
+      {
+        final String elem = result.iterator().next();
+        Assert.assertEquals("Non-null value and null separator lead to set with that value.", value, elem);
+      }
+    }
+  }
+
+  @Test
+  public void testSplitFileNamesNoSeparator()
+  {
+    final String value = "value";
+    final String sep = "x";
+    final Set<String> result = FileSystemHelper.splitFileNames(value, sep);
+    Assert.assertNotNull("Non-null value and null separator lead to non-null set.", result);
+    if (result != null)
+    {
+      final int size = result.size();
+      Assert.assertEquals("Non-null value and null separator lead to set of size one.", 1, size);
+      if (size == 1)
+      {
+        final String elem = result.iterator().next();
+        Assert.assertEquals("Non-null value and null separator lead to set with that value.", value, elem);
+      }
+    }
+  }
+
+  @Test
+  public void testCloseNull()
+  {
+    FileSystemHelper.close(null);
+  }
+
+  @Test
+  public void testCloseNonNull()
+  {
+    final ByteArrayInputStream in = new ByteArrayInputStream(new byte[]
+    {});
+    FileSystemHelper.close(in);
   }
 }

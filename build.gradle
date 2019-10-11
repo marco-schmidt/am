@@ -9,6 +9,7 @@ plugins {
   id 'com.github.jk1.dependency-license-report' version '1.11'
   id 'com.github.spotbugs' version '2.0.0'
   id 'com.jfrog.bintray' version '1.8.4'
+  id 'jacoco'
   id 'org.owasp.dependencycheck' version '5.2.2'
   id 'net.researchgate.release' version '2.8.1'
 }
@@ -156,6 +157,20 @@ spotbugs {
   excludeFilter = file('config/spotbugs/excludeBugsFilter.xml')
 }
 
+jacoco {
+  toolVersion = "0.8.4"
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled false
+    csv.enabled false
+    html.destination file("${buildDir}/reports/jacoco")
+  }
+}
+jacocoTestCoverageVerification.dependsOn test
+jacocoTestReport.dependsOn jacocoTestCoverageVerification
+
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
   reports {
     xml.enabled = false
@@ -180,6 +195,12 @@ task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
 task packageSources(type: Jar, dependsOn: 'classes') {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+task packageCoverageReport(type: Zip, dependsOn: 'jacocoTestReport') {
+  description "create a zip archive with coverage report information"
+  from jacocoTestReport.reports.html.destination
+  classifier = 'coveragereport'
 }
 
 task packageLicenseReport(type: Zip, dependsOn: 'generateLicenseReport') {
@@ -210,6 +231,7 @@ publishing {
       from components.java
       artifact packageSources
       artifact packageJavadoc
+      artifact packageCoverageReport
       artifact packageDependencyCheckReport
       artifact packageLicenseReport
       groupId 'com.github.marco-schmidt'

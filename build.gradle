@@ -206,7 +206,7 @@ task packageCoverageReport(type: Zip, dependsOn: 'jacocoTestReport') {
 task packageLicenseReport(type: Zip, dependsOn: 'generateLicenseReport') {
   description "create a zip archive with license report information"
   from licenseReport.outputDir
-  classifier = 'licensereport'
+  classifier = 'deplicensereport'
 }
 
 dependencyCheck {
@@ -219,10 +219,10 @@ dependencyCheck {
 check.dependsOn dependencyCheckAnalyze
 
 task packageDependencyCheckReport(type: Zip, dependsOn: 'dependencyCheckAnalyze') {
-  description "create a zip archive with report on security issues"
+  description "create a zip archive with report on dependency vulnerability issues (as stored in NVD)"
   from dependencyCheck.outputDirectory
   include 'dependency-check-report.html'
-  classifier = 'securityreport'
+  classifier = 'depvulnreport'
 }
 
 publishing {

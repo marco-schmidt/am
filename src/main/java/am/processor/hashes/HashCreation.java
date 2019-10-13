@@ -147,12 +147,15 @@ public class HashCreation
    *          byte array to convert
    * @return string with hexadecimal representation, twice the length of input
    */
-  private String toString(byte[] hashValueArray)
+  String toString(byte[] hashValueArray)
   {
     final StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < hashValueArray.length; i++)
+    if (hashValueArray != null)
     {
-      sb.append(String.format("%02x", hashValueArray[i]));
+      for (int i = 0; i < hashValueArray.length; i++)
+      {
+        sb.append(String.format("%02x", hashValueArray[i]));
+      }
     }
     return sb.toString();
   }

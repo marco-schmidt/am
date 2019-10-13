@@ -78,7 +78,7 @@ public class JdbcSerialization
     {
       return true;
     }
-    uri = createConnectorString(dir);
+    uri = dir == null ? createConnectorStringInMemory() : createConnectorString(dir);
     try
     {
       final long millis = System.currentTimeMillis();
@@ -100,6 +100,11 @@ public class JdbcSerialization
     final File dbFile = new File(dir, "am.db");
     final String path = FileSystemHelper.normalizePath(dbFile.getAbsolutePath());
     return "jdbc:sqlite:" + path;
+  }
+
+  public String createConnectorStringInMemory()
+  {
+    return "jdbc:sqlite::memory:";
   }
 
   public void createTables()

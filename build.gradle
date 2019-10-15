@@ -78,6 +78,15 @@ tasks.withType(JavaCompile) {
   options.compilerArgs += ['-Xlint:all', '-Werror']
 }
 
+task createPomProperties()  {
+  doLast {
+    new File(buildDir, "pom.properties").text = """version=${version}
+groupId=${project.group}
+artifactId=${project.name}
+"""
+  }
+}
+
 def retrieveGitModification = { ->
   def baos = new ByteArrayOutputStream()
   exec {
@@ -127,7 +136,12 @@ jar {
     from { generatePomFileForLibraryPublication }
     rename ".*", "pom.xml"
   }
+  from (buildDir) {
+    include 'pom.properties'
+    into "META-INF/maven/${project.group}/${project.name}"
+  }
 }
+jar.dependsOn createPomProperties
 
 run {
   args += ['--print-env', '-l', 'info']

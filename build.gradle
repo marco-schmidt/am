@@ -123,6 +123,10 @@ jar {
     include 'LICENSE'
     into 'META-INF'
   }
+  into("META-INF/maven/${project.group}/${project.name}") {
+    from { generatePomFileForLibraryPublication }
+    rename ".*", "pom.xml"
+  }
 }
 
 run {
@@ -234,7 +238,7 @@ publishing {
       artifact packageCoverageReport
       artifact packageDependencyCheckReport
       artifact packageLicenseReport
-      groupId 'com.github.marco-schmidt'
+      groupId group
       pom.withXml {
         asNode().appendNode('name', project.name)
         asNode().appendNode('url', 'https://github.com/marco-schmidt/am')

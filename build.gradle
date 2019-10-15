@@ -78,7 +78,8 @@ tasks.withType(JavaCompile) {
   options.compilerArgs += ['-Xlint:all', '-Werror']
 }
 
-task createPomProperties()  {
+task createPomProperties() {
+  description "create a text file to be included in the jar to make it self-describing"
   doLast {
     new File(buildDir, "pom.properties").text = """version=${version}
 groupId=${project.group}

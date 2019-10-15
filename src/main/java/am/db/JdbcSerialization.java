@@ -136,6 +136,14 @@ public class JdbcSerialization
     }
   }
 
+  /**
+   * Create a {@link PreparedStatement} object from argument query.
+   *
+   * @param query
+   *          SQL statement from which to create a {@link PreparedStatement} object
+   * @return a {@link PreparedStatement} object on success or null if the attempt failed or there was no database
+   *         connection
+   */
   public PreparedStatement prepare(String query)
   {
     if (isConnected())
@@ -146,12 +154,18 @@ public class JdbcSerialization
       }
       catch (final SQLException e)
       {
-        e.printStackTrace();
+        LOGGER.error(config.msg("database.error.prepare_statement_failed", query), e);
       }
     }
     return null;
   }
 
+  /**
+   * Close argument {@link ResultSet} to release any underlying resources.
+   *
+   * @param rs
+   *          {@link ResultSet} object to be closed
+   */
   public void close(ResultSet rs)
   {
     if (rs != null)
@@ -162,6 +176,7 @@ public class JdbcSerialization
       }
       catch (final SQLException e)
       {
+        LOGGER.error(config.msg("database.error.close_resultset_failed"), e);
       }
     }
   }

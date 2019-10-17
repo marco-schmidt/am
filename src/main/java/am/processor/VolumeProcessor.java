@@ -90,7 +90,16 @@ public class VolumeProcessor
     return merged;
   }
 
-  private File mergeFile(File scanned, File loaded)
+  /**
+   * Merge a scanned and a loaded {@link File} object denoting the same file in the file system, returning a result.
+   *
+   * @param scanned
+   *          file created when scanning for file information in file system
+   * @param loaded
+   *          file as loaded from a database
+   * @return either one of the arguments or a new {@link File} created by merging content from both arguments
+   */
+  File mergeFile(File scanned, File loaded)
   {
     if (scanned == null)
     {

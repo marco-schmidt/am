@@ -81,6 +81,31 @@ public class VolumeProcessorTest
   }
 
   @Test
+  public void testMergeDirectory()
+  {
+    final VolumeProcessor processor = new VolumeProcessor();
+    final Directory scanned = new Directory();
+    final Directory sub = new Directory();
+    final File file = new File();
+    file.setName("afile");
+    file.setByteSize(Long.valueOf(1));
+    file.setLastModified(new Date(1000000));
+    sub.setName("adirectory");
+    scanned.add(sub);
+    scanned.add(file);
+    final Directory loaded = new Directory();
+    loaded.add(sub);
+    loaded.add(file);
+    Assert.assertNull("Null if both null.", processor.mergeDirectory(null, null));
+    Assert.assertEquals("Scanned null, loaded non-null yields loaded.", loaded, processor.mergeDirectory(null, loaded));
+    Assert.assertEquals("Loaded null, scanned non-null yields scanned.", scanned,
+        processor.mergeDirectory(scanned, null));
+    final Directory result = processor.mergeDirectory(scanned, loaded);
+    Assert.assertNotEquals("Merging two non-null volumes does not yield loaded.", loaded, result);
+    Assert.assertNotEquals("Merging two non-null volumes does not yield scanned.", scanned, result);
+  }
+
+  @Test
   public void testProcessVolumes()
   {
     final Directory root = new Directory();
@@ -89,7 +114,6 @@ public class VolumeProcessorTest
     scanned.setRoot(root);
     scanned.setPath("/scanned");
     final Volume loaded = new Volume();
-    // loaded.setRoot(root);
     loaded.setPath("/loaded");
     final Volume both = new Volume();
     both.setRoot(root);
@@ -100,7 +124,6 @@ public class VolumeProcessorTest
     final List<Volume> loadedList = new ArrayList<Volume>();
     loadedList.add(loaded);
     loadedList.add(both);
-
     final VolumeProcessor processor = new VolumeProcessor();
     final List<Volume> result = processor.processVolumes(scannedList, loadedList);
     Assert.assertNotNull("Merge of two non-null input values yields non-null result.", result);

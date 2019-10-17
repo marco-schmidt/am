@@ -44,17 +44,42 @@ public class VolumeProcessor
 
   private void assignFileState(Directory dir, FileState state)
   {
-    for (final Directory sub : dir.getSubdirectories())
+    if (dir != null)
     {
-      assignFileState(sub, state);
-    }
-    for (final File file : dir.getFiles())
-    {
-      file.setState(state);
+      for (final Directory sub : dir.getSubdirectories())
+      {
+        assignFileState(sub, state);
+      }
+      for (final File file : dir.getFiles())
+      {
+        file.setState(state);
+      }
     }
   }
 
-  private Directory mergeDirectory(Directory scanned, Directory loaded)
+  private void assignFileSystemEntries(java.io.File parent, Directory dir)
+  {
+    final java.io.File dirEntry = new java.io.File(parent, dir.getName());
+    dir.setEntry(dirEntry);
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      assignFileSystemEntries(dirEntry, sub);
+    }
+    for (final File file : dir.getFiles())
+    {
+      file.setEntry(new java.io.File(dirEntry, file.getName()));
+    }
+  }
+
+  private void assignFileSystemEntries(Volume vol)
+  {
+    final String path = vol.getPath();
+    final java.io.File entry = new java.io.File(path);
+    vol.setEntry(entry);
+    assignFileSystemEntries(entry, vol.getRoot());
+  }
+
+  Directory mergeDirectory(Directory scanned, Directory loaded)
   {
     if (scanned == null)
     {
@@ -171,28 +196,6 @@ public class VolumeProcessor
       result.put(FileSystemHelper.normalizePath(vol.getPath()), vol);
     }
     return result;
-  }
-
-  private void assignFileSystemEntries(java.io.File parent, Directory dir)
-  {
-    final java.io.File dirEntry = new java.io.File(parent, dir.getName());
-    dir.setEntry(dirEntry);
-    for (final Directory sub : dir.getSubdirectories())
-    {
-      assignFileSystemEntries(dirEntry, sub);
-    }
-    for (final File file : dir.getFiles())
-    {
-      file.setEntry(new java.io.File(dirEntry, file.getName()));
-    }
-  }
-
-  private void assignFileSystemEntries(Volume vol)
-  {
-    final String path = vol.getPath();
-    final java.io.File entry = new java.io.File(path);
-    vol.setEntry(entry);
-    assignFileSystemEntries(entry, vol.getRoot());
   }
 
   public List<Volume> processVolumes(List<Volume> scannedVolumes, List<Volume> loadedVolumes)

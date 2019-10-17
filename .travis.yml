@@ -37,6 +37,7 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.gradle/dependency-check-data/
-script: ./gradlew --stacktrace --info --no-daemon
+script: ./gradlew --stacktrace --info --no-daemon clean check javadoc installDist generateLicenseReport jacocoTestReport
 after_success:
   - unzip -c build/libs/am-*.jar META-INF/MANIFEST.MF
+  - bash <(curl -s https://codecov.io/bash)

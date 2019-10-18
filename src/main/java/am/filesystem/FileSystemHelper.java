@@ -123,13 +123,22 @@ public final class FileSystemHelper
 
   public static String normalizePath(final String path)
   {
-    if (File.separator.equals(FileSystemHelper.DIRECTORY_SEPARATOR))
+    String result;
+    if (path == null)
     {
-      return path;
+      result = null;
     }
     else
     {
-      return path.replace(File.separator, FileSystemHelper.DIRECTORY_SEPARATOR);
+      if (File.separator.equals(FileSystemHelper.DIRECTORY_SEPARATOR))
+      {
+        result = path;
+      }
+      else
+      {
+        result = path.replace(File.separator, FileSystemHelper.DIRECTORY_SEPARATOR);
+      }
     }
+    return result;
   }
 }

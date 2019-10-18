@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.app.validators;
+package am.validators;
 
 import java.util.ListResourceBundle;
 import org.junit.Assert;
@@ -23,7 +23,6 @@ import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.Volume;
-import am.validators.MovieValidator;
 
 /**
  * Test {@link MovieValidator} class.
@@ -134,5 +133,19 @@ public class MovieValidatorTest
   public void testIsValidVideoFileExtensionMkv()
   {
     Assert.assertTrue("'mkv' is  valid.", validator.isValidVideoFileExtension("mkv"));
+  }
+
+  @Test
+  public void testValidate()
+  {
+    validator.validate(config, volume);
+    Assert.assertTrue("No violations with empty volume.", validator.isViolationsEmpty());
+    final File file = new File();
+    file.setName("title.2019.mkv");
+    root.add(file);
+    validator.validate(config, volume);
+    Assert.assertTrue("Has one violation file in root.",
+        validator.contains(MovieValidator.VIOLATION_FILE_WRONG_DIRECTORY));
+
   }
 }

@@ -80,6 +80,11 @@ public abstract class AbstractValidator
     LOGGER.error(config.msg(keyViolation, path) + config.msg(keyMsg));
   }
 
+  public boolean isViolationsEmpty()
+  {
+    return ids.isEmpty();
+  }
+
   public abstract String getMessagePrefix();
 
   public abstract void validate(AppConfig config, Volume volume);
@@ -97,6 +102,11 @@ public abstract class AbstractValidator
   public void resetIds()
   {
     ids.clear();
+  }
+
+  public boolean contains(String id)
+  {
+    return ids.contains(id);
   }
 
   public boolean containsOnly(String id)

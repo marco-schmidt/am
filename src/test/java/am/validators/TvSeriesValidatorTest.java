@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.app.validators;
+package am.validators;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import am.app.AppConfig;
-import am.app.validators.MovieValidatorTest.TestBundle;
 import am.filesystem.model.Directory;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
-import am.validators.TvSeriesValidator;
+import am.validators.MovieValidatorTest.TestBundle;
 
 /**
  * Test {@link TvSeriesValidator} class.

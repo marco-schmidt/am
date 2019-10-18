@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package am.app.validators;
+package am.validators;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import am.validators.AbstractValidator;
-import am.validators.MovieValidator;
-import am.validators.TvSeriesValidator;
 
 /**
  * Test {@link TvSeriesValidator} class.

@@ -60,7 +60,7 @@ public class MovieValidator extends AbstractValidator
    */
   public static final String VIOLATION_FILE_NO_EXTENSION = "no_file_extension";
   private static final String VIOLATION_FILE_EXTENSION_UNKNOWN = "file_extension_unknown";
-  private static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
+  static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
   private static final String VIOLATION_DIRECTORY_TOO_DEEP = "directory_too_deep";
   private static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
   private static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";

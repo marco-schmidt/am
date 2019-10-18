@@ -15,6 +15,8 @@
  */
 package am.util;
 
+import java.math.BigInteger;
+
 /**
  * Static helper methods to deal with strings.
  */
@@ -53,6 +55,34 @@ public final class StrUtil
       {
         result = new String(array);
       }
+    }
+    return result;
+  }
+
+  /**
+   * Convert string to {@link BigInteger} object.
+   *
+   * @param s
+   *          String to be converted
+   * @return resulting BigInteger, possibly null
+   */
+  public static BigInteger getAsBigInteger(final String s)
+  {
+    BigInteger result;
+    try
+    {
+      if (s == null)
+      {
+        result = null;
+      }
+      else
+      {
+        result = new BigInteger(s);
+      }
+    }
+    catch (final NumberFormatException nfe)
+    {
+      result = null;
     }
     return result;
   }

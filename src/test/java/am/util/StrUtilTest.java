@@ -15,6 +15,7 @@
  */
 package am.util;
 
+import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,5 +52,17 @@ public class StrUtilTest
     final String expected = " abcABC123!";
     Assert.assertEquals("Input with special characters yields differing result.", expected,
         StrUtil.escapeControl(input));
+  }
+
+  @Test
+  public void testGetAsBigInteger()
+  {
+    Assert.assertNull("Null input yields null result.", StrUtil.getAsBigInteger(null));
+    Assert.assertNull("Invalid input yields null result.", StrUtil.getAsBigInteger("xyz"));
+    Assert.assertEquals("Input '0' leads to zero.", BigInteger.ZERO, StrUtil.getAsBigInteger("0"));
+    Assert.assertEquals("Input '1' leads to one.", BigInteger.ONE, StrUtil.getAsBigInteger("1"));
+    Assert.assertEquals("Input '10' leads to ten.", BigInteger.TEN, StrUtil.getAsBigInteger("10"));
+    Assert.assertEquals("Input Long.MIN_VALUE leads to that value.", BigInteger.valueOf(Long.MIN_VALUE),
+        StrUtil.getAsBigInteger("-9223372036854775808"));
   }
 }

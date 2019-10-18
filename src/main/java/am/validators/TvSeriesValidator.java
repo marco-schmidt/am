@@ -29,6 +29,7 @@ import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
+import am.util.StrUtil;
 
 /**
  * Validate a television series volume.
@@ -138,18 +139,6 @@ public class TvSeriesValidator extends AbstractValidator
     }
   }
 
-  private BigInteger getAsNumber(String s)
-  {
-    try
-    {
-      return new BigInteger(s);
-    }
-    catch (final NumberFormatException nfe)
-    {
-      return null;
-    }
-  }
-
   private void validateShowEntries(AppConfig config, Directory dir, Long year)
   {
     LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_show_directory", dir.getEntry().getAbsolutePath()));
@@ -160,7 +149,7 @@ public class TvSeriesValidator extends AbstractValidator
     final String showName = dir.getName();
     for (final Directory sub : dir.getSubdirectories())
     {
-      final BigInteger number = getAsNumber(sub.getName());
+      final BigInteger number = StrUtil.getAsBigInteger(sub.getName());
       if (number == null)
       {
         addViolation(sub, VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER);

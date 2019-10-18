@@ -59,6 +59,11 @@ public class HashCreation
     // create input stream to read from
     InputStream input = null;
     final java.io.File entry = file.getEntry();
+    if (entry == null)
+    {
+      LOGGER.error(config.msg("hashcreation.error.no_file_object"));
+      return;
+    }
     try
     {
       input = Files.newInputStream(entry.toPath());

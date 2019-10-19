@@ -73,8 +73,17 @@ public class App
 
   private void printVersion(final AppConfig config)
   {
-    LOGGER.info(String.format("%s %s <%s>", SystemInfo.APP_NAME, config.getSystemInfo().getApplicationVersion(),
-        SystemInfo.APP_URI));
+    String version = config.getSystemInfo().getApplicationVersion();
+    if (version == null)
+    {
+      // when run inside of IDE
+      version = "";
+    }
+    else
+    {
+      version += " ";
+    }
+    LOGGER.info(String.format("%s %s<%s>", SystemInfo.APP_NAME, version, SystemInfo.APP_URI));
   }
 
   private void printHelp(final AppConfig config)

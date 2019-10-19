@@ -31,6 +31,7 @@ import org.wikidata.wdtk.wikibaseapi.apierrors.MediaWikiApiErrorException;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
+import am.filesystem.model.FileState;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 import am.services.wikidata.WikidataConfiguration;
@@ -157,6 +158,11 @@ public class MovieValidator extends AbstractValidator
 
   private void validateFile(AppConfig config, Directory dir, Long year, int level, File file)
   {
+    final FileState state = file.getState();
+    if (state != null && state == FileState.Missing)
+    {
+      return;
+    }
     if (level != 1)
     {
       addViolation(file, VIOLATION_FILE_WRONG_DIRECTORY);

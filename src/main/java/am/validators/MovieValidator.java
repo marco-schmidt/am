@@ -33,6 +33,7 @@ import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
+import am.services.wikidata.WikidataConfiguration;
 
 /**
  * Validate a movie volume.
@@ -162,10 +163,7 @@ public class MovieValidator extends AbstractValidator
 
     validateFileName(file, year);
 
-    if (config.isQueryWikidata())
-    {
-      assignWikidataEntity(file);
-    }
+    assignWikidataEntity(file);
   }
 
   private void assignWikidataEntity(File file)
@@ -173,6 +171,14 @@ public class MovieValidator extends AbstractValidator
     // if we already know the entity id or we failed to retrieve it in the past ("?") we don't need to fetch it again
     final String id = file.getWikidataEntityId();
     if (id != null && !id.isEmpty())
+    {
+      return;
+    }
+
+    // are we supposed to retrieve Wikidata information?
+    final AppConfig config = getConfig();
+    final WikidataConfiguration wikidataConfiguration = config.getWikidataConfiguration();
+    if (wikidataConfiguration == null || !wikidataConfiguration.isEnabled())
     {
       return;
     }
@@ -185,13 +191,18 @@ public class MovieValidator extends AbstractValidator
       return;
     }
 
+    queryWikidata(config, wikidataConfiguration, file, videoFileName, query);
+  }
+
+  private void queryWikidata(AppConfig config, WikidataConfiguration wikidataConfiguration, File file,
+      VideoFileName videoFileName, String query)
+  {
     // reuse fetcher if it already exists
-    final AppConfig config = getConfig();
-    WikibaseDataFetcher fetcher = config.getFetcher();
+    WikibaseDataFetcher fetcher = wikidataConfiguration.getFetcher();
     if (fetcher == null)
     {
       fetcher = WikibaseDataFetcher.getWikidataDataFetcher();
-      config.setFetcher(fetcher);
+      wikidataConfiguration.setFetcher(fetcher);
     }
     try
     {

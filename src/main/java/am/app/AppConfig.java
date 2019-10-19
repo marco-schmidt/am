@@ -23,10 +23,10 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
-import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.db.JdbcSerialization;
 import am.processor.hashes.HashConfig;
+import am.services.wikidata.WikidataConfiguration;
 import am.util.StrUtil;
 
 /**
@@ -67,14 +67,13 @@ public class AppConfig
   private String exifToolPath;
   private Long exifToolMaxUsage;
   private HashConfig hashConfig;
-  private boolean queryWikidata;
   private File databaseDirectory;
   private JdbcSerialization databaseSerializer;
   private String addVolumePath;
   private String deleteVolumePath;
   private String addVolumeValidator;
-  private WikibaseDataFetcher fetcher;
   private final List<String> fileSystemItems;
+  private WikidataConfiguration wikidataConfiguration;
 
   public AppConfig()
   {
@@ -82,6 +81,7 @@ public class AppConfig
     loggingHandler = new LoggingHandler();
     hashConfig = new HashConfig();
     fileSystemItems = new ArrayList<>();
+    setWikidataConfiguration(new WikidataConfiguration());
   }
 
   public void addFileSystemItem(String item)
@@ -305,16 +305,6 @@ public class AppConfig
     this.hashConfig = hashConfig;
   }
 
-  public boolean isQueryWikidata()
-  {
-    return queryWikidata;
-  }
-
-  public void setQueryWikidata(boolean queryWikidata)
-  {
-    this.queryWikidata = queryWikidata;
-  }
-
   public File getDatabaseDirectory()
   {
     return databaseDirectory;
@@ -355,16 +345,6 @@ public class AppConfig
     this.addVolumeValidator = addVolumeValidator;
   }
 
-  public WikibaseDataFetcher getFetcher()
-  {
-    return fetcher;
-  }
-
-  public void setFetcher(WikibaseDataFetcher fetcher)
-  {
-    this.fetcher = fetcher;
-  }
-
   public String getDeleteVolumePath()
   {
     return deleteVolumePath;
@@ -373,5 +353,15 @@ public class AppConfig
   public void setDeleteVolumePath(String deleteVolumePath)
   {
     this.deleteVolumePath = deleteVolumePath;
+  }
+
+  public WikidataConfiguration getWikidataConfiguration()
+  {
+    return wikidataConfiguration;
+  }
+
+  public void setWikidataConfiguration(WikidataConfiguration wikidataConfiguration)
+  {
+    this.wikidataConfiguration = wikidataConfiguration;
   }
 }

@@ -15,9 +15,11 @@
  */
 package am.app;
 
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.slf4j.LoggerFactory;
 import com.thebuzzmedia.exiftool.ExifTool;
 import am.db.JdbcSerialization;
+import am.services.wikidata.WikidataConfiguration;
 import ch.qos.logback.classic.LoggerContext;
 
 /**
@@ -62,6 +64,13 @@ public class ShutdownThread extends Thread
         LOGGER.error(config.msg("exiftool.error.failed_to_close"), e);
       }
       config.setExifTool(null);
+    }
+
+    final WikidataConfiguration wikiConfig = config.getWikidataConfiguration();
+    final RepositoryConnection connection = wikiConfig.getConnection();
+    if (connection != null)
+    {
+      connection.close();
     }
 
     // shut down logging last so that everyone can log until the end

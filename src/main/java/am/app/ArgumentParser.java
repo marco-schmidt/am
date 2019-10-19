@@ -165,7 +165,7 @@ public class ArgumentParser
         @Override
         public void process(final AppConfig config, final String nextArg)
         {
-          config.setQueryWikidata(Boolean.parseBoolean(nextArg));
+          config.getWikidataConfiguration().setEnabled(Boolean.parseBoolean(nextArg));
         };
       }
   };

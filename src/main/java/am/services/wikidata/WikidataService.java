@@ -20,11 +20,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.rdf4j.http.client.util.HttpClientBuilders;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.QueryEvaluationException;
 import org.eclipse.rdf4j.query.QueryLanguage;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import am.app.AppConfig;
 
 /**
  * Query information from Wikidata.
@@ -33,7 +37,24 @@ import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
  */
 public class WikidataService
 {
-  private String uriSparqlEndpoint = "https://query.wikidata.org/sparql";
+  private static final Logger LOGGER = LoggerFactory.getLogger(WikidataService.class);
+  private AppConfig appConfig;
+  private WikidataConfiguration config;
+
+  private void ensureSparqlConnection()
+  {
+    final RepositoryConnection connection = config.getConnection();
+    if (connection == null)
+    {
+      final HttpClientBuilder httpClientBuilder = HttpClientBuilders.getSSLTrustAllHttpClientBuilder();
+      httpClientBuilder.setMaxConnTotal(10);
+      httpClientBuilder.setMaxConnPerRoute(5);
+      final HttpClient httpClient = httpClientBuilder.build();
+      final SPARQLRepository repo = new SPARQLRepository(config.getUriSparqlEndpoint());
+      repo.setHttpClient(httpClient);
+      config.setConnection(repo.getConnection());
+    }
+  }
 
   /**
    * Search for television show.
@@ -49,13 +70,12 @@ public class WikidataService
     final String queryStr = "select distinct ?show where\n" + "{\n" + "  ?show wdt:P31/wdt:P279* wd:Q15416.\n"
         + "  ?show rdfs:label ?label .\n" + "  ?show wdt:P580 ?start .\n" + "  filter(str(?label) = \"" + title
         + "\")\n" + "  filter(year(?start) = " + year + ")}";
-    final HttpClientBuilder httpClientBuilder = HttpClientBuilders.getSSLTrustAllHttpClientBuilder();
-    httpClientBuilder.setMaxConnTotal(10);
-    httpClientBuilder.setMaxConnPerRoute(5);
-    final HttpClient httpClient = httpClientBuilder.build();
-    final SPARQLRepository repo = new SPARQLRepository(getUriSparqlEndpoint());
-    repo.setHttpClient(httpClient);
-    final RepositoryConnection conn = repo.getConnection();
+    ensureSparqlConnection();
+    final RepositoryConnection conn = config.getConnection();
+    if (conn == null)
+    {
+      return null;
+    }
     try
     {
       final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
@@ -70,20 +90,30 @@ public class WikidataService
         return index < 0 ? null : uri.substring(index + 1);
       }
     }
-    finally
+    catch (final QueryEvaluationException qee)
     {
-      conn.close();
+      LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
     }
     return null;
   }
 
-  public String getUriSparqlEndpoint()
+  public WikidataConfiguration getConfig()
   {
-    return uriSparqlEndpoint;
+    return config;
   }
 
-  public void setUriSparqlEndpoint(String uriSparqlEndpoint)
+  public void setConfig(WikidataConfiguration config)
   {
-    this.uriSparqlEndpoint = uriSparqlEndpoint;
+    this.config = config;
+  }
+
+  public AppConfig getAppConfig()
+  {
+    return appConfig;
+  }
+
+  public void setAppConfig(AppConfig appConfig)
+  {
+    this.appConfig = appConfig;
   }
 }

@@ -80,7 +80,7 @@ public final class AppConfigLoader
     {
       final Object obj = props.remove(WIKIDATA);
       final Boolean wikidata = Boolean.valueOf(obj.toString());
-      config.setQueryWikidata(wikidata.booleanValue());
+      config.getWikidataConfiguration().setEnabled(wikidata.booleanValue());
     }
   }
 

@@ -38,6 +38,8 @@ public class SystemInfo
 {
   /** Application name (short version). */
   public static final String APP_NAME = "am";
+  /** Application URI. */
+  public static final String APP_URI = "https://github.com/marco-schmidt/am";
   private static final Logger LOGGER = LoggerFactory.getLogger(SystemInfo.class);
   private final List<AbstractMap.SimpleEntry<String, String>> props = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
   private String applicationVersion;

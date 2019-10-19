@@ -73,7 +73,8 @@ public class App
 
   private void printVersion(final AppConfig config)
   {
-    LOGGER.info(String.format("%s %s", SystemInfo.APP_NAME, config.getSystemInfo().getApplicationVersion()));
+    LOGGER.info(String.format("%s %s <%s>", SystemInfo.APP_NAME, config.getSystemInfo().getApplicationVersion(),
+        SystemInfo.APP_URI));
   }
 
   private void printHelp(final AppConfig config)
@@ -175,6 +176,7 @@ public class App
 
   private void process(final AppConfig config)
   {
+    printVersion(config);
     switch (config.getMode())
     {
     case AddVolume:
@@ -194,7 +196,6 @@ public class App
     }
     case ShowVersion:
     {
-      printVersion(config);
       break;
     }
     default:

@@ -160,7 +160,7 @@ checkstyle {
   toolVersion '8.24'
   ignoreFailures false
   showViolations true
-  configDir = file("${rootDir}/config/checkstyle")
+  configDirectory = file("${rootDir}/config/checkstyle")
 }
 
 // https://github.com/spotbugs/spotbugs

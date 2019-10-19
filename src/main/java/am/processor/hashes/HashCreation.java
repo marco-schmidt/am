@@ -38,19 +38,29 @@ public class HashCreation
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(HashCreation.class);
 
-  public void update(final AppConfig config, final File file)
+  public MessageDigest createDigest(final AppConfig config, final HashConfig hashConfig)
   {
-    // create digest to be used to compute hash value
     MessageDigest digest;
-    final String algorithm = config.getHashConfig().getAlgorithm();
+    final String algorithm = hashConfig.getAlgorithm();
     try
     {
       digest = MessageDigest.getInstance(algorithm);
-      update(config, file, digest);
     }
     catch (final NoSuchAlgorithmException e)
     {
+      digest = null;
       LOGGER.error(config.msg("hashcreation.error.unknown_algorithm", algorithm), e);
+    }
+    return digest;
+  }
+
+  public void update(final AppConfig config, final File file)
+  {
+    // create digest to be used to compute hash value
+    final MessageDigest digest = createDigest(config, config.getHashConfig());
+    if (digest != null)
+    {
+      update(config, file, digest);
     }
   }
 

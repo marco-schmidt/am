@@ -18,6 +18,7 @@ package am.processor.hashes;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import am.app.AppConfig;
@@ -31,6 +32,8 @@ public class HashProcessorTest
   private HashConfig hashConfig;
   private HashProcessor proc;
   private List<Volume> volumes;
+  private File file1;
+  private File file2;
 
   @Before
   public void setup()
@@ -43,13 +46,13 @@ public class HashProcessorTest
     final Volume vol = new Volume();
     final Directory root = new Directory();
     vol.setRoot(root);
-    final File file1 = new File();
+    file1 = new File();
     file1.setName("a");
     file1.setByteSize(Long.valueOf(10));
     file1.setHashCreated(new Date(100000));
     file1.setHashValue("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
     root.add(file1);
-    final File file2 = new File();
+    file2 = new File();
     file2.setName("b");
     file2.setByteSize(Long.valueOf(20));
     file2.setHashCreated(new Date(500));
@@ -71,5 +74,10 @@ public class HashProcessorTest
     hashConfig.setStrategy(HashStrategy.Percentage);
     hashConfig.setPercentage(Double.valueOf(0.0d));
     proc.update(config, volumes);
+    final List<File> files = proc.getFiles();
+    final File f1 = files.get(0);
+    final File f2 = files.get(1);
+    Assert.assertEquals("After sorting file 2 is first.", file2, f1);
+    Assert.assertEquals("After sorting file 1 is second.", file1, f2);
   }
 }

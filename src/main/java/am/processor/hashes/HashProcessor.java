@@ -37,6 +37,11 @@ public class HashProcessor
   private final List<File> files = new ArrayList<>();
   private long fileSizeSum;
 
+  public List<File> getFiles()
+  {
+    return files;
+  }
+
   public void update(final AppConfig config, final List<Volume> volumes)
   {
     final HashStrategy strategy = config.getHashConfig().getStrategy();
@@ -46,42 +51,52 @@ public class HashProcessor
     }
     // put all files that are not missing in a list and add their sizes
     files.clear();
-    fileSizeSum = 0;
-    for (final Volume v : volumes)
-    {
-      find(config, v);
-    }
+    fileSizeSum = initFileList(files, volumes, 0L);
     // sort list by necessity to compute hash: files without any hash value first, then by age in descending order
     // (oldest hashes first)
     Collections.sort(files, new HashFilePriorityComparator());
     compute(config);
   }
 
-  private void find(final AppConfig config, final Volume volume)
+  private long initFileList(final List<File> files, final List<Volume> volumes, final long fileSizeSum)
   {
-    find(config, volume.getRoot());
+    long result = fileSizeSum;
+    for (final Volume v : volumes)
+    {
+      result = initFileList(files, v, result);
+    }
+    return result;
   }
 
-  private void find(final AppConfig config, Directory dir)
+  private long initFileList(final List<File> files, final Volume volume, final long fileSizeSum)
   {
+    return initFileList(files, volume.getRoot(), fileSizeSum);
+  }
+
+  private long initFileList(final List<File> files, final Directory dir, final long fileSizeSum)
+  {
+    long result = fileSizeSum;
     for (final File f : dir.getFiles())
     {
-      find(config, f);
+      result = initFileList(files, f, result);
     }
     for (final Directory d : dir.getSubdirectories())
     {
-      find(config, d);
+      result = initFileList(files, d, result);
     }
+    return result;
   }
 
-  private void find(final AppConfig config, File file)
+  private long initFileList(final List<File> files, final File file, final long fileSizeSum)
   {
+    long result = fileSizeSum;
     final FileState state = file.getState();
     if (state != null && state != FileState.Missing)
     {
       files.add(file);
-      fileSizeSum += file.getByteSize().longValue();
+      result += file.getByteSize().longValue();
     }
+    return result;
   }
 
   private void compute(AppConfig config)

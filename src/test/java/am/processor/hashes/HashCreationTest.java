@@ -15,11 +15,33 @@
  */
 package am.processor.hashes;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.MessageDigest;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import am.app.AppConfig;
+import am.filesystem.model.File;
 
 public class HashCreationTest
 {
+  private AppConfig config;
+  private HashConfig hashConfig;
+  private HashCreation creation;
+
+  @Before
+  public void setup()
+  {
+    config = new AppConfig();
+    hashConfig = new HashConfig();
+    creation = new HashCreation();
+    config.setHashConfig(hashConfig);
+    hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
+    hashConfig.setPercentage(Double.valueOf(0d));
+    hashConfig.setStrategy(HashStrategy.All);
+  }
+
   @Test
   public void toStringEmpty()
   {
@@ -40,5 +62,46 @@ public class HashCreationTest
   public void toStringNull()
   {
     Assert.assertEquals("Null array leads to empty string.", "", new HashCreation().toString(null));
+  }
+
+  @Test
+  public void testCreateDigestInvalid()
+  {
+    hashConfig.setAlgorithm("invalidAlgorithmName");
+    final MessageDigest digest = creation.createDigest(config, hashConfig);
+    Assert.assertNull("Invalid algorithm name leads to null digest.", digest);
+  }
+
+  @Test
+  public void testCreateDigestDefault()
+  {
+    hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
+    final MessageDigest digest = creation.createDigest(config, hashConfig);
+    Assert.assertNotNull("Default algorithm name leads to non-null digest.", digest);
+  }
+
+  @Test
+  public void testUpdate()
+  {
+    hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
+    final File file = new File();
+    creation.update(config, file);
+  }
+
+  @Test
+  public void testUpdateInputStream()
+  {
+    hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
+    final MessageDigest digest = creation.createDigest(config, hashConfig);
+    final InputStream in = new ByteArrayInputStream(new byte[]
+    {});
+    final File file = new File();
+    file.setByteSize(Long.valueOf(0));
+    creation.update(config, file, digest, in, "testin");
+    final String hashValue = file.getHashValue();
+    Assert.assertNotNull("After update we do have a hash value.", hashValue);
+    Assert.assertEquals("Empty SHA-256 message digest value expected.",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", hashValue);
+    Assert.assertNotNull("After update we do have a hash date.", file.getHashCreated());
   }
 }

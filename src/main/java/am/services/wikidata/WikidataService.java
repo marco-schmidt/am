@@ -37,6 +37,11 @@ import am.app.AppConfig;
  */
 public class WikidataService
 {
+  /**
+   * The string representing an unknown Wikidata entity, a non-null value to indicate that the application searched for
+   * it without result, avoiding identical queries in the future.
+   */
+  public static final String UNKNOWN_ENTITY = "?";
   private static final Logger LOGGER = LoggerFactory.getLogger(WikidataService.class);
   private AppConfig appConfig;
   private WikidataConfiguration config;
@@ -46,10 +51,15 @@ public class WikidataService
     final RepositoryConnection connection = config.getConnection();
     if (connection == null)
     {
+      long millis = System.currentTimeMillis();
       final HttpClientBuilder httpClientBuilder = HttpClientBuilders.getSSLTrustAllHttpClientBuilder();
+      LOGGER.debug(appConfig.msg("wikidataservice.debug.created_http_builder", System.currentTimeMillis() - millis));
+      millis = System.currentTimeMillis();
       httpClientBuilder.setMaxConnTotal(10);
       httpClientBuilder.setMaxConnPerRoute(5);
       final HttpClient httpClient = httpClientBuilder.build();
+      LOGGER
+          .debug(appConfig.msg("wikidataservice.debug.initialized_http_builder", System.currentTimeMillis() - millis));
       final SPARQLRepository repo = new SPARQLRepository(config.getUriSparqlEndpoint());
       repo.setHttpClient(httpClient);
       config.setConnection(repo.getConnection());
@@ -78,8 +88,10 @@ public class WikidataService
     }
     try
     {
+      final long millis = System.currentTimeMillis();
       final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
       final TupleQueryResult rs = query.evaluate();
+      LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
       if (rs.hasNext())
       {
         final BindingSet next = rs.next();
@@ -93,6 +105,8 @@ public class WikidataService
     catch (final QueryEvaluationException qee)
     {
       LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
+      conn.close();
+      config.setConnection(null);
     }
     return null;
   }

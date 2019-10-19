@@ -93,7 +93,7 @@ public class VolumeProcessor
     }
     final Directory merged = new Directory();
     merged.setId(loaded.getId());
-
+    merged.setWikidataEntityId(loaded.getWikidataEntityId());
     merged.setName(scanned.getName());
 
     final Set<String> names = new HashSet<>();

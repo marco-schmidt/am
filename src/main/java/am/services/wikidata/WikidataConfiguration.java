@@ -19,7 +19,7 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher;
 
 /**
- * Configuration information about usage of Wikidata information.
+ * Configuration data class about usage of <a href="https://www.wikidata.org/">Wikidata</a> information.
  *
  * @author Marco Schmidt
  */
@@ -29,6 +29,7 @@ public class WikidataConfiguration
   private WikibaseDataFetcher fetcher;
   private RepositoryConnection connection;
   private String uriSparqlEndpoint = "https://query.wikidata.org/sparql";
+  private WikidataService service;
 
   public boolean isEnabled()
   {
@@ -68,5 +69,15 @@ public class WikidataConfiguration
   public void setUriSparqlEndpoint(String uriSparqlEndpoint)
   {
     this.uriSparqlEndpoint = uriSparqlEndpoint;
+  }
+
+  public WikidataService getService()
+  {
+    return service;
+  }
+
+  public void setService(WikidataService service)
+  {
+    this.service = service;
   }
 }

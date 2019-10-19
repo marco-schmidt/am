@@ -29,6 +29,8 @@ import am.filesystem.model.Directory;
 import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
+import am.services.wikidata.WikidataConfiguration;
+import am.services.wikidata.WikidataService;
 import am.util.StrUtil;
 
 /**
@@ -101,10 +103,10 @@ public class TvSeriesValidator extends AbstractValidator
   {
     LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_year_directory", dir.getEntry().getAbsolutePath()));
 
-    Long year;
+    Integer year;
     try
     {
-      year = Long.valueOf(dir.getName());
+      year = Integer.valueOf(dir.getName());
     }
     catch (final NumberFormatException nfe)
     {
@@ -139,11 +141,13 @@ public class TvSeriesValidator extends AbstractValidator
     }
   }
 
-  private void validateShowEntries(AppConfig config, Directory dir, Long year)
+  private void validateShowEntries(AppConfig config, Directory dir, Integer year)
   {
     LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_show_directory", dir.getEntry().getAbsolutePath()));
 
     markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+
+    findShowWikidataEntity(config, dir, year);
 
     final Map<BigInteger, Directory> mapSeasonNumberToDirectory = new HashMap<>();
     final String showName = dir.getName();
@@ -173,6 +177,33 @@ public class TvSeriesValidator extends AbstractValidator
           validateSeasonEntries(config, sub, showName, number);
         }
       }
+    }
+  }
+
+  private void findShowWikidataEntity(AppConfig config, Directory dir, Integer year)
+  {
+    if (dir.getWikidataEntityId() != null)
+    {
+      return;
+    }
+    final WikidataConfiguration wikiConfig = config.getWikidataConfiguration();
+    if (wikiConfig.isEnabled())
+    {
+      WikidataService service = wikiConfig.getService();
+      if (service == null)
+      {
+        service = new WikidataService();
+        service.setAppConfig(config);
+        service.setConfig(wikiConfig);
+        wikiConfig.setService(service);
+      }
+      String entityId = service.searchTelevisionShow(dir.getName(), year);
+      if (entityId == null)
+      {
+        entityId = WikidataService.UNKNOWN_ENTITY;
+      }
+      dir.setWikidataEntityId(entityId);
+      LOGGER.info(config.msg("tvseriesvalidator.info.television_show", entityId, dir.getName(), year.toString()));
     }
   }
 

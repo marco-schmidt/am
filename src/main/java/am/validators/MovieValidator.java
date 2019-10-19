@@ -34,6 +34,7 @@ import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 import am.services.wikidata.WikidataConfiguration;
+import am.services.wikidata.WikidataService;
 
 /**
  * Validate a movie volume.
@@ -220,7 +221,7 @@ public class MovieValidator extends AbstractValidator
       }
       if (!success)
       {
-        file.setWikidataEntityId("?");
+        file.setWikidataEntityId(WikidataService.UNKNOWN_ENTITY);
       }
     }
     catch (final MediaWikiApiErrorException e)

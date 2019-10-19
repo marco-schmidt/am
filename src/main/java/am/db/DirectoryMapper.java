@@ -97,8 +97,8 @@ public class DirectoryMapper extends ModelMapper<Directory>
   @Override
   String getTableDefinition()
   {
-    return TABLE_DIRS_VOLUME_REF + " bigint,\n" + TABLE_DIRS_PARENT_REF + " bigint,\n" + TABLE_DIRS_NAME + " string,\n"
-        + TABLE_DIRS_WIKIDATA_ENT_ID + " string\n";
+    return TABLE_DIRS_VOLUME_REF + " bigint,\n" + TABLE_DIRS_PARENT_REF + " bigint,\n" + TABLE_DIRS_NAME + " text,\n"
+        + TABLE_DIRS_WIKIDATA_ENT_ID + " text\n";
   }
 
   @Override

@@ -120,11 +120,14 @@ public class WikidataService
     return sparqlFindTelevisionShow;
   }
 
-  private String buildFindTelevisionShowQuery(String title, Integer year)
+  String buildFindTelevisionShowQuery(String title, Integer year)
   {
     String query = getFindTelevisionShowByTitleAndYearTemplate();
-    query = query.replace("@TITLE@", title);
-    query = query.replace("@YEAR@", year.toString());
+    if (query != null)
+    {
+      query = query.replace("@TITLE@", title);
+      query = query.replace("@YEAR@", year.toString());
+    }
     return query;
   }
 

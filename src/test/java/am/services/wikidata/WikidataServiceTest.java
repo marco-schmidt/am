@@ -17,7 +17,13 @@ package am.services.wikidata;
 
 import org.junit.Assert;
 import org.junit.Test;
+import am.util.StrUtil;
 
+/**
+ * Unit tests for {@link WikidataService}.
+ *
+ * @author Marco Schmidt
+ */
 public class WikidataServiceTest
 {
   @Test
@@ -25,5 +31,16 @@ public class WikidataServiceTest
   {
     final String data = new WikidataService().loadSparqlTemplate("am/services/wikidata/Test.rq");
     Assert.assertEquals("Expected content of test resource file.", "SELECT * WHERE {}", data);
+  }
+
+  @Test
+  public void testBuildFindTelevisionShowQuery()
+  {
+    String query = new WikidataService().buildFindTelevisionShowQuery("Show", Integer.valueOf(2019));
+    query = StrUtil.escapeControl(query);
+    Assert.assertEquals("Expected query of test resource file.",
+        "select distinct ?show where {   ?show wdt:P31/wdt:P279* wd:Q15416.   ?show"
+            + " rdfs:label ?label .   ?show wdt:P580 ?start .   filter(year(?start) = 2019)   filter(str(?label) = \"Show\") }",
+        query);
   }
 }

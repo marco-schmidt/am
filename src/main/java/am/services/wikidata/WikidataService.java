@@ -15,6 +15,11 @@
  */
 package am.services.wikidata;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.rdf4j.http.client.util.HttpClientBuilders;
@@ -45,6 +50,7 @@ public class WikidataService
   private static final Logger LOGGER = LoggerFactory.getLogger(WikidataService.class);
   private AppConfig appConfig;
   private WikidataConfiguration config;
+  private String sparqlFindTelevisionShow;
 
   private void ensureSparqlConnection()
   {
@@ -67,6 +73,62 @@ public class WikidataService
   }
 
   /**
+   * Load file content from argument path using a class loader's getResourceAsStream method.
+   *
+   * @param path
+   *          file to be read
+   * @return file content as String or null on failure
+   */
+  String loadSparqlTemplate(final String path)
+  {
+    final StringBuilder sb = new StringBuilder();
+    final Reader in = new BufferedReader(
+        new InputStreamReader(getClass().getClassLoader().getResourceAsStream(path), StandardCharsets.UTF_8));
+    int c = 0;
+    try
+    {
+      while ((c = in.read()) != -1)
+      {
+        sb.append((char) c);
+      }
+    }
+    catch (final IOException e)
+    {
+      LOGGER.error(appConfig.msg("wikidataservice.error.failed_reading_file", path));
+      return null;
+    }
+    finally
+    {
+      try
+      {
+        in.close();
+      }
+      catch (final IOException e)
+      {
+        LOGGER.error(appConfig.msg("wikidataservice.error.failed_closing_file", path));
+      }
+    }
+    return sb.toString();
+  }
+
+  private String getFindTelevisionShowByTitleAndYearTemplate()
+  {
+    if (sparqlFindTelevisionShow == null)
+    {
+      sparqlFindTelevisionShow = loadSparqlTemplate("am/services/wikidata/FindTelevisionShowByTitleAndStartTime.rq");
+    }
+    return sparqlFindTelevisionShow;
+  }
+
+  private String buildFindTelevisionShowQuery(String title, Integer year)
+  {
+    String query = getFindTelevisionShowByTitleAndYearTemplate();
+    query = query.replace("@TITLE@", title);
+    query = query.replace("@YEAR@", year.toString());
+    return query;
+  }
+
+  /**
    * Search for television show.
    *
    * @param title
@@ -77,9 +139,7 @@ public class WikidataService
    */
   public String searchTelevisionShow(String title, Integer year)
   {
-    final String queryStr = "select distinct ?show where\n" + "{\n" + "  ?show wdt:P31/wdt:P279* wd:Q15416.\n"
-        + "  ?show rdfs:label ?label .\n" + "  ?show wdt:P580 ?start .\n" + "  filter(str(?label) = \"" + title
-        + "\")\n" + "  filter(year(?start) = " + year + ")}";
+    final String queryStr = buildFindTelevisionShowQuery(title, year);
     ensureSparqlConnection();
     final RepositoryConnection conn = config.getConnection();
     if (conn == null)

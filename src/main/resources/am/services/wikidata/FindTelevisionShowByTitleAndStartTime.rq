@@ -1,0 +1,7 @@
+select distinct ?show where {
+  ?show wdt:P31/wdt:P279* wd:Q15416.
+  ?show rdfs:label ?label .
+  ?show wdt:P580 ?start .
+  filter(year(?start) = @YEAR@)
+  filter(str(?label) = "@TITLE@")
+}

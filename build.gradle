@@ -64,10 +64,6 @@ configurations.all {
   }
 }
 
-wrapper {
-  gradleVersion = '5.6.2'
-}
-
 tasks.withType(JavaCompile) {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = sourceCompatibility

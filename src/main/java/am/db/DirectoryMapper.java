@@ -37,9 +37,10 @@ public class DirectoryMapper extends ModelMapper<Directory>
   public static final String TABLE_DIRS_VOLUME_REF = "volume_ref";
   private static final String TABLE_DIRS_PARENT_REF = "parent_ref";
   private static final String TABLE_DIRS_NAME = "name";
+  private static final String TABLE_DIRS_WIKIDATA_ENT_ID = "wikidata_ent_id";
   private static final String[] COLUMNS =
   {
-      TABLE_DIRS_VOLUME_REF, TABLE_DIRS_PARENT_REF, TABLE_DIRS_NAME
+      TABLE_DIRS_VOLUME_REF, TABLE_DIRS_PARENT_REF, TABLE_DIRS_NAME, TABLE_DIRS_WIKIDATA_ENT_ID
   };
 
   @Override
@@ -64,6 +65,7 @@ public class DirectoryMapper extends ModelMapper<Directory>
       final long parentRef = rs.getLong(TABLE_DIRS_PARENT_REF);
       dir.setParentRef(parentRef < 1 ? null : Long.valueOf(parentRef));
       dir.setName(rs.getString(TABLE_DIRS_NAME));
+      dir.setWikidataEntityId(rs.getString(TABLE_DIRS_WIKIDATA_ENT_ID));
     }
     catch (final SQLException e)
     {
@@ -80,9 +82,10 @@ public class DirectoryMapper extends ModelMapper<Directory>
       stat.setLong(1, dir.getVolumeRef());
       ModelMapper.setLong(stat, 2, dir.getParentRef());
       stat.setString(3, dir.getName());
+      stat.setString(4, dir.getWikidataEntityId());
       if (appendModelId)
       {
-        stat.setLong(4, dir.getId());
+        stat.setLong(5, dir.getId());
       }
     }
     catch (final SQLException e)

@@ -35,6 +35,7 @@ public class Directory extends Model
   private final Map<String, Directory> subdirectoryMap = new HashMap<>();
   private final Map<String, File> fileMap = new HashMap<>();
   private java.io.File entry;
+  private String wikidataEntityId;
 
   public String getName()
   {
@@ -129,5 +130,15 @@ public class Directory extends Model
   public void setParentRef(Long parentRef)
   {
     this.parentRef = parentRef;
+  }
+
+  public String getWikidataEntityId()
+  {
+    return wikidataEntityId;
+  }
+
+  public void setWikidataEntityId(String wikidataEntityId)
+  {
+    this.wikidataEntityId = wikidataEntityId;
   }
 }

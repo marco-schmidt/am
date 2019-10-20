@@ -58,14 +58,28 @@ public class TvSeriesValidator extends AbstractValidator
    * television</a>.
    */
   private static final int MIN_TELEVISION_YEAR = 1926;
-  private static final String NO_FILES_IN_ROOT = "no_files_in_root_directory";
-  private static final String NO_FILES_IN_YEAR_DIRECTORY = "no_files_in_year_directory";
+  /**
+   * No files in root directory allowed.
+   */
+  public static final String VIOLATION_NO_FILES_IN_ROOT = "no_files_in_root_directory";
+  /**
+   * No files in year directory allowed.
+   */
+  public static final String VIOLATION_NO_FILES_IN_YEAR_DIRECTORY = "no_files_in_year_directory";
+  /**
+   * No files in show directory allowed.
+   */
+  public static final String VIOLATION_NO_FILES_IN_SHOW_DIRECTORY = "no_files_in_show_directory";
   private static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";
   private static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
   private static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
   private static final String VIOLATION_DUPLICATE_SEASON_DIRECTORY = "duplicate_season_directory";
   private static final String VIOLATION_SEASON_DIRECTORY_NOT_A_NUMBER = "season_directory_not_a_number";
   private static final String VIOLATION_SEASON_DIRECTORY_NUMBER_TOO_SMALL = "season_directory_number_too_small";
+  /**
+   * No directories in season directory.
+   */
+  public static final String VIOLATION_NO_DIRECTORIES_IN_SEASON_DIRECTORY = "no_directories_in_season_directory";
   private static final String VIOLATION_EPISODE_SEASON_AND_SEASON_DIRECTORY_DIFFER = "episode_season_and_season_directory_differ";
   private static final Pattern FILE_NAME_PATTERN = Pattern.compile("(.+)[sS](\\d+)[eE](\\d+)(.*)\\.(.*)");
   private static final Logger LOGGER = LoggerFactory.getLogger(TvSeriesValidator.class);
@@ -89,7 +103,7 @@ public class TvSeriesValidator extends AbstractValidator
       validateYearEntries(config, sub);
     }
 
-    markFilesInvalid(dir, NO_FILES_IN_ROOT);
+    markFilesInvalid(dir, VIOLATION_NO_FILES_IN_ROOT);
   }
 
   private int findMaxTelevisionYear()
@@ -133,7 +147,7 @@ public class TvSeriesValidator extends AbstractValidator
       }
     }
 
-    markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+    markFilesInvalid(dir, VIOLATION_NO_FILES_IN_YEAR_DIRECTORY);
 
     for (final Directory sub : dir.getSubdirectories())
     {
@@ -143,9 +157,10 @@ public class TvSeriesValidator extends AbstractValidator
 
   private void validateShowEntries(AppConfig config, Directory dir, Integer year)
   {
-    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_show_directory", dir.getEntry().getAbsolutePath()));
+    LOGGER.debug(config.msg("tvseriesvalidator.debug.entering_show_directory",
+        dir.getEntry() == null ? dir.getName() : dir.getEntry().getAbsolutePath()));
 
-    markFilesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+    markFilesInvalid(dir, VIOLATION_NO_FILES_IN_SHOW_DIRECTORY);
 
     findShowWikidataEntity(config, dir, year);
 
@@ -221,9 +236,10 @@ public class TvSeriesValidator extends AbstractValidator
 
   private void validateSeasonEntries(AppConfig config, Directory dir, String showName, BigInteger seasonNumber)
   {
-    LOGGER.trace(config.msg("tvseriesvalidator.trace.entering_season_directory", dir.getEntry().getAbsolutePath()));
+    LOGGER.trace(config.msg("tvseriesvalidator.trace.entering_season_directory",
+        dir.getEntry() == null ? dir.getName() : dir.getEntry().getAbsolutePath()));
 
-    markDirectoriesInvalid(dir, NO_FILES_IN_YEAR_DIRECTORY);
+    markDirectoriesInvalid(dir, VIOLATION_NO_DIRECTORIES_IN_SEASON_DIRECTORY);
 
     for (final File file : dir.getFiles())
     {
@@ -233,7 +249,8 @@ public class TvSeriesValidator extends AbstractValidator
 
   private void validateEpisodeEntry(AppConfig config, File file, String showName, BigInteger seasonNumber)
   {
-    LOGGER.trace(config.msg("tvseriesvalidator.trace.checking_episode_file", file.getEntry().getAbsolutePath()));
+    LOGGER.trace(config.msg("tvseriesvalidator.trace.checking_episode_file",
+        file.getEntry() == null ? file.getName() : file.getEntry().getAbsolutePath()));
     final VideoFileName videoFileName = parseFileName(file.getName());
     file.setVideoFileName(videoFileName);
     if (seasonNumber != null)

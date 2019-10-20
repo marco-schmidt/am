@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 import am.validators.MovieValidatorTest.TestBundle;
@@ -37,6 +38,10 @@ public class TvSeriesValidatorTest
   private TvSeriesValidator validator;
   private Volume volume;
   private Directory root;
+  private Directory year;
+  private Directory show;
+  private Directory season;
+  private File file;
 
   @Before
   public void setup()
@@ -53,6 +58,19 @@ public class TvSeriesValidatorTest
     volume = new Volume();
     root = new Directory();
     volume.setRoot(root);
+    year = new Directory();
+    year.setName("2019");
+    year.setEntry(new java.io.File(year.getName()));
+    root.add(year);
+    show = new Directory();
+    show.setName("Show Title");
+    year.add(show);
+    season = new Directory();
+    season.setName("01");
+    show.add(season);
+    file = new File();
+    file.setName("Show Title S01E01.mp4");
+    season.add(file);
   }
 
   private void checkBasics(final VideoFileName name)
@@ -100,5 +118,35 @@ public class TvSeriesValidatorTest
     Assert.assertEquals("Specific first episode expected.", EPISODE, name.getFirstEpisode());
     Assert.assertEquals("Specific last episode expected.", EPISODE, name.getLastEpisode());
     Assert.assertNull("Missing resolution in file name leads to null resolution.", name.getResolution());
+  }
+
+  @Test
+  public void testValidateCorrect()
+  {
+    initialize();
+    validator.validate(config, volume);
+    Assert.assertTrue("Regular setup leads to no rule violations.", validator.isViolationsEmpty());
+  }
+
+  @Test
+  public void testValidateFileRoot()
+  {
+    initialize();
+    final File rootFile = new File();
+    root.add(rootFile);
+    validator.validate(config, volume);
+    Assert.assertTrue("File in root directory is determined as only violation.",
+        validator.containsOnly(TvSeriesValidator.VIOLATION_NO_FILES_IN_ROOT));
+  }
+
+  @Test
+  public void testValidateFileYear()
+  {
+    initialize();
+    final File yearFile = new File();
+    year.add(yearFile);
+    validator.validate(config, volume);
+    Assert.assertTrue("File in show directory is determined as only violation.",
+        validator.containsOnly(TvSeriesValidator.VIOLATION_NO_FILES_IN_YEAR_DIRECTORY));
   }
 }

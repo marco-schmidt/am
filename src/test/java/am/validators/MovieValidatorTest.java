@@ -29,7 +29,7 @@ import am.filesystem.model.Volume;
  */
 public class MovieValidatorTest
 {
-  static class TestBundle extends ListResourceBundle
+  public static class TestBundle extends ListResourceBundle
   {
     @Override
     protected Object[][] getContents()

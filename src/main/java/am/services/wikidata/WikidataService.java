@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 
 /**
  * Query information from Wikidata.
@@ -54,6 +55,7 @@ public class WikidataService
   private WikidataConfiguration config;
   private String sparqlFindTelevisionShow;
   private String sparqlFindTelevisionSeasons;
+  private String sparqlFindTelevisionEpisodes;
 
   private void ensureSparqlConnection()
   {
@@ -132,6 +134,15 @@ public class WikidataService
     return sparqlFindTelevisionSeasons;
   }
 
+  private String getFindTelevisionEpisodesBySeasonTemplate()
+  {
+    if (sparqlFindTelevisionEpisodes == null)
+    {
+      sparqlFindTelevisionEpisodes = loadSparqlTemplate("am/services/wikidata/FindTelevisionEpisodesBySeason.rq");
+    }
+    return sparqlFindTelevisionEpisodes;
+  }
+
   String buildFindTelevisionShowQuery(String title, Integer year)
   {
     String query = getFindTelevisionShowByTitleAndYearTemplate();
@@ -160,6 +171,16 @@ public class WikidataService
     if (query != null)
     {
       query = query.replace("@SHOW@", showEntityId);
+    }
+    return query;
+  }
+
+  String buildFindTelevisionEpisodesQuery(String seasonEntityId)
+  {
+    String query = getFindTelevisionEpisodesBySeasonTemplate();
+    if (query != null)
+    {
+      query = query.replace("@SEASON@", seasonEntityId);
     }
     return query;
   }
@@ -256,6 +277,58 @@ public class WikidataService
           directory.setWikidataEntityId(entity);
           LOGGER
               .info(appConfig.msg("wikidataservice.info.television_show_season", entity, dir.getName(), numberString));
+        }
+      }
+      rs.close();
+    }
+    catch (final QueryEvaluationException qee)
+    {
+      LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
+      conn.close();
+      config.setConnection(null);
+    }
+  }
+
+  /**
+   * Search for television episodes.
+   *
+   * @param seasonEntityId
+   *          Wikidata entity ID of show
+   * @param mapMissing
+   *          map from episode number string (number relative to the season) to {@link File}
+   */
+  public void searchTelevisionEpisodes(final String seasonEntityId, final Map<Long, File> mapMissing)
+  {
+    if (seasonEntityId == null || seasonEntityId.equals(WikidataService.UNKNOWN_ENTITY))
+    {
+      return;
+    }
+    final String queryStr = buildFindTelevisionEpisodesQuery(seasonEntityId);
+    ensureSparqlConnection();
+    final RepositoryConnection conn = config.getConnection();
+    if (conn == null)
+    {
+      return;
+    }
+    try
+    {
+      final long millis = System.currentTimeMillis();
+      final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+      final TupleQueryResult rs = query.evaluate();
+      LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
+      while (rs.hasNext())
+      {
+        final BindingSet next = rs.next();
+        final Value episode = next.getValue("episode");
+        final String entity = extractEntity(episode);
+        final Value relativeNumberValue = next.getValue("relNr");
+        final String relativeNumberString = relativeNumberValue.stringValue();
+        final Long relativeNumber = Long.valueOf(relativeNumberString);
+        final File file = mapMissing.get(relativeNumber);
+        if (file != null)
+        {
+          file.setWikidataEntityId(entity);
+          LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity, file.getName()));
         }
       }
       rs.close();

@@ -241,10 +241,18 @@ public class TvSeriesValidator extends AbstractValidator
 
     markDirectoriesInvalid(dir, VIOLATION_NO_DIRECTORIES_IN_SEASON_DIRECTORY);
 
+    final Map<Long, File> map = new HashMap<>();
     for (final File file : dir.getFiles())
     {
       validateEpisodeEntry(config, file, showName, seasonNumber);
+      final VideoFileName videoFileName = file.getVideoFileName();
+      final Long firstEpisode = videoFileName == null ? null : videoFileName.getFirstEpisode();
+      if (firstEpisode != null)
+      {
+        map.put(firstEpisode, file);
+      }
     }
+    config.getWikidataConfiguration().getService().searchTelevisionEpisodes(dir.getWikidataEntityId(), map);
   }
 
   private void validateEpisodeEntry(AppConfig config, File file, String showName, BigInteger seasonNumber)

@@ -1,0 +1,5 @@
+select ?relNr ?episode where
+{
+  ?episode wdt:P4908 wd:@SEASON@ .
+  ?episode p:P4908 [pq:P1545 ?relNr]
+}

@@ -1,0 +1,6 @@
+select ?season ?seasNr where
+{
+  ?season wdt:P31 wd:Q3464665.
+  ?season wdt:P179 wd:@SHOW@.
+  ?season p:P179 [pq:P1545 ?seasNr]
+}

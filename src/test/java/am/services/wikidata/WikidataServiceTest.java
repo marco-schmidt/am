@@ -43,4 +43,15 @@ public class WikidataServiceTest
             + " rdfs:label ?label .   ?show wdt:P580 ?start .   filter(year(?start) = 2019)   filter(str(?label) = \"Show\") }",
         query);
   }
+
+  @Test
+  public void testBuildFindTelevisionSeasonsQuery()
+  {
+    String query = new WikidataService().buildFindTelevisionSeasonsQuery("Q886");
+    query = StrUtil.escapeControl(query);
+    Assert.assertEquals("Expected query of test resource file.",
+        "select ?season ?seasNr where {   ?season wdt:P31 wd:Q3464665.   ?season wdt:P179 wd:Q886.   "
+            + "?season p:P179 [pq:P1545 ?seasNr] }",
+        query);
+  }
 }

@@ -150,6 +150,7 @@ public class TvSeriesValidator extends AbstractValidator
     findShowWikidataEntity(config, dir, year);
 
     final Map<BigInteger, Directory> mapSeasonNumberToDirectory = new HashMap<>();
+    final Map<String, Directory> mapMissing = new HashMap<>();
     final String showName = dir.getName();
     for (final Directory sub : dir.getSubdirectories())
     {
@@ -173,10 +174,21 @@ public class TvSeriesValidator extends AbstractValidator
           else
           {
             mapSeasonNumberToDirectory.put(number, sub);
+            if (sub.getWikidataEntityId() == null)
+            {
+              mapMissing.put(number.toString(), sub);
+            }
           }
           validateSeasonEntries(config, sub, showName, number);
         }
       }
+    }
+
+    final String showEntityId = dir.getWikidataEntityId();
+    final WikidataService service = config.getWikidataConfiguration().getService();
+    if (showEntityId != null && service != null && !mapMissing.isEmpty())
+    {
+      service.searchTelevisionSeasons(dir, showEntityId, mapMissing);
     }
   }
 

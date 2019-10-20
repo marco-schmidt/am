@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.rdf4j.http.client.util.HttpClientBuilders;
@@ -34,6 +35,7 @@ import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
+import am.filesystem.model.Directory;
 
 /**
  * Query information from Wikidata.
@@ -51,6 +53,7 @@ public class WikidataService
   private AppConfig appConfig;
   private WikidataConfiguration config;
   private String sparqlFindTelevisionShow;
+  private String sparqlFindTelevisionSeasons;
 
   private void ensureSparqlConnection()
   {
@@ -120,6 +123,15 @@ public class WikidataService
     return sparqlFindTelevisionShow;
   }
 
+  private String getFindTelevisionSeasonsByShowTemplate()
+  {
+    if (sparqlFindTelevisionSeasons == null)
+    {
+      sparqlFindTelevisionSeasons = loadSparqlTemplate("am/services/wikidata/FindTelevisionSeasonsByShow.rq");
+    }
+    return sparqlFindTelevisionSeasons;
+  }
+
   String buildFindTelevisionShowQuery(String title, Integer year)
   {
     String query = getFindTelevisionShowByTitleAndYearTemplate();
@@ -129,6 +141,39 @@ public class WikidataService
       query = query.replace("@YEAR@", year.toString());
     }
     return query;
+  }
+
+  String buildFindTelevisionSeasons(String title, Integer year)
+  {
+    String query = getFindTelevisionSeasonsByShowTemplate();
+    if (query != null)
+    {
+      query = query.replace("@TITLE@", title);
+      query = query.replace("@YEAR@", year.toString());
+    }
+    return query;
+  }
+
+  String buildFindTelevisionSeasonsQuery(String showEntityId)
+  {
+    String query = getFindTelevisionSeasonsByShowTemplate();
+    if (query != null)
+    {
+      query = query.replace("@SHOW@", showEntityId);
+    }
+    return query;
+  }
+
+  String extractEntity(Value uri)
+  {
+    final String s = uri == null ? null : uri.stringValue();
+    return extractEntity(s);
+  }
+
+  String extractEntity(String uri)
+  {
+    final int index = uri == null ? -1 : uri.lastIndexOf('/');
+    return index < 0 ? null : uri.substring(index + 1);
   }
 
   /**
@@ -172,6 +217,57 @@ public class WikidataService
       config.setConnection(null);
     }
     return null;
+  }
+
+  /**
+   * Search for television seasons.
+   *
+   * @param dir
+   *          show {@link Directory}
+   * @param showEntityId
+   *          Wikidata entity ID of show
+   * @param mapMissing
+   *          map from season number string (no leading zeroes) to {@link Directory} of that season
+   */
+  public void searchTelevisionSeasons(final Directory dir, final String showEntityId,
+      final Map<String, Directory> mapMissing)
+  {
+    final String queryStr = buildFindTelevisionSeasonsQuery(showEntityId);
+    ensureSparqlConnection();
+    final RepositoryConnection conn = config.getConnection();
+    if (conn == null)
+    {
+      return;
+    }
+    try
+    {
+      final long millis = System.currentTimeMillis();
+      final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
+      final TupleQueryResult rs = query.evaluate();
+      LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
+      while (rs.hasNext())
+      {
+        final BindingSet next = rs.next();
+        final Value season = next.getValue("season");
+        final String entity = extractEntity(season);
+        final Value seasonNumber = next.getValue("seasNr");
+        final String numberString = seasonNumber.stringValue();
+        final Directory directory = mapMissing.get(numberString);
+        if (directory != null)
+        {
+          directory.setWikidataEntityId(entity);
+          LOGGER
+              .info(appConfig.msg("wikidataservice.info.television_show_season", entity, dir.getName(), numberString));
+        }
+      }
+      rs.close();
+    }
+    catch (final QueryEvaluationException qee)
+    {
+      LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
+      conn.close();
+      config.setConnection(null);
+    }
   }
 
   public WikidataConfiguration getConfig()

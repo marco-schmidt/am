@@ -27,6 +27,7 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import am.db.JdbcSerialization;
 import am.processor.hashes.HashConfig;
 import am.services.wikidata.WikidataConfiguration;
+import am.services.wikidata.WikidataService;
 import am.util.StrUtil;
 
 /**
@@ -81,7 +82,12 @@ public class AppConfig
     loggingHandler = new LoggingHandler();
     hashConfig = new HashConfig();
     fileSystemItems = new ArrayList<>();
-    setWikidataConfiguration(new WikidataConfiguration());
+    final WikidataConfiguration wikiConfig = new WikidataConfiguration();
+    setWikidataConfiguration(wikiConfig);
+    final WikidataService service = new WikidataService();
+    wikiConfig.setService(service);
+    service.setAppConfig(this);
+    service.setConfig(wikiConfig);
   }
 
   public void addFileSystemItem(String item)

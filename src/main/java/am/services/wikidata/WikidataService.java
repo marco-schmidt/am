@@ -205,9 +205,7 @@ public class WikidataService
         final BindingSet next = rs.next();
         final Value value = next.getValue("show");
         rs.close();
-        final String uri = value == null ? null : value.stringValue();
-        final int index = uri == null ? -1 : uri.lastIndexOf('/');
-        return index < 0 ? null : uri.substring(index + 1);
+        return value == null ? null : extractEntity(value.stringValue());
       }
     }
     catch (final QueryEvaluationException qee)

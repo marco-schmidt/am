@@ -73,7 +73,8 @@ public abstract class AbstractValidator
 
   public void addViolation(Directory dir, String id)
   {
-    final String path = dir.getEntry().getAbsolutePath();
+    final java.io.File entry = dir.getEntry();
+    final String path = entry == null ? dir.getName() : entry.getAbsolutePath();
     final String keyViolation = getMessagePrefix() + ".violation";
     final String keyMsg = getMessagePrefix() + "." + id;
     ids.add(id);

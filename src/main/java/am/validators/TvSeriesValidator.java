@@ -30,6 +30,7 @@ import am.filesystem.model.File;
 import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 import am.services.wikidata.WikidataConfiguration;
+import am.services.wikidata.WikidataEntity;
 import am.services.wikidata.WikidataService;
 import am.util.StrUtil;
 
@@ -226,6 +227,7 @@ public class TvSeriesValidator extends AbstractValidator
     if (showEntityId != null && service != null && !mapMissing.isEmpty())
     {
       service.searchTelevisionSeasons(dir, showEntityId, mapMissing);
+      service.assignUnknownEntityWhereNull(mapMissing.values());
     }
   }
 
@@ -249,7 +251,7 @@ public class TvSeriesValidator extends AbstractValidator
       String entityId = service.searchTelevisionShow(dir.getName(), year);
       if (entityId == null)
       {
-        entityId = WikidataService.UNKNOWN_ENTITY;
+        entityId = WikidataEntity.UNKNOWN_ENTITY;
       }
       dir.setWikidataEntityId(entityId);
       LOGGER.info(config.msg("tvseriesvalidator.info.television_show", entityId, dir.getName(), year.toString()));
@@ -267,14 +269,19 @@ public class TvSeriesValidator extends AbstractValidator
     for (final File file : dir.getFiles())
     {
       validateEpisodeEntry(config, file, showName, seasonNumber);
-      final VideoFileName videoFileName = file.getVideoFileName();
-      final Long firstEpisode = videoFileName == null ? null : videoFileName.getFirstEpisode();
-      if (firstEpisode != null)
+      if (file.getWikidataEntityId() == null)
       {
-        map.put(firstEpisode, file);
+        final VideoFileName videoFileName = file.getVideoFileName();
+        final Long firstEpisode = videoFileName == null ? null : videoFileName.getFirstEpisode();
+        if (firstEpisode != null)
+        {
+          map.put(firstEpisode, file);
+        }
       }
     }
-    config.getWikidataConfiguration().getService().searchTelevisionEpisodes(dir.getWikidataEntityId(), map);
+    final WikidataService service = config.getWikidataConfiguration().getService();
+    service.searchTelevisionEpisodes(dir.getWikidataEntityId(), map);
+    service.assignUnknownEntityWhereNull(map.values());
   }
 
   private void validateEpisodeEntry(AppConfig config, File file, String showName, BigInteger seasonNumber)

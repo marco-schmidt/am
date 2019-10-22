@@ -17,11 +17,12 @@ package am.filesystem.model;
 
 import java.util.Date;
 import am.db.Model;
+import am.services.wikidata.WikidataEntity;
 
 /**
  * Data model class for a file as part of a {@link Directory} in a {@link Volume}.
  */
-public class File extends Model
+public class File extends Model implements WikidataEntity
 {
   private Long volumeRef;
   private Long directoryRef;
@@ -181,11 +182,13 @@ public class File extends Model
     this.videoFileName = videoFileName;
   }
 
+  @Override
   public String getWikidataEntityId()
   {
     return wikidataEntityId;
   }
 
+  @Override
   public void setWikidataEntityId(String wikidataEntityId)
   {
     this.wikidataEntityId = wikidataEntityId;

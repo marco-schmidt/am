@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import am.db.Model;
+import am.services.wikidata.WikidataEntity;
 
 /**
  * Data model class representing a directory as part of a {@link Volume}. Has a name, contains subdirectories and files.
  */
-public class Directory extends Model
+public class Directory extends Model implements WikidataEntity
 {
   private Long volumeRef;
   private Long parentRef;
@@ -132,11 +133,13 @@ public class Directory extends Model
     this.parentRef = parentRef;
   }
 
+  @Override
   public String getWikidataEntityId()
   {
     return wikidataEntityId;
   }
 
+  @Override
   public void setWikidataEntityId(String wikidataEntityId)
   {
     this.wikidataEntityId = wikidataEntityId;

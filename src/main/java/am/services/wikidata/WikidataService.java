@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Map;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -45,11 +46,6 @@ import am.filesystem.model.File;
  */
 public class WikidataService
 {
-  /**
-   * The string representing an unknown Wikidata entity, a non-null value to indicate that the application searched for
-   * it without result, avoiding identical queries in the future.
-   */
-  public static final String UNKNOWN_ENTITY = "?";
   private static final Logger LOGGER = LoggerFactory.getLogger(WikidataService.class);
   private AppConfig appConfig;
   private WikidataConfiguration config;
@@ -198,17 +194,14 @@ public class WikidataService
   }
 
   /**
-   * Search for television show.
+   * Run argument SPARQL query and return result to caller.
    *
-   * @param title
-   *          name of show
-   * @param year
-   *          year of the first airdate of an episode of the show
-   * @return WikiData entity id or null
+   * @param queryStr
+   *          SPARQL code
+   * @return {@link TupleQueryResult} object or null if there were problems
    */
-  public String searchTelevisionShow(String title, Integer year)
+  public TupleQueryResult runQuery(final String queryStr)
   {
-    final String queryStr = buildFindTelevisionShowQuery(title, year);
     ensureSparqlConnection();
     final RepositoryConnection conn = config.getConnection();
     if (conn == null)
@@ -221,19 +214,36 @@ public class WikidataService
       final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
       final TupleQueryResult rs = query.evaluate();
       LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
-      if (rs.hasNext())
-      {
-        final BindingSet next = rs.next();
-        final Value value = next.getValue("show");
-        rs.close();
-        return value == null ? null : extractEntity(value.stringValue());
-      }
+      return rs;
     }
     catch (final QueryEvaluationException qee)
     {
       LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
       conn.close();
       config.setConnection(null);
+      return null;
+    }
+  }
+
+  /**
+   * Search for television show.
+   *
+   * @param title
+   *          name of show
+   * @param year
+   *          year of the first airdate of an episode of the show
+   * @return WikiData entity id or null
+   */
+  public String searchTelevisionShow(String title, Integer year)
+  {
+    final String queryStr = buildFindTelevisionShowQuery(title, year);
+    final TupleQueryResult rs = runQuery(queryStr);
+    if (rs.hasNext())
+    {
+      final BindingSet next = rs.next();
+      final Value value = next.getValue("show");
+      rs.close();
+      return value == null ? null : extractEntity(value.stringValue());
     }
     return null;
   }
@@ -252,41 +262,22 @@ public class WikidataService
       final Map<String, Directory> mapMissing)
   {
     final String queryStr = buildFindTelevisionSeasonsQuery(showEntityId);
-    ensureSparqlConnection();
-    final RepositoryConnection conn = config.getConnection();
-    if (conn == null)
+    final TupleQueryResult rs = runQuery(queryStr);
+    while (rs.hasNext())
     {
-      return;
-    }
-    try
-    {
-      final long millis = System.currentTimeMillis();
-      final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-      final TupleQueryResult rs = query.evaluate();
-      LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
-      while (rs.hasNext())
+      final BindingSet next = rs.next();
+      final Value season = next.getValue("season");
+      final String entity = extractEntity(season);
+      final Value seasonNumber = next.getValue("seasNr");
+      final String numberString = seasonNumber.stringValue();
+      final Directory directory = mapMissing.get(numberString);
+      if (directory != null)
       {
-        final BindingSet next = rs.next();
-        final Value season = next.getValue("season");
-        final String entity = extractEntity(season);
-        final Value seasonNumber = next.getValue("seasNr");
-        final String numberString = seasonNumber.stringValue();
-        final Directory directory = mapMissing.get(numberString);
-        if (directory != null)
-        {
-          directory.setWikidataEntityId(entity);
-          LOGGER
-              .info(appConfig.msg("wikidataservice.info.television_show_season", entity, dir.getName(), numberString));
-        }
+        directory.setWikidataEntityId(entity);
+        LOGGER.info(appConfig.msg("wikidataservice.info.television_show_season", entity, dir.getName(), numberString));
       }
-      rs.close();
     }
-    catch (final QueryEvaluationException qee)
-    {
-      LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
-      conn.close();
-      config.setConnection(null);
-    }
+    rs.close();
   }
 
   /**
@@ -299,46 +290,29 @@ public class WikidataService
    */
   public void searchTelevisionEpisodes(final String seasonEntityId, final Map<Long, File> mapMissing)
   {
-    if (seasonEntityId == null || seasonEntityId.equals(WikidataService.UNKNOWN_ENTITY))
+    if (seasonEntityId == null || seasonEntityId.equals(WikidataEntity.UNKNOWN_ENTITY) || mapMissing == null
+        || mapMissing.isEmpty())
     {
       return;
     }
     final String queryStr = buildFindTelevisionEpisodesQuery(seasonEntityId);
-    ensureSparqlConnection();
-    final RepositoryConnection conn = config.getConnection();
-    if (conn == null)
+    final TupleQueryResult rs = runQuery(queryStr);
+    while (rs.hasNext())
     {
-      return;
-    }
-    try
-    {
-      final long millis = System.currentTimeMillis();
-      final TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, queryStr);
-      final TupleQueryResult rs = query.evaluate();
-      LOGGER.debug(appConfig.msg("wikidataservice.debug.sparql_query_time", System.currentTimeMillis() - millis));
-      while (rs.hasNext())
+      final BindingSet next = rs.next();
+      final Value episode = next.getValue("episode");
+      final String entity = extractEntity(episode);
+      final Value relativeNumberValue = next.getValue("relNr");
+      final String relativeNumberString = relativeNumberValue.stringValue();
+      final Long relativeNumber = Long.valueOf(relativeNumberString);
+      final File file = mapMissing.get(relativeNumber);
+      if (file != null)
       {
-        final BindingSet next = rs.next();
-        final Value episode = next.getValue("episode");
-        final String entity = extractEntity(episode);
-        final Value relativeNumberValue = next.getValue("relNr");
-        final String relativeNumberString = relativeNumberValue.stringValue();
-        final Long relativeNumber = Long.valueOf(relativeNumberString);
-        final File file = mapMissing.get(relativeNumber);
-        if (file != null)
-        {
-          file.setWikidataEntityId(entity);
-          LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity, file.getName()));
-        }
+        file.setWikidataEntityId(entity);
+        LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity, file.getName()));
       }
-      rs.close();
     }
-    catch (final QueryEvaluationException qee)
-    {
-      LOGGER.error(appConfig.msg("wikidataservice.error.failed_to_run_query"), qee);
-      conn.close();
-      config.setConnection(null);
-    }
+    rs.close();
   }
 
   public WikidataConfiguration getConfig()
@@ -359,5 +333,25 @@ public class WikidataService
   public void setAppConfig(AppConfig appConfig)
   {
     this.appConfig = appConfig;
+  }
+
+  /**
+   * Assign value {@link WikidataEntity#UNKNOWN_ENTITY} to all list items which have it set to null.
+   *
+   * @param list
+   *          {@link java.util.List} of objects implementing {@link WikidataEntity}
+   */
+  public void assignUnknownEntityWhereNull(Collection<? extends WikidataEntity> list)
+  {
+    if (list != null)
+    {
+      for (final WikidataEntity ent : list)
+      {
+        if (ent.getWikidataEntityId() == null)
+        {
+          ent.setWikidataEntityId(WikidataEntity.UNKNOWN_ENTITY);
+        }
+      }
+    }
   }
 }

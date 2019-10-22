@@ -15,8 +15,11 @@
  */
 package am.services.wikidata;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import am.filesystem.model.Directory;
 import am.util.StrUtil;
 
 /**
@@ -56,5 +59,22 @@ public class WikidataServiceTest
     String query = new WikidataService().buildFindTelevisionEpisodesQuery("Q435566");
     query = StrUtil.escapeControl(query);
     Assert.assertTrue("Expected query to contain Q435566.", query != null && query.contains("Q435566"));
+  }
+
+  @Test
+  public void testAssignUnknownEntityWhereNull()
+  {
+    final List<Directory> list = new ArrayList<Directory>();
+    final Directory d1 = new Directory();
+    d1.setWikidataEntityId(null);
+    list.add(d1);
+    final Directory d2 = new Directory();
+    final String entityId = "Q1";
+    d2.setWikidataEntityId(entityId);
+    list.add(d2);
+    new WikidataService().assignUnknownEntityWhereNull(list);
+    Assert.assertEquals("Element without entity now contains unknown entity.", WikidataEntity.UNKNOWN_ENTITY,
+        d1.getWikidataEntityId());
+    Assert.assertEquals("Element with entity still contains same entity.", entityId, d2.getWikidataEntityId());
   }
 }

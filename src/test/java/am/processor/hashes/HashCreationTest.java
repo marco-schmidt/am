@@ -89,7 +89,7 @@ public class HashCreationTest
   }
 
   @Test
-  public void testUpdateInputStream()
+  public void testUpdateInputStreamEmpty()
   {
     hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
     final MessageDigest digest = creation.createDigest(config, hashConfig);
@@ -102,6 +102,25 @@ public class HashCreationTest
     Assert.assertNotNull("After update we do have a hash value.", hashValue);
     Assert.assertEquals("Empty SHA-256 message digest value expected.",
         "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", hashValue);
+    Assert.assertNotNull("After update we do have a hash date.", file.getHashCreated());
+  }
+
+  @Test
+  public void testUpdateInputStreamAbc()
+  {
+    hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
+    final MessageDigest digest = creation.createDigest(config, hashConfig);
+    final InputStream in = new ByteArrayInputStream(new byte[]
+    {
+        'a', 'b', 'c'
+    });
+    final File file = new File();
+    file.setByteSize(Long.valueOf(3));
+    creation.update(config, file, digest, in, "testin");
+    final String hashValue = file.getHashValue();
+    Assert.assertNotNull("After update we do have a hash value.", hashValue);
+    Assert.assertEquals("Empty SHA-256 message digest value expected.",
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", hashValue);
     Assert.assertNotNull("After update we do have a hash date.", file.getHashCreated());
   }
 }

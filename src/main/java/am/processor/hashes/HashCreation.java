@@ -74,18 +74,19 @@ public class HashCreation
       LOGGER.error(config.msg("hashcreation.error.no_file_object"));
       return;
     }
+    final String path = entry.getAbsolutePath();
     try
     {
       input = Files.newInputStream(entry.toPath());
-      update(config, file, digest, input, entry.getAbsolutePath());
+      update(config, file, digest, input, path);
     }
     catch (final InvalidPathException ipe)
     {
-      LOGGER.error(config.msg("hashcreation.error.path_conversion_failed", entry.getAbsolutePath()), ipe);
+      LOGGER.error(config.msg("hashcreation.error.path_conversion_failed", path), ipe);
     }
     catch (final IOException e)
     {
-      LOGGER.error(config.msg("hashcreation.error.file_open_failed", entry.getAbsolutePath()), e);
+      LOGGER.error(config.msg("hashcreation.error.file_open_failed", path), e);
     }
     FileSystemHelper.close(input);
   }
@@ -96,7 +97,9 @@ public class HashCreation
     long timeMillis = System.currentTimeMillis();
 
     // create buffer
-    final byte[] buffer = new byte[1024 * 1024];
+    final long fileSize = file.getByteSize() == null ? Integer.MAX_VALUE : file.getByteSize();
+    final int bufferSize = Math.min(1024 * 1024, fileSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) fileSize);
+    final byte[] buffer = new byte[bufferSize];
 
     // read complete file in chunks and update digest
     int numRead;
@@ -110,6 +113,8 @@ public class HashCreation
     catch (final IOException e)
     {
       LOGGER.error(config.msg("hashcreation.error.input_read", inputName), e);
+      file.setState(FileState.Corrupted);
+      return;
     }
 
     // create final digest as byte array
@@ -128,6 +133,11 @@ public class HashCreation
       LOGGER.debug(config.msg("hashcreation.debug.computed_value", hashValue, inputName, timeMillis, mbPerSecond));
     }
 
+    updateFileState(config, file, hashValue, inputName);
+  }
+
+  private void updateFileState(final AppConfig config, final File file, final String hashValue, final String inputName)
+  {
     final String oldHashValue = file.getHashValue();
     if (oldHashValue == null)
     {

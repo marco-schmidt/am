@@ -53,9 +53,9 @@ public class WikidataService
   private String sparqlFindTelevisionSeasons;
   private String sparqlFindTelevisionEpisodes;
 
-  private void ensureSparqlConnection()
+  private RepositoryConnection ensureSparqlConnection()
   {
-    final RepositoryConnection connection = config.getConnection();
+    RepositoryConnection connection = config.getConnection();
     if (connection == null)
     {
       long millis = System.currentTimeMillis();
@@ -69,8 +69,10 @@ public class WikidataService
           .debug(appConfig.msg("wikidataservice.debug.initialized_http_builder", System.currentTimeMillis() - millis));
       final SPARQLRepository repo = new SPARQLRepository(config.getUriSparqlEndpoint());
       repo.setHttpClient(httpClient);
-      config.setConnection(repo.getConnection());
+      connection = repo.getConnection();
+      config.setConnection(connection);
     }
+    return connection;
   }
 
   /**
@@ -202,8 +204,7 @@ public class WikidataService
    */
   public TupleQueryResult runQuery(final String queryStr)
   {
-    ensureSparqlConnection();
-    final RepositoryConnection conn = config.getConnection();
+    final RepositoryConnection conn = ensureSparqlConnection();
     if (conn == null)
     {
       return null;
@@ -238,12 +239,15 @@ public class WikidataService
   {
     final String queryStr = buildFindTelevisionShowQuery(title, year);
     final TupleQueryResult rs = runQuery(queryStr);
-    if (rs.hasNext())
+    if (rs != null)
     {
-      final BindingSet next = rs.next();
-      final Value value = next.getValue("show");
-      rs.close();
-      return value == null ? null : extractEntity(value.stringValue());
+      if (rs.hasNext())
+      {
+        final BindingSet next = rs.next();
+        final Value value = next.getValue("show");
+        rs.close();
+        return value == null ? null : extractEntity(value.stringValue());
+      }
     }
     return null;
   }
@@ -263,6 +267,10 @@ public class WikidataService
   {
     final String queryStr = buildFindTelevisionSeasonsQuery(showEntityId);
     final TupleQueryResult rs = runQuery(queryStr);
+    if (rs == null)
+    {
+      return;
+    }
     while (rs.hasNext())
     {
       final BindingSet next = rs.next();
@@ -297,6 +305,10 @@ public class WikidataService
     }
     final String queryStr = buildFindTelevisionEpisodesQuery(seasonEntityId);
     final TupleQueryResult rs = runQuery(queryStr);
+    if (rs == null)
+    {
+      return;
+    }
     while (rs.hasNext())
     {
       final BindingSet next = rs.next();

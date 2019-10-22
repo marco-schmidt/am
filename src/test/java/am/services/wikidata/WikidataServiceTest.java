@@ -64,6 +64,8 @@ public class WikidataServiceTest
   @Test
   public void testAssignUnknownEntityWhereNull()
   {
+    final WikidataService service = new WikidataService();
+    service.assignUnknownEntityWhereNull(null);
     final List<Directory> list = new ArrayList<Directory>();
     final Directory d1 = new Directory();
     d1.setWikidataEntityId(null);
@@ -72,7 +74,7 @@ public class WikidataServiceTest
     final String entityId = "Q1";
     d2.setWikidataEntityId(entityId);
     list.add(d2);
-    new WikidataService().assignUnknownEntityWhereNull(list);
+    service.assignUnknownEntityWhereNull(list);
     Assert.assertEquals("Element without entity now contains unknown entity.", WikidataEntity.UNKNOWN_ENTITY,
         d1.getWikidataEntityId());
     Assert.assertEquals("Element with entity still contains same entity.", entityId, d2.getWikidataEntityId());

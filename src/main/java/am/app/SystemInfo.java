@@ -44,6 +44,11 @@ public class SystemInfo
   private final List<AbstractMap.SimpleEntry<String, String>> props = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
   private String applicationVersion;
 
+  public int getNumProperties()
+  {
+    return props.size();
+  }
+
   public void initialize(final AppConfig config, final String... args)
   {
     add(config.msg("system.workingdir"), System.getProperty("user.dir"));
@@ -151,10 +156,16 @@ public class SystemInfo
       final String key = entry.getKey();
       max = max(max, key);
     }
+    max = Math.max(max, 1);
     // print all pairs as padded key and value
     for (final AbstractMap.SimpleEntry<String, String> entry : props)
     {
-      LOGGER.info(String.format("%1$-" + max + "s", entry.getKey()) + "=" + entry.getValue());
+      String key = entry.getKey();
+      if (key == null || key.isEmpty())
+      {
+        key = "?";
+      }
+      LOGGER.info(String.format("%1$-" + max + "s", key) + "=" + entry.getValue());
     }
   }
 

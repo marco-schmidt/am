@@ -98,7 +98,8 @@ public class HashCreation
 
     // create buffer
     final long fileSize = file.getByteSize() == null ? Integer.MAX_VALUE : file.getByteSize();
-    final int bufferSize = Math.min(1024 * 1024, fileSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) fileSize);
+    final int bufferSize = Math
+        .max(Math.min(1024 * 1024, fileSize > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) fileSize), 1024);
     final byte[] buffer = new byte[bufferSize];
 
     // read complete file in chunks and update digest

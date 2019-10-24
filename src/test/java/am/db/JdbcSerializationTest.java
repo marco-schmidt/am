@@ -126,7 +126,7 @@ public class JdbcSerializationTest
     final Volume loadedVolume = volsOut.get(0);
     Assert.assertEquals("Loaded volume has same path as save volume.", path, loadedVolume.getPath());
 
-    // delete subdirectory by search for its id
+    // delete subdirectory given its id
     final int numDeleted = directoryMapper.deleteByField(io, ModelMapper.ROWID, sub.getId());
     Assert.assertEquals("Deleting sub directory results in one deletion.", 1, numDeleted);
 

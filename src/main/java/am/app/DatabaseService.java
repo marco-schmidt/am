@@ -220,8 +220,7 @@ public class DatabaseService
       return false;
     }
     final FileMapper fileMapper = io.getFileMapper();
-    fileMapper.update(io, file);
-    return true;
+    return fileMapper.update(io, file);
   }
 
   public boolean find(String name, Volume volume, SearchResult result)

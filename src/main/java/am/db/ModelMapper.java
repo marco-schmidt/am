@@ -45,6 +45,11 @@ public abstract class ModelMapper<T extends Model>
   public static final String ROWID = "rowid";
   private AppConfig config;
 
+  /**
+   * Create a new object of type T.
+   *
+   * @return new object
+   */
   abstract T create();
 
   abstract String getTableDefinition();
@@ -78,7 +83,7 @@ public abstract class ModelMapper<T extends Model>
     }
     catch (final SQLException e)
     {
-      LOGGER.error("failed", e);
+      LOGGER.error(config.msg("database.error.failed_retrieve_row_id"), e);
       return null;
     }
   }
@@ -110,7 +115,7 @@ public abstract class ModelMapper<T extends Model>
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(config.msg("database.error.failed_loading_rows"), e);
       result.clear();
     }
     finally
@@ -153,7 +158,7 @@ public abstract class ModelMapper<T extends Model>
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(config.msg("database.error.failed_loading_rows"), e);
       result.clear();
     }
     finally
@@ -298,17 +303,28 @@ public abstract class ModelMapper<T extends Model>
 
   public abstract void to(PreparedStatement stat, T model, boolean appendModelId);
 
-  public void upsert(JdbcSerialization io, T model)
+  /**
+   * Argument model object is either inserted (if {@link Model#getId()} is null) or updated (otherwise).
+   *
+   * @param io
+   *          database connection
+   * @param model
+   *          object to be persisted
+   * @return true on success, false on failure
+   */
+  public boolean upsert(JdbcSerialization io, T model)
   {
     final Long id = model.getId();
+    boolean success;
     if (id == null)
     {
-      insert(io, model);
+      success = insert(io, model);
     }
     else
     {
-      update(io, model);
+      success = update(io, model);
     }
+    return success;
   }
 
   public boolean insert(JdbcSerialization io, T model)
@@ -333,7 +349,7 @@ public abstract class ModelMapper<T extends Model>
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(config.msg("database.error.failed_inserting_rows"), e);
       return false;
     }
     finally
@@ -343,21 +359,23 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
-  public void update(JdbcSerialization io, T model)
+  public boolean update(JdbcSerialization io, T model)
   {
     final PreparedStatement stat = createUpdate(io);
     if (stat == null)
     {
-      return;
+      return false;
     }
     try
     {
       to(stat, model, true);
       stat.executeUpdate();
+      return true;
     }
     catch (final SQLException e)
     {
-      e.printStackTrace();
+      LOGGER.error(config.msg("database.error.failed_updating_rows"), e);
+      return false;
     }
     finally
     {
@@ -396,7 +414,7 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
-  public static void setLong(PreparedStatement stat, int index, Long value) throws SQLException
+  public void setLong(PreparedStatement stat, int index, Long value) throws SQLException
   {
     if (value == null)
     {
@@ -442,7 +460,14 @@ public abstract class ModelMapper<T extends Model>
     return sb.toString();
   }
 
-  public String getUpdateQuery(String[] columnNames)
+  /**
+   * Assemble an SQL query to update one or more columns for a single row.
+   *
+   * @param columnNames
+   *          names of the columns to be updated
+   * @return the SQL code
+   */
+  public String getUpdateQuery(final String[] columnNames)
   {
     final StringBuilder sb = new StringBuilder();
     sb.append("update ");

@@ -78,7 +78,7 @@ public class VolumeMapper extends ModelMapper<Volume>
     {
       stat.setString(1, vol.getPath());
       stat.setInt(2, vol.isMain() ? 1 : 0);
-      ModelMapper.setLong(stat, 3, vol.getMainRef());
+      setLong(stat, 3, vol.getMainRef());
       stat.setString(4, vol.getValidator());
       if (appendModelId)
       {

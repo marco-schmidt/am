@@ -80,7 +80,7 @@ public class DirectoryMapper extends ModelMapper<Directory>
     try
     {
       stat.setLong(1, dir.getVolumeRef());
-      ModelMapper.setLong(stat, 2, dir.getParentRef());
+      setLong(stat, 2, dir.getParentRef());
       stat.setString(3, dir.getName());
       stat.setString(4, dir.getWikidataEntityId());
       if (appendModelId)

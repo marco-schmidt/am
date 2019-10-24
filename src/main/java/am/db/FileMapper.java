@@ -98,7 +98,7 @@ public class FileMapper extends ModelMapper<File>
     try
     {
       stat.setLong(1, file.getVolumeRef());
-      ModelMapper.setLong(stat, 2, file.getDirectoryRef());
+      setLong(stat, 2, file.getDirectoryRef());
       stat.setString(3, file.getName());
       stat.setLong(4, file.getByteSize());
       stat.setLong(5, file.getLastModified().getTime());
@@ -108,7 +108,7 @@ public class FileMapper extends ModelMapper<File>
       stat.setInt(9, file.getState().getNumericValue());
       ModelMapper.setString(stat, 10, file.getHashValue());
       final Date hashCreated = file.getHashCreated();
-      ModelMapper.setLong(stat, 11, hashCreated == null ? null : hashCreated.getTime());
+      setLong(stat, 11, hashCreated == null ? null : hashCreated.getTime());
       ModelMapper.setString(stat, 12, file.getWikidataEntityId());
       if (appendModelId)
       {

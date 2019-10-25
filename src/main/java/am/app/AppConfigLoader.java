@@ -216,9 +216,13 @@ public final class AppConfigLoader
       else
       {
         LOGGER.error(config.msg("init.error.database_dir_does_not_exist", dirName));
+        return false;
       }
     }
-    return false;
+    else
+    {
+      return true;
+    }
   }
 
   public static void loadConfig(final AppConfig config)

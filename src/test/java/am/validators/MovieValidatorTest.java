@@ -47,6 +47,7 @@ public class MovieValidatorTest
   private MovieValidator validator;
   private Volume volume;
   private Directory root;
+  private Directory yearDir;
 
   @Before
   public void setup()
@@ -63,6 +64,9 @@ public class MovieValidatorTest
     volume = new Volume();
     root = new Directory();
     volume.setRoot(root);
+    yearDir = new Directory();
+    yearDir.setName("2019");
+    root.add(yearDir);
   }
 
   @Test
@@ -136,16 +140,70 @@ public class MovieValidatorTest
   }
 
   @Test
-  public void testValidate()
+  public void testValidateNoViolations()
   {
+    initialize();
     validator.validate(config, volume);
     Assert.assertTrue("No violations with empty volume.", validator.isViolationsEmpty());
+  }
+
+  @Test
+  public void testValidateViolationFileRootDirectory()
+  {
+    initialize();
     final File file = new File();
     file.setName("title.2019.mkv");
     root.add(file);
     validator.validate(config, volume);
     Assert.assertTrue("Has one violation file in root.",
         validator.contains(MovieValidator.VIOLATION_FILE_WRONG_DIRECTORY));
+  }
 
+  @Test
+  public void testValidateViolationSubDirectoryTooDeep()
+  {
+    initialize();
+    final Directory dir = new Directory();
+    dir.setName("sub");
+    yearDir.add(dir);
+    validator.validate(config, volume);
+    Assert.assertTrue("Has one violation about the directory structure being too deep.",
+        validator.contains(MovieValidator.VIOLATION_DIRECTORY_TOO_DEEP));
+  }
+
+  @Test
+  public void testValidateViolationInvalidYearDirectory()
+  {
+    initialize();
+    final Directory invalidYear = new Directory();
+    invalidYear.setName("x");
+    root.add(invalidYear);
+    validator.validate(config, volume);
+    Assert.assertTrue("Has one violation about the directory not being a valid year.",
+        validator.contains(MovieValidator.VIOLATION_DIRECTORY_NOT_A_NUMBER));
+  }
+
+  @Test
+  public void testValidateViolationYearDirectoryTooSmall()
+  {
+    initialize();
+    final Directory invalidYear = new Directory();
+    invalidYear.setName("1850");
+    root.add(invalidYear);
+    validator.validate(config, volume);
+    Assert.assertTrue("Has one violation about the directory not being a valid year (too small).",
+        validator.contains(MovieValidator.VIOLATION_DIRECTORY_YEAR_TOO_SMALL));
+  }
+
+  @Test
+  public void testValidateViolationYearDirectoryTooLarge()
+  {
+    initialize();
+    final Directory invalidYear = new Directory();
+    invalidYear.setName(Integer.toString(Integer.MAX_VALUE));
+    root.add(invalidYear);
+    validator.validate(config, volume);
+    Assert.assertTrue("Has one violation about the directory not being a valid year (too large).",
+        validator.contains(MovieValidator.VIOLATION_DIRECTORY_YEAR_TOO_LARGE));
   }
 }

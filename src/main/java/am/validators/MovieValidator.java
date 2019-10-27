@@ -63,11 +63,26 @@ public class MovieValidator extends AbstractValidator
    */
   public static final String VIOLATION_FILE_NO_EXTENSION = "no_file_extension";
   private static final String VIOLATION_FILE_EXTENSION_UNKNOWN = "file_extension_unknown";
+  /**
+   * File not allowed in this directory.
+   */
   static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
-  private static final String VIOLATION_DIRECTORY_TOO_DEEP = "directory_too_deep";
-  private static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
-  private static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";
-  private static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
+  /**
+   * Directory too deep, only root and year directories allowed.
+   */
+  public static final String VIOLATION_DIRECTORY_TOO_DEEP = "directory_too_deep";
+  /**
+   * Year directory not a number.
+   */
+  public static final String VIOLATION_DIRECTORY_NOT_A_NUMBER = "directory_not_a_number";
+  /**
+   * Year directory too small.
+   */
+  public static final String VIOLATION_DIRECTORY_YEAR_TOO_SMALL = "directory_year_too_small";
+  /**
+   * Year directory too large.
+   */
+  public static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
   private static final String VIOLATION_FILE_NO_YEAR = "file_no_year";
   private static final String VIOLATION_FILE_DIRECTORY_YEAR_DIFFER = "file_dir_year_differ";
   private static final String VIOLATION_TITLE_MISSING = "file_title_missing";

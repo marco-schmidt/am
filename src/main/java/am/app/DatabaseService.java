@@ -55,16 +55,17 @@ public class DatabaseService
     return null;
   }
 
-  public void addVolume(AppConfig config)
+  /**
+   * Add volume to database.
+   *
+   * @param config
+   *          application configuration
+   * @return success of volume addition
+   */
+  public boolean addVolume(AppConfig config)
   {
-    // is path a valid directory?
     String path = config.getAddVolumePath();
     final File dir = new File(path);
-    if (!dir.isDirectory())
-    {
-      LOGGER.error(config.msg("addvolume.error.directory_invalid", path));
-      return;
-    }
 
     // get normalized version of directory path to identify duplicates
     try
@@ -74,7 +75,14 @@ public class DatabaseService
     catch (final IOException e)
     {
       LOGGER.error(config.msg("addvolume.error.cannot_get_canonical_directory_name", path), e);
-      return;
+      return false;
+    }
+
+    // is path a valid directory?
+    if (!dir.isDirectory())
+    {
+      LOGGER.error(config.msg("addvolume.error.directory_invalid", path));
+      return false;
     }
 
     // this only works with a database connection
@@ -82,7 +90,7 @@ public class DatabaseService
     if (io == null)
     {
       LOGGER.error(config.msg("addvolume.error.no_database_connection"));
-      return;
+      return false;
     }
 
     // is this path already assigned to a volume?
@@ -90,14 +98,14 @@ public class DatabaseService
     if (duplicate != null)
     {
       LOGGER.error(config.msg("addvolume.error.path_already_used", path, duplicate.getId()));
-      return;
+      return false;
     }
 
     // if optional validator name was provided, is it known?
     final Volume vol = new Volume();
     if (!checkValidator(config, vol))
     {
-      return;
+      return false;
     }
 
     vol.setPath(path);
@@ -109,14 +117,23 @@ public class DatabaseService
     if (volumeMapper.insert(io, vol))
     {
       LOGGER.info(config.msg("addvolume.info.added_volume_success", path, vol.getId(), validator));
+      return true;
     }
     else
     {
       LOGGER.error(config.msg("addvolume.error.added_volume_failure", path, validator));
+      return false;
     }
   }
 
-  public void deleteVolume(AppConfig config)
+  /**
+   * Delete volume as specified in the configuration.
+   *
+   * @param config
+   *          application configuration
+   * @return true on success, false otherwise
+   */
+  public boolean deleteVolume(AppConfig config)
   {
     // get normalized version of directory path to identify duplicates
     String path = config.getDeleteVolumePath();
@@ -128,7 +145,7 @@ public class DatabaseService
     catch (final IOException e)
     {
       LOGGER.error(config.msg("deletevolume.error.cannot_get_canonical_directory_name", path), e);
-      return;
+      return false;
     }
 
     // this only works with a database connection
@@ -136,7 +153,7 @@ public class DatabaseService
     if (io == null)
     {
       LOGGER.error(config.msg("deletevolume.error.no_database_connection"));
-      return;
+      return false;
     }
 
     // find volume
@@ -145,7 +162,7 @@ public class DatabaseService
     if (volume == null)
     {
       LOGGER.error(config.msg("deletevolume.error.unknown_path", path));
-      return;
+      return false;
     }
 
     // delete files and directories referencing the volume and then the volume itself
@@ -155,6 +172,7 @@ public class DatabaseService
     final int numDirs = dirMapper.deleteByField(io, DirectoryMapper.TABLE_DIRS_VOLUME_REF, volume.getId());
     final int numVolumes = volumeMapper.deleteByField(io, ModelMapper.ROWID, volume.getId());
     LOGGER.info(config.msg("database.info.deleted_volume", numFiles, numDirs, numVolumes));
+    return numVolumes == 1;
   }
 
   /**

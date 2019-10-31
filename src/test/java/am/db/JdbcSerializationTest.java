@@ -92,7 +92,7 @@ public class JdbcSerializationTest
     Assert.assertTrue("Inserting root directory works.", inserted);
 
     // find root directory by search for its id
-    final List<Directory> dirs = directoryMapper.loadByField(io, ModelMapper.ROWID, root.getId());
+    final List<Directory> dirs = directoryMapper.loadByField(io, ModelMapper.ID, root.getId());
     Assert.assertEquals("Searching for root directory rowid finds one dir.", 1, dirs.size());
     Assert.assertEquals("Searching for root directory rowid finds only root dir.", root.getId(), dirs.get(0).getId());
 
@@ -127,7 +127,7 @@ public class JdbcSerializationTest
     Assert.assertEquals("Loaded volume has same path as save volume.", path, loadedVolume.getPath());
 
     // delete subdirectory given its id
-    final int numDeleted = directoryMapper.deleteByField(io, ModelMapper.ROWID, sub.getId());
+    final int numDeleted = directoryMapper.deleteByField(io, ModelMapper.ID, sub.getId());
     Assert.assertEquals("Deleting sub directory results in one deletion.", 1, numDeleted);
 
     io.close();

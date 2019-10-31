@@ -234,7 +234,7 @@ public class DatabaseServiceTest
     file.setWikidataEntityId(entId);
     final boolean updated = service.updateWikidataEntityId(config, file);
     Assert.assertTrue("File update succeeded.", updated);
-    final List<File> files = io.getFileMapper().loadByField(io, ModelMapper.ROWID, file.getId());
+    final List<File> files = io.getFileMapper().loadByField(io, ModelMapper.ID, file.getId());
     Assert.assertTrue("Loaded one file.", files != null && files.size() == 1);
     Assert.assertEquals("Loaded file wikidata id like saved one.", entId, files.get(0).getWikidataEntityId());
   }

@@ -40,9 +40,9 @@ public abstract class ModelMapper<T extends Model>
 {
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelMapper.class);
   /**
-   * Name of column with mandatory row id.
+   * Name of column with primary key.
    */
-  public static final String ROWID = "rowid";
+  public static final String ID = "id";
   private AppConfig config;
 
   /**
@@ -78,7 +78,7 @@ public abstract class ModelMapper<T extends Model>
     final T result = create();
     try
     {
-      result.setId(rs.getLong(ROWID));
+      result.setId(rs.getLong(ID));
       return result;
     }
     catch (final SQLException e)
@@ -385,12 +385,12 @@ public abstract class ModelMapper<T extends Model>
 
   public String getSelectAllQuery()
   {
-    return "select " + ROWID + ", * from " + getTableName() + ";";
+    return "select * from " + getTableName() + ";";
   }
 
   public String getSelectByFieldValueQuery(String fieldName)
   {
-    return "select " + ROWID + ", * from " + getTableName() + " where " + fieldName + "=?;";
+    return "select * from " + getTableName() + " where " + fieldName + "=?;";
   }
 
   public String getDeleteByFieldValue(String fieldName)
@@ -488,14 +488,15 @@ public abstract class ModelMapper<T extends Model>
       sb.append("=?");
     }
     sb.append(" where ");
-    sb.append(ROWID);
+    sb.append(ID);
     sb.append(" =?");
     return sb.toString();
   }
 
   public String getCreateTableQuery()
   {
-    return "create table if not exists " + getTableName() + " (\n" + getTableDefinition() + ");\n";
+    return "create table if not exists " + getTableName() + " (\n" + ID + " integer not null primary key,\n"
+        + getTableDefinition() + ");\n";
   }
 
   public AppConfig getConfig()

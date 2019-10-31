@@ -85,6 +85,7 @@ public class JdbcSerialization
       conn = DriverManager.getConnection(uri);
       LOGGER.debug(
           config.msg("init.debug.database_connection_attempt_succeeded", uri, System.currentTimeMillis() - millis));
+      enableForeignKeys();
       return true;
     }
     catch (final SQLException e)
@@ -92,6 +93,24 @@ public class JdbcSerialization
       LOGGER.error(config.msg("init.error.database_connection_attempt_failed", uri), e);
       uri = null;
       return false;
+    }
+  }
+
+  private boolean enableForeignKeys()
+  {
+    final PreparedStatement stat = prepare("PRAGMA foreign_keys = ON;");
+    try
+    {
+      stat.execute();
+      return true;
+    }
+    catch (final SQLException e)
+    {
+      return false;
+    }
+    finally
+    {
+      close(stat);
     }
   }
 

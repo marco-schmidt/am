@@ -170,7 +170,7 @@ public class DatabaseService
     final int numFiles = fileMapper.deleteByField(io, FileMapper.COL_VOLUME_REF, volume.getId());
     final DirectoryMapper dirMapper = io.getDirectoryMapper();
     final int numDirs = dirMapper.deleteByField(io, DirectoryMapper.TABLE_DIRS_VOLUME_REF, volume.getId());
-    final int numVolumes = volumeMapper.deleteByField(io, ModelMapper.ROWID, volume.getId());
+    final int numVolumes = volumeMapper.deleteByField(io, ModelMapper.ID, volume.getId());
     LOGGER.info(config.msg("database.info.deleted_volume", numFiles, numDirs, numVolumes));
     return numVolumes == 1;
   }

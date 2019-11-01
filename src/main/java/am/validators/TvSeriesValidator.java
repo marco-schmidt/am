@@ -16,10 +16,14 @@
 package am.validators;
 
 import java.math.BigInteger;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -190,6 +194,7 @@ public class TvSeriesValidator extends AbstractValidator
     final Map<BigInteger, Directory> mapSeasonNumberToDirectory = new HashMap<>();
     final Map<String, Directory> mapMissing = new HashMap<>();
     final String showName = dir.getName();
+    final List<Entry<BigInteger, Directory>> seasons = new ArrayList<Map.Entry<BigInteger, Directory>>();
     for (final Directory sub : dir.getSubdirectories())
     {
       final BigInteger number = StrUtil.getAsBigInteger(sub.getName());
@@ -217,17 +222,24 @@ public class TvSeriesValidator extends AbstractValidator
               mapMissing.put(number.toString(), sub);
             }
           }
-          validateSeasonEntries(config, sub, showName, number);
+          seasons.add(new AbstractMap.SimpleEntry<BigInteger, Directory>(number, sub));
         }
       }
     }
 
+    // find season-specific semantic information
     final String showEntityId = dir.getWikidataEntityId();
     final WikidataService service = config.getWikidataConfiguration().getService();
     if (showEntityId != null && service != null && !mapMissing.isEmpty())
     {
       service.searchTelevisionSeasons(dir, showEntityId, mapMissing);
       service.assignUnknownEntityWhereNull(mapMissing.values());
+    }
+
+    // find episode information for each season
+    for (final Entry<BigInteger, Directory> entry : seasons)
+    {
+      validateSeasonEntries(config, entry.getValue(), showName, entry.getKey());
     }
   }
 

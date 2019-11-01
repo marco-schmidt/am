@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.util.StrUtil;
 
@@ -64,7 +65,9 @@ public class WikidataServiceTest
   @Test
   public void testAssignUnknownEntityWhereNull()
   {
+    final AppConfig config = new AppConfig();
     final WikidataService service = new WikidataService();
+    service.setAppConfig(config);
     service.assignUnknownEntityWhereNull(null);
     final List<Directory> list = new ArrayList<Directory>();
     final Directory d1 = new Directory();

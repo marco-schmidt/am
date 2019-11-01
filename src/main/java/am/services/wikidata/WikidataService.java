@@ -362,6 +362,7 @@ public class WikidataService
         if (ent.getWikidataEntityId() == null)
         {
           ent.setWikidataEntityId(WikidataEntity.UNKNOWN_ENTITY);
+          LOGGER.info(appConfig.msg("wikidataservice.info.assign_unknown_entity", ent.toString()));
         }
       }
     }

@@ -33,4 +33,10 @@ public abstract class Model
   {
     this.id = id;
   }
+
+  @Override
+  public String toString()
+  {
+    return getClass().getSimpleName() + " id=" + getId();
+  }
 }

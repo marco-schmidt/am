@@ -86,4 +86,23 @@ public final class StrUtil
     }
     return result;
   }
+
+  /**
+   * Parse number string (radix 10) into {@link Long} object.
+   *
+   * @param s
+   *          String containing number
+   * @return Long object or null if argument could not be represented as a Long value
+   */
+  public static Long getAsLong(String s)
+  {
+    try
+    {
+      return Long.valueOf(s);
+    }
+    catch (final NumberFormatException nfe)
+    {
+      return null;
+    }
+  }
 }

@@ -65,4 +65,22 @@ public class StrUtilTest
     Assert.assertEquals("Input Long.MIN_VALUE leads to that value.", BigInteger.valueOf(Long.MIN_VALUE),
         StrUtil.getAsBigInteger("-9223372036854775808"));
   }
+
+  @Test
+  public void testGetAsLongNull()
+  {
+    Assert.assertNull("Null input leads to null output.", StrUtil.getAsLong(null));
+  }
+
+  @Test
+  public void testGetAsLongNonNumber()
+  {
+    Assert.assertNull("Non-number input leads to null output.", StrUtil.getAsLong("xy"));
+  }
+
+  @Test
+  public void testGetAsLongOne()
+  {
+    Assert.assertEquals("Input '1' leads to Long one output.", Long.valueOf(1), StrUtil.getAsLong("1"));
+  }
 }

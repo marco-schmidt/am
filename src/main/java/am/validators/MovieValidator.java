@@ -36,6 +36,7 @@ import am.filesystem.model.VideoFileName;
 import am.filesystem.model.Volume;
 import am.services.wikidata.WikidataConfiguration;
 import am.services.wikidata.WikidataEntity;
+import am.util.StrUtil;
 
 /**
  * Validate a movie volume.
@@ -287,24 +288,12 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
-  public Long getAsLong(String s)
-  {
-    try
-    {
-      return Long.valueOf(s);
-    }
-    catch (final NumberFormatException nfe)
-    {
-      return null;
-    }
-  }
-
   public Long getAsResolution(String s)
   {
     if (s != null && s.length() > 1 && (s.endsWith("p") || s.endsWith("P")))
     {
       s = s.substring(0, s.length() - 1);
-      return getAsLong(s);
+      return StrUtil.getAsLong(s);
     }
     else
     {
@@ -403,7 +392,7 @@ public class MovieValidator extends AbstractValidator
 
   private boolean consumeYear(List<String> list, VideoFileName videoFileName, String s)
   {
-    final Long year = getAsLong(s);
+    final Long year = StrUtil.getAsLong(s);
     if (year == null)
     {
       return false;

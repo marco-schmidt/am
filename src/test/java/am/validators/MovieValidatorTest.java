@@ -70,24 +70,6 @@ public class MovieValidatorTest
   }
 
   @Test
-  public void testGetAsLongNull()
-  {
-    Assert.assertNull("Null input leads to null output.", validator.getAsLong(null));
-  }
-
-  @Test
-  public void testGetAsLongNonNumber()
-  {
-    Assert.assertNull("Non-number input leads to null output.", validator.getAsLong("xy"));
-  }
-
-  @Test
-  public void testGetAsLongOne()
-  {
-    Assert.assertEquals("Input '1' leads to Long one output.", Long.valueOf(1), validator.getAsLong("1"));
-  }
-
-  @Test
   public void testGetAsResolutionull()
   {
     Assert.assertNull("Null input leads to null output.", validator.getAsResolution(null));
@@ -96,7 +78,7 @@ public class MovieValidatorTest
   @Test
   public void testGetAsResolutionNonNumber()
   {
-    Assert.assertNull("Non-number input leads to null output.", validator.getAsLong("xyp"));
+    Assert.assertNull("Non-number input leads to null output.", validator.getAsResolution("xyp"));
   }
 
   @Test

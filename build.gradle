@@ -226,6 +226,7 @@ task packageLicenseReport(type: Zip, dependsOn: 'generateLicenseReport') {
 }
 
 dependencyCheck {
+  scanConfigurations = ['runtimeClasspath']
   cveValidForHours=24
   failBuildOnCVSS=0
   analyzers {

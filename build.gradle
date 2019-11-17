@@ -309,7 +309,7 @@ bintray {
     }
   }
 }
-afterReleaseBuild.dependsOn = [bintrayUpload]
+afterReleaseBuild.dependsOn = [bintrayUpload, publishLibraryPublicationToGitHubPackagesRepository]
 
 licenseReport {
   allowedLicensesFile = new File("$projectDir/config/licenseReport/allowed-licenses.json")

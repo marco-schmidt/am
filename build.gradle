@@ -51,7 +51,7 @@ dependencies {
 configurations.all {
   resolutionStrategy.eachDependency { DependencyResolveDetails details ->
     if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
-      details.useVersion '2.10.0'
+      details.useVersion '2.10.1'
       details.because 'CVE-2019-16942, CVE-2019-16943'
     }
     if (details.requested.group == 'commons-beanutils' && details.requested.name == 'commons-beanutils') {

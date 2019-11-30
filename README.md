@@ -37,7 +37,8 @@ As of October 2019, this tool is in an early development stage, to be used only 
 ## Services
 * Hosted at [GitHub](https://github.com/)
 * Continuous integration at
-  * [Travis CI](https://travis-ci.org/marco-schmidt/am) and
+  * [Travis CI](https://travis-ci.org/marco-schmidt/am)
+  * [GitHub Action Java CI](https://github.com/marco-schmidt/am/actions?query=workflow%3A%22Java+CI%22)
   * [JitCI](https://jitci.com/gh/marco-schmidt/am) [![](https://jitci.com/gh/marco-schmidt/am/svg)](https://jitci.com/gh/marco-schmidt/am)
 * Dependency version update checks by
   * [GitHub Dependabot](https://github.com/marketplace/dependabot-preview) and

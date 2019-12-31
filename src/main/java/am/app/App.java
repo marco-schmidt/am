@@ -31,6 +31,7 @@ import am.processor.VolumeProcessor;
 import am.processor.hashes.HashProcessor;
 import am.validators.AbstractValidator;
 import am.validators.MovieValidator;
+import am.validators.PersonalDocumentValidator;
 import am.validators.TvSeriesValidator;
 
 /**
@@ -177,6 +178,8 @@ public class App
       return new MovieValidator();
     case "TvSeriesValidator":
       return new TvSeriesValidator();
+    case "PersonalDocumentValidator":
+      return new PersonalDocumentValidator();
     default:
       LOGGER.error(config.msg("init.error.unknown_validator", validatorName, volNr));
       return null;

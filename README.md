@@ -2,7 +2,7 @@
 asset manager
 
 ## Status
-As of October 2019, this tool is in an early development stage, to be used only by the very curious.
+As of January 2020, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
 * Command-line asset manager, managing files, checking their integrity, extracting metadata.

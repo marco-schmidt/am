@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 import am.filesystem.model.Volume;
 
 /**
@@ -82,5 +83,17 @@ public class PersonalDocumentValidatorTest
     initialize();
     validator.validate(config, volume);
     Assert.assertTrue("No violations with empty volume.", validator.isViolationsEmpty());
+  }
+
+  @Test
+  public void testValidateRootFile()
+  {
+    initialize();
+    final File file = new File();
+    file.setName("some.jpg");
+    root.add(file);
+    validator.validate(config, volume);
+    Assert.assertTrue("File in root directory not allowed.",
+        validator.containsOnly(PersonalDocumentValidator.VIOLATION_FILE_WRONG_DIRECTORY));
   }
 }

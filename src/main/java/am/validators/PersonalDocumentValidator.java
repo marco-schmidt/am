@@ -18,6 +18,7 @@ package am.validators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
+import am.filesystem.model.Directory;
 import am.filesystem.model.Volume;
 
 /**
@@ -63,7 +64,8 @@ public class PersonalDocumentValidator extends AbstractValidator
   @Override
   public void validate(AppConfig config, Volume volume)
   {
-    LOGGER.info("test");
+    final Directory root = volume.getRoot();
+    markFilesInvalid(root, VIOLATION_FILE_WRONG_DIRECTORY);
   }
 
   @Override

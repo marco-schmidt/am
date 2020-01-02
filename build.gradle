@@ -233,9 +233,6 @@ dependencyCheck {
   analyzers {
     assemblyEnabled=false
   }
-  cve {
-    urlBase='https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-2019.json.gz'
-  }
 }
 check.dependsOn dependencyCheckAnalyze
 

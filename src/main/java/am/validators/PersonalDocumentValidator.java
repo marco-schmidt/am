@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,11 +131,12 @@ public class PersonalDocumentValidator extends AbstractValidator
         }
       }
     }
-    for (final String base : xmp.keySet())
+    for (final Entry<String, File> entry : xmp.entrySet())
     {
-      if (!regular.contains(base))
+      final String key = entry.getKey();
+      if (!regular.contains(key))
       {
-        addViolation(xmp.get(base), VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE);
+        addViolation(entry.getValue(), VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE);
       }
     }
   }

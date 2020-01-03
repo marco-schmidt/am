@@ -96,4 +96,66 @@ public class PersonalDocumentValidatorTest
     Assert.assertTrue("File in root directory not allowed.",
         validator.containsOnly(PersonalDocumentValidator.VIOLATION_FILE_WRONG_DIRECTORY));
   }
+
+  @Test
+  public void testValidatePersonDirFile()
+  {
+    initialize();
+    final File file = new File();
+    file.setName("some.jpg");
+    personDir.add(file);
+    validator.validate(config, volume);
+    Assert.assertTrue("File in person directory not allowed.",
+        validator.containsOnly(PersonalDocumentValidator.VIOLATION_FILE_WRONG_DIRECTORY));
+  }
+
+  @Test
+  public void testValidateYearFile()
+  {
+    initialize();
+    final File file = new File();
+    file.setName("some.jpg");
+    yearDir.add(file);
+    validator.validate(config, volume);
+    Assert.assertTrue("File in year directory not allowed.",
+        validator.containsOnly(PersonalDocumentValidator.VIOLATION_FILE_WRONG_DIRECTORY));
+  }
+
+  @Test
+  public void testValidateDateDirDirectory()
+  {
+    initialize();
+    final Directory sub = new Directory();
+    sub.setName("test");
+    dayDir.add(sub);
+    validator.validate(config, volume);
+    Assert.assertTrue("Directory in day directory not allowed.",
+        validator.containsOnly(PersonalDocumentValidator.VIOLATION_DIRECTORY_TOO_DEEP));
+  }
+
+  @Test
+  public void testValidateCreatorYearDay()
+  {
+    initialize();
+
+    final File noExt = new File();
+    noExt.setName("foo");
+    dayDir.add(noExt);
+
+    final File regWithXmp = new File();
+    regWithXmp.setName("test.jpg");
+    dayDir.add(regWithXmp);
+
+    final File regXmp = new File();
+    regXmp.setName("test.xmp");
+    dayDir.add(regXmp);
+
+    final File soloXmp = new File();
+    soloXmp.setName("bar.xmp");
+    dayDir.add(soloXmp);
+
+    validator.validate(config, volume);
+    Assert.assertTrue("Solo XMP in day directory not allowed.",
+        validator.containsOnly(PersonalDocumentValidator.VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE));
+  }
 }

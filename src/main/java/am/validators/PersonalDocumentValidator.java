@@ -15,10 +15,16 @@
  */
 package am.validators;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
+import am.filesystem.model.File;
 import am.filesystem.model.Volume;
 
 /**
@@ -43,7 +49,11 @@ public class PersonalDocumentValidator extends AbstractValidator
    */
   static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
   /**
-   * Directory too deep, only root and year directories allowed.
+   * XMP file without matching regular file ("test.xmp", but no "test.SOMETHING").
+   */
+  static final String VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE = "xmp_without_file";
+  /**
+   * Directory too deep.
    */
   public static final String VIOLATION_DIRECTORY_TOO_DEEP = "directory_too_deep";
   /**
@@ -66,6 +76,67 @@ public class PersonalDocumentValidator extends AbstractValidator
   {
     final Directory root = volume.getRoot();
     markFilesInvalid(root, VIOLATION_FILE_WRONG_DIRECTORY);
+    for (final Directory sub : root.getSubdirectories())
+    {
+      validateCreator(config, sub);
+    }
+  }
+
+  private void validateCreator(AppConfig config, Directory dir)
+  {
+    markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
+    final String creator = dir.getName();
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      validateCreatorYear(config, creator, sub);
+    }
+  }
+
+  private void validateCreatorYear(AppConfig config, String creator, Directory dir)
+  {
+    markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
+    final String year = dir.getName();
+    for (final Directory sub : dir.getSubdirectories())
+    {
+      validateCreatorYearDay(config, creator, year, sub);
+    }
+  }
+
+  private void validateCreatorYearDay(AppConfig config, String creator, String year, Directory dir)
+  {
+    markDirectoriesInvalid(dir, VIOLATION_DIRECTORY_TOO_DEEP);
+    final Map<String, File> xmp = new HashMap<>();
+    final Set<String> regular = new HashSet<>();
+    for (final File file : dir.getFiles())
+    {
+      final String name = file.getName();
+      final int lastIndex = name.lastIndexOf('.');
+      if (lastIndex < 0)
+      {
+        regular.add(name);
+      }
+      else
+      {
+        final String base = name.substring(0, lastIndex);
+        final String ext = name.substring(lastIndex + 1);
+        final String normExt = ext.toLowerCase(Locale.ENGLISH);
+        if ("xmp".equals(normExt))
+        {
+          xmp.put(base, file);
+        }
+        else
+        {
+          regular.add(base);
+        }
+      }
+    }
+    for (final String base : xmp.keySet())
+    {
+      if (!regular.contains(base))
+      {
+        addViolation(xmp.get(base), VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE);
+      }
+    }
   }
 
   @Override

@@ -36,7 +36,7 @@ public class HashProcessorTest
   private File file2;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     config = new AppConfig();
     hashConfig = new HashConfig();

@@ -52,7 +52,7 @@ public class PersonalDocumentValidatorTest
   private Directory dayDir;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     initialize();
   }

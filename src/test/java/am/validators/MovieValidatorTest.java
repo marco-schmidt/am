@@ -50,7 +50,7 @@ public class MovieValidatorTest
   private Directory yearDir;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     initialize();
   }

@@ -239,15 +239,12 @@ public class WikidataService
   {
     final String queryStr = buildFindTelevisionShowQuery(title, year);
     final TupleQueryResult rs = runQuery(queryStr);
-    if (rs != null)
+    if (rs != null && rs.hasNext())
     {
-      if (rs.hasNext())
-      {
-        final BindingSet next = rs.next();
-        final Value value = next.getValue("show");
-        rs.close();
-        return value == null ? null : extractEntity(value.stringValue());
-      }
+      final BindingSet next = rs.next();
+      final Value value = next.getValue("show");
+      rs.close();
+      return value == null ? null : extractEntity(value.stringValue());
     }
     return null;
   }

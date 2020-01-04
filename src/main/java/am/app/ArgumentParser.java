@@ -227,10 +227,6 @@ public class ArgumentParser
           }
         }
       }
-      else
-      {
-        // TODO: what about non-switches?
-      }
     }
     return success;
   }

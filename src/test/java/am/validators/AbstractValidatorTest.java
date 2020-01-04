@@ -25,7 +25,7 @@ import org.junit.Test;
 public class AbstractValidatorTest
 {
   @Before
-  public void setup()
+  public void setUp()
   {
     AbstractValidator.register(MovieValidator.class);
     AbstractValidator.register(TvSeriesValidator.class);

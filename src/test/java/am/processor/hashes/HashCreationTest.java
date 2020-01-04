@@ -31,7 +31,7 @@ public class HashCreationTest
   private HashCreation creation;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     config = new AppConfig();
     hashConfig = new HashConfig();

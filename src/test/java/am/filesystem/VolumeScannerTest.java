@@ -31,7 +31,7 @@ public class VolumeScannerTest
   private VolumeScanner scanner;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     final AppConfig config = new AppConfig();
     config.setIgnoreDirNames(new HashSet<String>());

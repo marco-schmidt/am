@@ -41,10 +41,9 @@ public class TvSeriesValidatorTest
   private Directory year;
   private Directory show;
   private Directory season;
-  private File file;
 
   @Before
-  public void setup()
+  public void setUp()
   {
     initialize();
   }
@@ -69,7 +68,7 @@ public class TvSeriesValidatorTest
     season = new Directory();
     season.setName("01");
     show.add(season);
-    file = new File();
+    final File file = new File();
     file.setName("Show Title S01E01.mp4");
     season.add(file);
   }

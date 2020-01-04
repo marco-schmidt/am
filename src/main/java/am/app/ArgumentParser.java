@@ -248,10 +248,6 @@ public class ArgumentParser
         name = arg.substring(DASH.length());
         map = mapShort;
       }
-      else
-      {
-        // TODO: what about non-switches? addFileSystemEntry(config, arg);
-      }
     }
     if (name != null)
     {

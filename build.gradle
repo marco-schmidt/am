@@ -236,6 +236,19 @@ dependencyCheck {
 }
 check.dependsOn dependencyCheckAnalyze
 
+// version is stable if it contains only numerical parts or a 'stable keyword'
+def isStable = { String version ->
+  def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase(Locale.ENGLISH).contains(it) }
+  def regex = /^[0-9,.v-]+(-r)?$/
+  return stableKeyword || (version ==~ regex)
+}
+
+dependencyUpdates {
+  rejectVersionIf {
+    !isStable(it.candidate.version)
+  }
+}
+
 task packageDependencyCheckReport(type: Zip, dependsOn: 'dependencyCheckAnalyze') {
   description "create a zip archive with report on dependency vulnerability issues (as stored in NVD)"
   from dependencyCheck.outputDirectory

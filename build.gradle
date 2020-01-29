@@ -329,3 +329,8 @@ licenseReport {
   allowedLicensesFile = new File("$projectDir/config/licenseReport/allowed-licenses.json")
 }
 check.dependsOn checkLicense
+
+buildScan {
+  termsOfServiceUrl = "https://gradle.com/terms-of-service"
+  termsOfServiceAgree = "yes"
+}

@@ -50,17 +50,9 @@ dependencies {
 
 configurations.all {
   resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-    if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
-      details.useVersion '2.10.1'
+   if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
+      details.useVersion '2.10.2'
       details.because 'CVE-2019-16942, CVE-2019-16943'
-    }
-    if (details.requested.group == 'commons-beanutils' && details.requested.name == 'commons-beanutils') {
-      details.useVersion '1.9.4'
-      details.because 'CVE-2019-10086'
-    }
-    if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-compress') {
-      details.useVersion '1.19'
-      details.because 'CVE-2019-12402'
     }
   }
 }

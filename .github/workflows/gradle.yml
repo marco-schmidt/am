@@ -28,7 +28,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.gradle/dependency-check-data
-        key: ${{ runner.os }}-nvd-${{ hashFiles('**/*.db') }}
+        key: ${{ runner.os }}-nvd-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-nvd-
     - name: Set up JDK 1.8

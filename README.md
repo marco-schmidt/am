@@ -27,6 +27,7 @@ As of January 2020, this tool is in an early development stage, to be used only 
 * Built with [gradle](https://gradle.org/)
   * Code analysis with the [checkstyle plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
   * Code analysis with the [spotbugs plugin](https://spotbugs.readthedocs.io/en/stable/introduction.html)
+  * [Dependency verification](https://docs.gradle.org/6.2-rc-3/userguide/dependency_verification.html)
   * Releases with the [release plugin](https://github.com/researchgate/gradle-release)
   * Code formatting with the [spotless plugin](https://github.com/diffplug/spotless)
   * Coverage report with the [JaCoCo](https://www.eclemma.org/jacoco/) plugin

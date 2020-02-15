@@ -24,6 +24,13 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+    - name: NVD cache 
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/dependency-check-data
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:

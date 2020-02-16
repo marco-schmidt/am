@@ -67,3 +67,13 @@ jobs:
       with:
         name: am-${{github.run_number}}-unit-test-report
         path: build/reports/tests/test
+    - name: Upload spotbugs static analysis report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-${{github.run_number}}-spotbugs-report
+        path: build/reports/spotbugs
+    - name: Upload checkstyle static analysis report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-${{github.run_number}}-checkstyle-report
+        path: build/reports/checkstyle

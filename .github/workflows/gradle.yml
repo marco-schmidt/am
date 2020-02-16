@@ -37,3 +37,8 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew  --info --stacktrace
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: jar-file
+        path: build/libs/

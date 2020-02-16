@@ -40,30 +40,30 @@ jobs:
     - name: Upload application package
       uses: actions/upload-artifact@v1
       with:
-        name: am-distribution
+        name: am-${{github.run_number}}-distribution
         path: build/install/
     - name: Upload license report
       uses: actions/upload-artifact@v1
       with:
-        name: am-license-report
+        name: am-${{github.run_number}}-license-report
         path: build/reports/dependency-license
     - name: Upload versions report
       uses: actions/upload-artifact@v1
       with:
-        name: am-versions-report
+        name: am-${{github.run_number}}-versions-report
         path: build/reports/dependencyUpdates
     - name: Upload security report
       uses: actions/upload-artifact@v1
       with:
-        name: am-security-report
+        name: am-${{github.run_number}}-security-report
         path: build/reports/security-report
     - name: Upload coverage report
       uses: actions/upload-artifact@v1
       with:
-        name: am-coverage-report
+        name: am-${{github.run_number}}-coverage-report
         path: build/reports/jacoco
     - name: Upload unit test report
       uses: actions/upload-artifact@v1
       with:
-        name: am-unit-test-report
+        name: am-${{github.run_number}}-unit-test-report
         path: build/reports/tests/test

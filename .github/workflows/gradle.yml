@@ -36,7 +36,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: ./gradlew check installDist generateLicenseReport dependencyUpdates --info --stacktrace
+      run: ./gradlew check installDist generateLicenseReport dependencyUpdates jacocoTestReport --info --stacktrace
     - name: Upload application package
       uses: actions/upload-artifact@v1
       with:
@@ -52,3 +52,18 @@ jobs:
       with:
         name: am-versions-report
         path: build/reports/dependencyUpdates
+    - name: Upload security report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-security-report
+        path: build/reports/security-report
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-coverage-report
+        path: build/reports/jacoco
+    - name: Upload unit test report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-unit-test-report
+        path: build/reports/tests/test

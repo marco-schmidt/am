@@ -37,8 +37,13 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew  --info --stacktrace
-    - name: Upload artifact
+    - name: Upload application package
       uses: actions/upload-artifact@v1
       with:
-        name: jar-file
-        path: build/libs/
+        name: am-distribution
+        path: build/install/
+    - name: Upload license report
+      uses: actions/upload-artifact@v1
+      with:
+        name: am-license-report
+        path: build/reports/dependency-license

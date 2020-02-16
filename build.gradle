@@ -237,6 +237,7 @@ dependencyUpdates {
   rejectVersionIf {
     !isStable(it.candidate.version)
   }
+  outputDir = "${buildDir}/reports/dependencyUpdates"
 }
 
 task packageDependencyCheckReport(type: Zip, dependsOn: 'dependencyCheckAnalyze') {

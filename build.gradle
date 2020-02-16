@@ -223,6 +223,7 @@ dependencyCheck {
   analyzers {
     assemblyEnabled=false
   }
+  outputDirectory = "${buildDir}/reports/security-report"
 }
 check.dependsOn dependencyCheckAnalyze
 

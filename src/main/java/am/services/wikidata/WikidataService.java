@@ -152,17 +152,6 @@ public class WikidataService
     return query;
   }
 
-  String buildFindTelevisionSeasons(String title, Integer year)
-  {
-    String query = getFindTelevisionSeasonsByShowTemplate();
-    if (query != null)
-    {
-      query = query.replace("@TITLE@", title);
-      query = query.replace("@YEAR@", year.toString());
-    }
-    return query;
-  }
-
   String buildFindTelevisionSeasonsQuery(String showEntityId)
   {
     String query = getFindTelevisionSeasonsByShowTemplate();
@@ -183,13 +172,13 @@ public class WikidataService
     return query;
   }
 
-  String extractEntity(Value uri)
+  static String extractEntity(Value uri)
   {
     final String s = uri == null ? null : uri.stringValue();
     return extractEntity(s);
   }
 
-  String extractEntity(String uri)
+  static String extractEntity(final String uri)
   {
     final int index = uri == null ? -1 : uri.lastIndexOf('/');
     return index < 0 ? null : uri.substring(index + 1);

@@ -17,6 +17,8 @@ package am.services.wikidata;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import am.app.AppConfig;
@@ -81,5 +83,44 @@ public class WikidataServiceTest
     Assert.assertEquals("Element without entity now contains unknown entity.", WikidataEntity.UNKNOWN_ENTITY,
         d1.getWikidataEntityId());
     Assert.assertEquals("Element with entity still contains same entity.", entityId, d2.getWikidataEntityId());
+  }
+
+  @Test
+  public void testExtractEntityStringNull()
+  {
+    Assert.assertNull("Null input returns null output.", WikidataService.extractEntity((String) null));
+  }
+
+  @Test
+  public void testExtractEntityStringNoSlash()
+  {
+    Assert.assertNull("Input without slash returns null output.", WikidataService.extractEntity("a"));
+  }
+
+  @Test
+  public void testExtractEntitySlash()
+  {
+    Assert.assertEquals("Input with slash returns everything after slash.", "Q123",
+        WikidataService.extractEntity("http://a/Q123"));
+  }
+
+  @Test
+  public void testExtractEntityValueNull()
+  {
+    Assert.assertNull("Null input returns null output.", WikidataService.extractEntity((Value) null));
+  }
+
+  @Test
+  public void testExtractEntityValueNoSlash()
+  {
+    Assert.assertNull("Input without slash returns null output.",
+        WikidataService.extractEntity(SimpleValueFactory.getInstance().createIRI("proto:ac")));
+  }
+
+  @Test
+  public void testExtractEntityValueSlash()
+  {
+    Assert.assertEquals("Input with slash returns everything after slash.", "Q123",
+        WikidataService.extractEntity(SimpleValueFactory.getInstance().createIRI("http://a.org/Q123")));
   }
 }

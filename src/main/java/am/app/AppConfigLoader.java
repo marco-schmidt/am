@@ -225,19 +225,22 @@ public final class AppConfigLoader
     }
   }
 
-  public static void loadConfig(final AppConfig config)
+  public static boolean loadConfig(final AppConfig config)
   {
     String fileName = config.getConfigFileName();
     File file;
+    boolean defaultFileName;
     if (fileName == null)
     {
       final File dir = new File(System.getProperty("user.home"));
       file = new File(dir, ".am.properties");
       fileName = file.getAbsolutePath();
+      defaultFileName = true;
     }
     else
     {
       file = new File(fileName);
+      defaultFileName = false;
     }
 
     if (file.exists())
@@ -250,10 +253,12 @@ public final class AppConfigLoader
         props.load(reader);
         config.setProperties(props);
         LOGGER.debug(config.msg("init.info.success_load_configuration", fileName, props.size()));
+        return true;
       }
       catch (final IOException e)
       {
         LOGGER.error(config.msg("init.error.failure_load_configuration", fileName, e.getMessage()));
+        return false;
       }
       finally
       {
@@ -272,7 +277,16 @@ public final class AppConfigLoader
     }
     else
     {
-      LOGGER.info(config.msg("init.info.skip_load_configuration", fileName));
+      if (defaultFileName)
+      {
+        LOGGER.info(config.msg("init.info.skip_load_configuration", fileName));
+        return true;
+      }
+      else
+      {
+        LOGGER.error(config.msg("init.error.configuration_file_does_not_exist", fileName));
+        return false;
+      }
     }
   }
 }

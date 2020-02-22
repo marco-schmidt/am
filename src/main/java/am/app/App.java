@@ -54,7 +54,10 @@ public class App
       final SystemInfo info = new SystemInfo();
       config.setSystemInfo(info);
       info.initialize(config, args);
-      AppConfigLoader.loadConfig(config);
+      if (!AppConfigLoader.loadConfig(config))
+      {
+        return false;
+      }
       if (!AppConfigLoader.interpretProperties(config))
       {
         return false;

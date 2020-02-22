@@ -29,8 +29,6 @@ public class AppConfigLoaderTest
   {
     final AppConfig config = new AppConfig();
     final Properties props = new Properties();
-    // props.put("logDir", ".");
-    // props.put("databaseDir", ".");
     props.put("createHashes", "1%");
     props.put("ignoreDirNames", "@eaDir");
     props.put("ignoreFileNames", ".DS_Store,Thumbs.db");
@@ -39,5 +37,14 @@ public class AppConfigLoaderTest
     final boolean result = AppConfigLoader.interpretProperties(config);
     Assert.assertTrue("Interpreting correct properties returns success result.", result);
     Assert.assertTrue("Wikidata enabled.", config.getWikidataConfiguration().isEnabled());
+  }
+
+  @Test
+  public void testLoadConfigWrongFileName()
+  {
+    final AppConfig config = new AppConfig();
+    config.setConfigFileName("file_does_not_exist");
+    final boolean success = AppConfigLoader.loadConfig(config);
+    Assert.assertFalse("Trying to load non-existing config file fails.", success);
   }
 }

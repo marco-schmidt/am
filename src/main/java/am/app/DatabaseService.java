@@ -200,7 +200,18 @@ public class DatabaseService
     return true;
   }
 
-  public boolean find(String name, List<Volume> volumes, SearchResult result)
+  /**
+   * Find a file system entity given by its name in a list of volumes.
+   *
+   * @param name
+   *          path to file system entity, canonical version will be created
+   * @param volumes
+   *          list of known volumes to search
+   * @param result
+   *          {@link SearchResult} with matching elements initialized
+   * @return success of search
+   */
+  public boolean findFileSystemEntity(String name, List<Volume> volumes, SearchResult result)
   {
     result.clear();
     File entry = new File(name);
@@ -219,9 +230,7 @@ public class DatabaseService
       final String path = vol.getPath();
       if (query.startsWith(path))
       {
-        final String local = query.substring(path.length());
         result.setVolume(vol);
-        find(local, vol, result);
         return true;
       }
     }
@@ -239,10 +248,5 @@ public class DatabaseService
     }
     final FileMapper fileMapper = io.getFileMapper();
     return fileMapper.update(io, file);
-  }
-
-  public boolean find(String name, Volume volume, SearchResult result)
-  {
-    return true;
   }
 }

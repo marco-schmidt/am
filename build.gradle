@@ -8,7 +8,7 @@ plugins {
   id 'com.diffplug.gradle.spotless' version '3.27.2'
   id "com.github.ben-manes.versions" version '0.28.0'
   id 'com.github.jk1.dependency-license-report' version '1.13'
-  id 'com.github.spotbugs' version '4.0.2'
+  id 'com.github.spotbugs' version '4.0.4'
   id 'com.jfrog.bintray' version '1.8.4'
   id 'jacoco'
   id 'org.owasp.dependencycheck' version '5.3.1'

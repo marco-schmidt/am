@@ -15,6 +15,7 @@
  */
 package am.validators;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -245,6 +246,10 @@ public class MovieValidator extends AbstractValidator
       {
         file.setWikidataEntityId(WikidataEntity.UNKNOWN_ENTITY);
       }
+    }
+    catch (final IOException ioe)
+    {
+      LOGGER.error(getConfig().msg("movievalidator.error.connect_wikidata_failure"), ioe);
     }
     catch (final MediaWikiApiErrorException e)
     {

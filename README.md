@@ -135,6 +135,33 @@ ignoreDirNames=@eaDir
 wikidata=true
 ```
 
+## Troubleshooting
+
+### Character Encoding Issues
+
+With Unix-based operating systems, such exceptions may occur when trying to open files with names containing non-ASCII characters:
+```
+ERROR	Error converting path "/mnt/ext1/P��re.jpg" for opening a file to compute a hash value.
+java.nio.file.InvalidPathException: Malformed input or input contains unmappable characters: /mnt/ext1/P��re.jpg
+	at sun.nio.fs.UnixPath.encode(UnixPath.java:147)
+	at sun.nio.fs.UnixPath.<init>(UnixPath.java:71)
+	at sun.nio.fs.UnixFileSystem.getPath(UnixFileSystem.java:281)
+	at java.io.File.toPath(File.java:2234)
+	at am.processor.hashes.HashCreation.update(HashCreation.java:64)
+	at am.processor.hashes.HashCreation.update(HashCreation.java:49)
+	at am.processor.hashes.HashProcessor.compute(HashProcessor.java:102)
+	at am.processor.hashes.HashProcessor.update(HashProcessor.java:57)
+	at am.app.App.processVolumes(App.java:129)
+	at am.app.App.process(App.java:193)
+	at am.app.App.main(App.java:212)
+ ```
+
+These environment variable settings may solve that issue:
+```
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+```
+
 ## Development
 
 ### Setup of Integrated Development Environment Eclipse

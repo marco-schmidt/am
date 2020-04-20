@@ -302,12 +302,20 @@ public class WikidataService
       final String entity = extractEntity(episode);
       final Value relativeNumberValue = next.getValue("relNr");
       final String relativeNumberString = relativeNumberValue.stringValue();
-      final Long relativeNumber = Long.valueOf(relativeNumberString);
-      final File file = mapMissing.get(relativeNumber);
-      if (file != null)
+      try
       {
-        file.setWikidataEntityId(entity);
-        LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity, file.getName()));
+        final Long relativeNumber = Long.valueOf(relativeNumberString);
+        final File file = mapMissing.get(relativeNumber);
+        if (file != null)
+        {
+          file.setWikidataEntityId(entity);
+          LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity));
+        }
+      }
+      catch (final NumberFormatException nfe)
+      {
+        LOGGER
+            .error(appConfig.msg("wikidataservice.error.television_show_episode_number", relativeNumberString, entity));
       }
     }
     rs.close();

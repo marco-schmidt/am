@@ -144,4 +144,10 @@ public class Directory extends Model implements WikidataEntity
   {
     this.wikidataEntityId = wikidataEntityId;
   }
+
+  @Override
+  public String toString()
+  {
+    return name;
+  }
 }

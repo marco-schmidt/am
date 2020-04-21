@@ -213,4 +213,10 @@ public class File extends Model implements WikidataEntity
   {
     this.directoryRef = directoryRef;
   }
+
+  @Override
+  public String toString()
+  {
+    return name;
+  }
 }

@@ -309,7 +309,7 @@ public class WikidataService
         if (file != null)
         {
           file.setWikidataEntityId(entity);
-          LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity));
+          LOGGER.info(appConfig.msg("wikidataservice.info.television_show_episode", entity, file.getName()));
         }
       }
       catch (final NumberFormatException nfe)

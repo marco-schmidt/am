@@ -35,7 +35,7 @@ import ch.qos.logback.core.FileAppender;
  */
 public class LoggingHandler
 {
-  private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LoggingHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoggingHandler.class);
   private ch.qos.logback.classic.Logger rootLogger;
   private PatternLayoutEncoder encoder;
   private LoggerContext loggerContext;

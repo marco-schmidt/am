@@ -79,7 +79,7 @@ public class VolumeProcessor
     assignFileSystemEntries(entry, vol.getRoot());
   }
 
-  Directory mergeDirectory(Directory scanned, Directory loaded)
+  public Directory mergeDirectory(Directory scanned, Directory loaded)
   {
     if (scanned == null)
     {
@@ -124,7 +124,7 @@ public class VolumeProcessor
    *          file as loaded from a database
    * @return either one of the arguments or a new {@link File} created by merging content from both arguments
    */
-  File mergeFile(File scanned, File loaded)
+  public File mergeFile(File scanned, File loaded)
   {
     if (scanned == null)
     {

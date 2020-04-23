@@ -293,12 +293,12 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
-  public Long getAsResolution(String s)
+  public Long getAsResolution(final String s)
   {
     if (s != null && s.length() > 1 && (s.endsWith("p") || s.endsWith("P")))
     {
-      s = s.substring(0, s.length() - 1);
-      return StrUtil.getAsLong(s);
+      final String num = s.substring(0, s.length() - 1);
+      return StrUtil.getAsLong(num);
     }
     else
     {
@@ -332,7 +332,7 @@ public class MovieValidator extends AbstractValidator
     {
       final String s = last(list);
 
-      final boolean consumed = consumeYear(list, videoFileName, s) || consumeResolution(list, videoFileName, s);
+      final boolean consumed = consumeYear(list, videoFileName, s) || consumeResolution(videoFileName, s);
 
       if (!consumed)
       {
@@ -377,7 +377,7 @@ public class MovieValidator extends AbstractValidator
     return elem == null ? false : VIDEO_METADATA_FILE_EXTENSIONS.contains(elem);
   }
 
-  private boolean consumeResolution(List<String> list, VideoFileName videoFileName, String s)
+  private boolean consumeResolution(VideoFileName videoFileName, String s)
   {
     final Long res = getAsResolution(s);
     if (res == null)

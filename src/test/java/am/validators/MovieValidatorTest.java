@@ -29,6 +29,12 @@ import am.filesystem.model.Volume;
  */
 public class MovieValidatorTest
 {
+  private AppConfig config;
+  private MovieValidator validator;
+  private Volume volume;
+  private Directory root;
+  private Directory yearDir;
+
   public static class TestBundle extends ListResourceBundle
   {
     @Override
@@ -42,12 +48,6 @@ public class MovieValidatorTest
       };
     }
   }
-
-  private AppConfig config;
-  private MovieValidator validator;
-  private Volume volume;
-  private Directory root;
-  private Directory yearDir;
 
   @Before
   public void setUp()

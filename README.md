@@ -21,18 +21,30 @@ As of April 2020, this tool is in an early development stage, to be used only by
 * Optional but highly recommended: command-line tool [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) installed and  path to executable defined in configuration file. Check: ``exiftool -ver``
 
 ## Tools
-* Java provided by [AdoptOpenJDK](https://adoptopenjdk.net/)
-* Integrated development environment [Eclipse](https://www.eclipse.org/)
-* Version control system [git](https://git-scm.com)
-* Built with [gradle](https://gradle.org/)
+  * Java provided by [AdoptOpenJDK](https://adoptopenjdk.net/)
+
+  * Integrated development environment [Eclipse](https://www.eclipse.org/)
+
+  * Version control system [git](https://git-scm.com)
+
+  * Built with [gradle](https://gradle.org/)
+
   * Code analysis with the [checkstyle plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
+
   * Code analysis with the [spotbugs plugin](https://spotbugs.readthedocs.io/en/stable/introduction.html)
+
   * [Dependency verification](https://docs.gradle.org/6.2-rc-3/userguide/dependency_verification.html)
+
   * Releases with the [release plugin](https://github.com/researchgate/gradle-release)
+
   * Code formatting with the [spotless plugin](https://github.com/diffplug/spotless)
+
   * Coverage report with the [JaCoCo](https://www.eclemma.org/jacoco/) plugin
+
   * Check against the National Vulnerability Database (NVD) with the [OWASP dependency check plugin](https://github.com/jeremylong/dependency-check-gradle)
+
   * Create report and check licenses against whitelist with the [gradle license report plugin](https://github.com/jk1/Gradle-License-Report)
+
   * Find dependency updates with the [gradle versions plugin](https://plugins.gradle.org/plugin/com.github.ben-manes.versions)
 
 ## Services

@@ -29,6 +29,14 @@ import am.filesystem.model.Volume;
  */
 public class PersonalDocumentValidatorTest
 {
+  private AppConfig config;
+  private PersonalDocumentValidator validator;
+  private Volume volume;
+  private Directory root;
+  private Directory personDir;
+  private Directory yearDir;
+  private Directory dayDir;
+
   public static class TestBundle extends ListResourceBundle
   {
     @Override
@@ -42,14 +50,6 @@ public class PersonalDocumentValidatorTest
       };
     }
   }
-
-  private AppConfig config;
-  private PersonalDocumentValidator validator;
-  private Volume volume;
-  private Directory root;
-  private Directory personDir;
-  private Directory yearDir;
-  private Directory dayDir;
 
   @Before
   public void setUp()

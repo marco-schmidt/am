@@ -21,8 +21,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
 import am.filesystem.model.Directory;
 import am.filesystem.model.File;
@@ -69,8 +67,6 @@ public class PersonalDocumentValidator extends AbstractValidator
    * Year directory too large.
    */
   public static final String VIOLATION_DIRECTORY_YEAR_TOO_LARGE = "directory_year_too_large";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(PersonalDocumentValidator.class);
 
   @Override
   public void validate(AppConfig config, Volume volume)

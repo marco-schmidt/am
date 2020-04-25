@@ -173,7 +173,7 @@ public class HashCreation
    *          byte array to convert
    * @return string with hexadecimal representation, twice the length of input
    */
-  String toString(byte[] hashValueArray)
+  public String toString(final byte[] hashValueArray)
   {
     final StringBuilder sb = new StringBuilder();
     if (hashValueArray != null)

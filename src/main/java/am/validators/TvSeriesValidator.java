@@ -230,7 +230,8 @@ public class TvSeriesValidator extends AbstractValidator
     // find season-specific semantic information
     final String showEntityId = dir.getWikidataEntityId();
     final WikidataService service = config.getWikidataConfiguration().getService();
-    if (showEntityId != null && service != null && !mapMissing.isEmpty())
+    if (showEntityId != null && !showEntityId.equals(WikidataEntity.UNKNOWN_ENTITY) && service != null
+        && !mapMissing.isEmpty())
     {
       service.searchTelevisionSeasons(dir, showEntityId, mapMissing);
       service.assignUnknownEntityWhereNull(mapMissing.values());

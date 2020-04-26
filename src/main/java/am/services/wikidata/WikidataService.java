@@ -141,7 +141,7 @@ public class WikidataService
     return sparqlFindTelevisionEpisodes;
   }
 
-  String buildFindTelevisionShowQuery(String title, Integer year)
+  public String buildFindTelevisionShowQuery(String title, Integer year)
   {
     String query = getFindTelevisionShowByTitleAndYearTemplate();
     if (query != null)
@@ -152,7 +152,7 @@ public class WikidataService
     return query;
   }
 
-  String buildFindTelevisionSeasonsQuery(String showEntityId)
+  public String buildFindTelevisionSeasonsQuery(String showEntityId)
   {
     String query = getFindTelevisionSeasonsByShowTemplate();
     if (query != null)
@@ -162,7 +162,7 @@ public class WikidataService
     return query;
   }
 
-  String buildFindTelevisionEpisodesQuery(String seasonEntityId)
+  public String buildFindTelevisionEpisodesQuery(String seasonEntityId)
   {
     String query = getFindTelevisionEpisodesBySeasonTemplate();
     if (query != null)
@@ -172,13 +172,13 @@ public class WikidataService
     return query;
   }
 
-  static String extractEntity(Value uri)
+  public static String extractEntity(Value uri)
   {
     final String s = uri == null ? null : uri.stringValue();
     return extractEntity(s);
   }
 
-  static String extractEntity(final String uri)
+  public static String extractEntity(final String uri)
   {
     final int index = uri == null ? -1 : uri.lastIndexOf('/');
     return index < 0 ? null : uri.substring(index + 1);

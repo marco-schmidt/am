@@ -42,13 +42,13 @@ public class VolumeMapper extends ModelMapper<Volume>
   };
 
   @Override
-  Volume create()
+  protected Volume create()
   {
     return new Volume();
   }
 
   @Override
-  String getTableName()
+  protected String getTableName()
   {
     return TABLE_VOLUMES;
   }
@@ -92,7 +92,7 @@ public class VolumeMapper extends ModelMapper<Volume>
   }
 
   @Override
-  String getTableDefinition()
+  protected String getTableDefinition()
   {
     return TABLE_VOLUMES_PATH + " text,\n" + TABLE_VOLUMES_MAIN + " int,\n" + TABLE_VOLUMES_MAIN_REF + " bigint,\n"
         + TABLE_VOLUMES_VALIDATOR + " text\n";

@@ -55,13 +55,13 @@ public class FileMapper extends ModelMapper<File>
   };
 
   @Override
-  File create()
+  protected File create()
   {
     return new File();
   }
 
   @Override
-  String getTableName()
+  protected String getTableName()
   {
     return TABLE_FILES;
   }
@@ -123,7 +123,7 @@ public class FileMapper extends ModelMapper<File>
   }
 
   @Override
-  String getTableDefinition()
+  protected String getTableDefinition()
   {
     return COL_VOLUME_REF + " bigint,\n" + COL_DIR_REF + " bigint,\n" + COL_NAME + " text,\n" + COL_SIZE + " bigint,\n"
         + COL_LAST_MODIFIED + " integer,\n" + COL_MIME_TYPE + " text,\n" + COL_FILE_GROUP + " text,\n" + COL_FILE_TYPE

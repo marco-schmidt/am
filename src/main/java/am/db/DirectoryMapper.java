@@ -44,13 +44,13 @@ public class DirectoryMapper extends ModelMapper<Directory>
   };
 
   @Override
-  Directory create()
+  protected Directory create()
   {
     return new Directory();
   }
 
   @Override
-  String getTableName()
+  protected String getTableName()
   {
     return TABLE_DIRS;
   }
@@ -95,7 +95,7 @@ public class DirectoryMapper extends ModelMapper<Directory>
   }
 
   @Override
-  String getTableDefinition()
+  protected String getTableDefinition()
   {
     return TABLE_DIRS_VOLUME_REF + " bigint,\n" + TABLE_DIRS_PARENT_REF + " bigint,\n" + TABLE_DIRS_NAME + " text,\n"
         + TABLE_DIRS_WIKIDATA_ENT_ID + " text\n";

@@ -50,11 +50,11 @@ public abstract class ModelMapper<T extends Model>
    *
    * @return new object
    */
-  abstract T create();
+  protected abstract T create();
 
-  abstract String getTableDefinition();
+  protected abstract String getTableDefinition();
 
-  abstract String getTableName();
+  protected abstract String getTableName();
 
   public Map<Long, T> toMap(List<T> list)
   {

@@ -82,7 +82,7 @@ public class WikidataService
    *          file to be read
    * @return file content as String or null on failure
    */
-  String loadSparqlTemplate(final String path)
+  protected String loadSparqlTemplate(final String path)
   {
     final StringBuilder sb = new StringBuilder();
     final Reader in = new BufferedReader(

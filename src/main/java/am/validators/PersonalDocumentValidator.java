@@ -46,11 +46,11 @@ public class PersonalDocumentValidator extends AbstractValidator
   /**
    * File not allowed in this directory.
    */
-  static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
+  public static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
   /**
    * XMP file without matching regular file ("test.xmp", but no "test.SOMETHING").
    */
-  static final String VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE = "xmp_without_file";
+  public static final String VIOLATION_XMP_FILE_WITHOUT_REGULAR_FILE = "xmp_without_file";
   /**
    * Directory too deep.
    */
@@ -92,14 +92,13 @@ public class PersonalDocumentValidator extends AbstractValidator
   private void validateCreatorYear(AppConfig config, String creator, Directory dir)
   {
     markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
-    final String year = dir.getName();
     for (final Directory sub : dir.getSubdirectories())
     {
-      validateCreatorYearDay(config, creator, year, sub);
+      validateCreatorYearDay(config, creator, sub);
     }
   }
 
-  private void validateCreatorYearDay(AppConfig config, String creator, String year, Directory dir)
+  private void validateCreatorYearDay(AppConfig config, String creator, Directory dir)
   {
     markDirectoriesInvalid(dir, VIOLATION_DIRECTORY_TOO_DEEP);
     final Map<String, File> xmp = new HashMap<>();

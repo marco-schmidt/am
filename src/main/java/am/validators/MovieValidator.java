@@ -68,7 +68,7 @@ public class MovieValidator extends AbstractValidator
   /**
    * File not allowed in this directory.
    */
-  static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
+  public static final String VIOLATION_FILE_WRONG_DIRECTORY = "file_in_wrong_directory";
   /**
    * Directory too deep, only root and year directories allowed.
    */
@@ -169,11 +169,11 @@ public class MovieValidator extends AbstractValidator
 
     for (final File file : dir.getFiles())
     {
-      validateFile(config, dir, year, level, file);
+      validateFile(config, year, level, file);
     }
   }
 
-  private void validateFile(AppConfig config, Directory dir, Long year, int level, File file)
+  private void validateFile(AppConfig config, Long year, int level, File file)
   {
     final FileState state = file.getState();
     if (state != null && state == FileState.Missing)
@@ -332,7 +332,7 @@ public class MovieValidator extends AbstractValidator
     {
       final String s = last(list);
 
-      final boolean consumed = consumeYear(list, videoFileName, s) || consumeResolution(videoFileName, s);
+      final boolean consumed = consumeYear(videoFileName, s) || consumeResolution(videoFileName, s);
 
       if (!consumed)
       {
@@ -395,9 +395,9 @@ public class MovieValidator extends AbstractValidator
     }
   }
 
-  private boolean consumeYear(List<String> list, VideoFileName videoFileName, String s)
+  private boolean consumeYear(final VideoFileName videoFileName, final String yearString)
   {
-    final Long year = StrUtil.getAsLong(s);
+    final Long year = StrUtil.getAsLong(yearString);
     if (year == null)
     {
       return false;

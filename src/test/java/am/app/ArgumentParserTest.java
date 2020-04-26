@@ -32,8 +32,9 @@ public class ArgumentParserTest
   {
     final AppConfig config = new AppConfig();
     final ArgumentParser parser = new ArgumentParser();
-    parser.parse(config, new String[]
+    final boolean success = parser.parse(config, new String[]
     {});
+    Assert.assertTrue("Parsing empty list is successful.", success);
   }
 
   @Test

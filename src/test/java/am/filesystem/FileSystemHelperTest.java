@@ -167,17 +167,19 @@ public class FileSystemHelperTest
     }
   }
 
-  @Test
+  @Test(expected = Test.None.class)
   public void testCloseNull()
   {
     FileSystemHelper.close(null);
+    Assert.assertTrue("No exception thrown.", true);
   }
 
-  @Test
+  @Test(expected = Test.None.class)
   public void testCloseNonNull()
   {
     final ByteArrayInputStream in = new ByteArrayInputStream(new byte[]
     {});
     FileSystemHelper.close(in);
+    Assert.assertTrue("No exception thrown.", true);
   }
 }

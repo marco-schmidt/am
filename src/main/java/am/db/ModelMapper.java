@@ -131,7 +131,7 @@ public abstract class ModelMapper<T extends Model>
     final AppConfig config = io.getConfig();
     final List<T> result = new ArrayList<>();
     final long timeMillis = System.currentTimeMillis();
-    final PreparedStatement stat = createSelectByField(io, fieldName, fieldValue);
+    final PreparedStatement stat = createSelectByField(io, fieldName);
     if (stat == null)
     {
       return null;
@@ -214,7 +214,7 @@ public abstract class ModelMapper<T extends Model>
     }
   }
 
-  private PreparedStatement createSelectByField(JdbcSerialization io, String fieldName, Object fieldValue)
+  private PreparedStatement createSelectByField(JdbcSerialization io, String fieldName)
   {
     if (io.isConnected())
     {

@@ -66,6 +66,7 @@ public class HashProcessorTest
   {
     hashConfig.setStrategy(HashStrategy.None);
     proc.update(config, null);
+    Assert.assertTrue("No exception thrown.", true);
   }
 
   @Test

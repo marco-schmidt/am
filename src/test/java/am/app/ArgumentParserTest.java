@@ -27,6 +27,23 @@ import ch.qos.logback.classic.Level;
  */
 public class ArgumentParserTest
 {
+  static class TestParam extends AbstractParameter
+  {
+    TestParam()
+    {
+      super("s2", "long", "s", ParameterType.Boolean);
+    }
+
+    @Override
+    public void process(AppConfig config, String nextArg)
+    {
+      if (config != null)
+      {
+        config.setDeleteVolumePath(nextArg);
+      }
+    }
+  }
+
   @Test
   public void testParseEmpty()
   {
@@ -62,19 +79,6 @@ public class ArgumentParserTest
         "-j", "17"
     });
     Assert.assertEquals("Expect number of threads to be 17.", Integer.valueOf(17), config.getNumberOfThreads());
-  }
-
-  static class TestParam extends AbstractParameter
-  {
-    TestParam()
-    {
-      super("s2", "long", "s", ParameterType.Boolean);
-    }
-
-    @Override
-    public void process(AppConfig config, String nextArg)
-    {
-    }
   }
 
   @Test

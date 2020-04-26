@@ -86,6 +86,7 @@ public class HashCreationTest
     hashConfig.setAlgorithm(HashConfig.DEFAULT_HASH_ALGORITHM);
     final File file = new File();
     creation.update(config, file);
+    Assert.assertNull("Empty file leads to null hash value.", file.getHashValue());
   }
 
   @Test

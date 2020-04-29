@@ -169,11 +169,11 @@ public class MovieValidator extends AbstractValidator
 
     for (final File file : dir.getFiles())
     {
-      validateFile(config, year, level, file);
+      validateFile(year, level, file);
     }
   }
 
-  private void validateFile(AppConfig config, Long year, int level, File file)
+  private void validateFile(Long year, int level, File file)
   {
     final FileState state = file.getState();
     if (state != null && state == FileState.Missing)

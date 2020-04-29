@@ -94,11 +94,11 @@ public class PersonalDocumentValidator extends AbstractValidator
     markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
     for (final Directory sub : dir.getSubdirectories())
     {
-      validateCreatorYearDay(config, creator, sub);
+      validateCreatorYearDay(sub);
     }
   }
 
-  private void validateCreatorYearDay(AppConfig config, String creator, Directory dir)
+  private void validateCreatorYearDay(Directory dir)
   {
     markDirectoriesInvalid(dir, VIOLATION_DIRECTORY_TOO_DEEP);
     final Map<String, File> xmp = new HashMap<>();

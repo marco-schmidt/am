@@ -281,7 +281,7 @@ public class TvSeriesValidator extends AbstractValidator
     final Map<Long, File> map = new HashMap<>();
     for (final File file : dir.getFiles())
     {
-      validateEpisodeEntry(config, file, showName, seasonNumber);
+      validateEpisodeEntry(config, file, seasonNumber);
       if (file.getWikidataEntityId() == null)
       {
         final VideoFileName videoFileName = file.getVideoFileName();
@@ -297,7 +297,7 @@ public class TvSeriesValidator extends AbstractValidator
     service.assignUnknownEntityWhereNull(map.values());
   }
 
-  private void validateEpisodeEntry(AppConfig config, File file, String showName, BigInteger seasonNumber)
+  private void validateEpisodeEntry(AppConfig config, File file, BigInteger seasonNumber)
   {
     LOGGER.trace(config.msg("tvseriesvalidator.trace.checking_episode_file",
         file.getEntry() == null ? file.getName() : file.getEntry().getAbsolutePath()));

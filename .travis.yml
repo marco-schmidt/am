@@ -28,7 +28,6 @@ matrix:
   - os: windows
   - os: osx
   - jdk: openjdk8
-
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -37,7 +36,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.gradle/dependency-check-data/
-script: ./gradlew --stacktrace --info --no-daemon --scan clean check javadoc installDist generateLicenseReport jacocoTestReport
+install: skip
+script: ./gradlew --stacktrace --info --no-daemon --scan clean check javadoc installDist generateLicenseReport jacocoTestReport --write-verification-metadata sha256
 after_success:
   - unzip -c build/libs/am-*.jar META-INF/MANIFEST.MF
   - bash <(curl -s https://codecov.io/bash)

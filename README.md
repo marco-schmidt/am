@@ -2,7 +2,7 @@
 asset manager
 
 ## Status
-As of April 2020, this tool is in an early development stage, to be used only by the very curious.
+As of May 2020, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
 * Command-line asset manager, managing files, checking their integrity, extracting metadata.
@@ -187,6 +187,14 @@ export LANG="en_US.UTF-8"
 ```
 
 ## Development
+
+### Upgrade Gradle Wrapper
+
+  * Figure out a valid checksum for the new version by looking up its SHA-256 value for *Binary-only (-bin) ZIP Checksum* at the [Gradle distribution and wrapper JAR checksum reference](https://gradle.org/release-checksums/)
+
+  * Run the wrapper task with both version and the checksum value:
+
+    ``./gradlew wrapper --gradle-version 6.4 --gradle-distribution-sha256-sum b888659f637887e759749f6226ddfcb1cb04f828c58c41279de73c463fdbacc9``
 
 ### Setup of Integrated Development Environment Eclipse
 

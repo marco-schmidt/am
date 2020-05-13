@@ -82,14 +82,13 @@ public class PersonalDocumentValidator extends AbstractValidator
   private void validateCreator(AppConfig config, Directory dir)
   {
     markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
-    final String creator = dir.getName();
     for (final Directory sub : dir.getSubdirectories())
     {
-      validateCreatorYear(config, creator, sub);
+      validateCreatorYear(config, sub);
     }
   }
 
-  private void validateCreatorYear(AppConfig config, String creator, Directory dir)
+  private void validateCreatorYear(AppConfig config, Directory dir)
   {
     markFilesInvalid(dir, VIOLATION_FILE_WRONG_DIRECTORY);
     for (final Directory sub : dir.getSubdirectories())

@@ -274,7 +274,7 @@ public class TvSeriesValidator extends AbstractValidator
   private void validateSeasonEntries(AppConfig config, Directory dir, String showName, BigInteger seasonNumber)
   {
     LOGGER.trace(config.msg("tvseriesvalidator.trace.entering_season_directory",
-        dir.getEntry() == null ? dir.getName() : dir.getEntry().getAbsolutePath()));
+        dir.getEntry() == null ? dir.getName() : dir.getEntry().getAbsolutePath(), showName));
 
     markDirectoriesInvalid(dir, VIOLATION_NO_DIRECTORIES_IN_SEASON_DIRECTORY);
 

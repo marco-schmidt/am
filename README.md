@@ -196,6 +196,18 @@ export LANG="en_US.UTF-8"
 
     ``./gradlew wrapper --gradle-version 6.4 --gradle-distribution-sha256-sum b888659f637887e759749f6226ddfcb1cb04f828c58c41279de73c463fdbacc9``
 
+### Checking for New Versions of Dependencies
+
+In order to figure out if there are updates
+
+* check the [pull request tab of the am project](https://github.com/marco-schmidt/am/pulls), it may contain Dependabot pull requests about dependency upgrades, or
+* run ``./gradlew depUpd`` to use the gradle versions plugin checking for the same thing.
+
+### Upgrading Dependency Versions
+
+Once you've modified the version of a dependency library or plug-in by editing version numbers in build.gradle, run
+``./gradlew build --write-verification-metadata sha256`` to both check if the build still works and upgrade verification-metadata.xml. 
+
 ### Setup of Integrated Development Environment Eclipse
 
 Make sure a version 8 JDK is in the path and [Eclipse](https://www.eclipse.org/downloads/) is installed on the system.

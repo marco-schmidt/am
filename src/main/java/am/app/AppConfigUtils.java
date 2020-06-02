@@ -35,12 +35,11 @@ import am.processor.hashes.HashConfig;
 import am.processor.hashes.HashStrategy;
 
 /**
- * Load configuration information from a properties file to an {@link AppConfig} object.
- *
+ * Helper methods to load and initialize {@link AppConfig} objects.
  */
-public final class AppConfigLoader
+public final class AppConfigUtils
 {
-  private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigLoader.class);
+  private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AppConfigUtils.class);
   private static final String LOG_DIR = "logDir";
   private static final String DATABASE_DIR = "databaseDir";
   private static final String IGNORE_DIR_NAMES = "ignoreDirNames";
@@ -49,7 +48,7 @@ public final class AppConfigLoader
   private static final String CREATE_HASHES = "createHashes";
   private static final String WIKIDATA = "wikidata";
 
-  private AppConfigLoader()
+  private AppConfigUtils()
   {
     // prevent instantiation
   }

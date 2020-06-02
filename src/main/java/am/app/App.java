@@ -54,11 +54,11 @@ public class App
       final SystemInfo info = new SystemInfo();
       config.setSystemInfo(info);
       info.initialize(config, args);
-      if (!AppConfigLoader.loadConfig(config))
+      if (!AppConfigUtils.loadConfig(config))
       {
         return false;
       }
-      if (!AppConfigLoader.interpretProperties(config))
+      if (!AppConfigUtils.interpretProperties(config))
       {
         return false;
       }

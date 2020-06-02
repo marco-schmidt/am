@@ -20,9 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test {@link AppConfigLoader} class.
+ * Test {@link AppConfigUtils} class.
  */
-public class AppConfigLoaderTest
+public class AppConfigUtilsTest
 {
   @Test
   public void testInterpretProperties()
@@ -34,7 +34,7 @@ public class AppConfigLoaderTest
     props.put("ignoreFileNames", ".DS_Store,Thumbs.db");
     props.put("wikidata", "true");
     config.setProperties(props);
-    final boolean result = AppConfigLoader.interpretProperties(config);
+    final boolean result = AppConfigUtils.interpretProperties(config);
     Assert.assertTrue("Interpreting correct properties returns success result.", result);
     Assert.assertTrue("Wikidata enabled.", config.getWikidataConfiguration().isEnabled());
   }
@@ -44,7 +44,7 @@ public class AppConfigLoaderTest
   {
     final AppConfig config = new AppConfig();
     config.setConfigFileName("file_does_not_exist");
-    final boolean success = AppConfigLoader.loadConfig(config);
+    final boolean success = AppConfigUtils.loadConfig(config);
     Assert.assertFalse("Trying to load non-existing config file fails.", success);
   }
 }

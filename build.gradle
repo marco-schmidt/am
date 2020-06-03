@@ -110,6 +110,7 @@ jar {
       'Implementation-Title': project.name,
       'Implementation-Version': project.version,
       'Implementation-URL': 'https://github.com/marco-schmidt/am/',
+      'Automatic-Module-Name': "${project.group}.${project.name}",
       'Created-By': 'Gradle ' + gradleVersion,
       'Build-Date': now,
       'License': licenseName,

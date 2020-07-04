@@ -1,0 +1,3 @@
+# https://jenkins.thetaphi.de/job/Forbidden-APIs/javadoc/signatures-syntax.html
+@defaultMessage code from package sun.misc is not available in all JDK implementations
+sun.misc.**

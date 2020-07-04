@@ -143,6 +143,8 @@ run {
 forbiddenApis {
   bundledSignatures = ['jdk-system-out', 'jdk-unsafe', 'jdk-internal',
     'jdk-deprecated', 'jdk-non-portable', 'jdk-reflection' ]
+  // https://jenkins.thetaphi.de/job/Forbidden-APIs/javadoc/signatures-syntax.html
+  signaturesFiles = files('config/forbiddenApis/signatures.txt')
   ignoreFailures = true
 }
 

@@ -22,6 +22,7 @@ import java.nio.file.InvalidPathException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import am.app.AppConfig;
@@ -180,7 +181,7 @@ public class HashCreation
     {
       for (int i = 0; i < hashValueArray.length; i++)
       {
-        sb.append(String.format("%02x", hashValueArray[i]));
+        sb.append(String.format(Locale.ROOT, "%02x", hashValueArray[i]));
       }
     }
     return sb.toString();

@@ -87,7 +87,7 @@ public class App
     {
       version += " ";
     }
-    LOGGER.info(String.format("%s %s<%s>", SystemInfo.APP_NAME, version, SystemInfo.APP_URI));
+    LOGGER.info(String.format(Locale.ROOT, "%s %s<%s>", SystemInfo.APP_NAME, version, SystemInfo.APP_URI));
   }
 
   private void printHelp(final AppConfig config)

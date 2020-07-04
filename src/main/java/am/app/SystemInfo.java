@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.slf4j.Logger;
@@ -165,7 +166,7 @@ public class SystemInfo
       {
         key = "?";
       }
-      LOGGER.info(String.format("%1$-" + max + "s", key) + "=" + entry.getValue());
+      LOGGER.info(String.format(Locale.ROOT, "%1$-" + max + "s", key) + "=" + entry.getValue());
     }
   }
 
@@ -239,7 +240,7 @@ public class SystemInfo
       }
       else
       {
-        result = String.format("%s (%s)", result, jarName);
+        result = String.format(Locale.ROOT, "%s (%s)", result, jarName);
       }
     }
     catch (final IOException ioe)

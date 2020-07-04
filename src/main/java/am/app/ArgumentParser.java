@@ -195,7 +195,7 @@ public class ArgumentParser
     {
       if (map.containsKey(name))
       {
-        LOGGER.error(String.format("Switch defined twice: %s.", name));
+        LOGGER.error(String.format(Locale.ROOT, "Switch defined twice: %s.", name));
       }
       else
       {
@@ -322,6 +322,6 @@ public class ArgumentParser
     {
       argument = " " + argumentType.name().toUpperCase(Locale.ENGLISH) + " ";
     }
-    return String.format("%s  %s%s%s", shortName, longName, argument, config.msg(param.getMessage()));
+    return String.format(Locale.ROOT, "%s  %s%s%s", shortName, longName, argument, config.msg(param.getMessage()));
   }
 }

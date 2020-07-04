@@ -23,7 +23,9 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wikidata.wdtk.wikibaseapi.WbSearchEntitiesResult;
@@ -112,7 +114,7 @@ public class MovieValidator extends AbstractValidator
 
   private int findMaxMovieYear()
   {
-    final Calendar cal = new GregorianCalendar();
+    final Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.ROOT);
     final int maxYear = cal.get(Calendar.YEAR) + 1;
     return maxYear;
   }

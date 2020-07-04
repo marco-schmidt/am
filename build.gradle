@@ -145,7 +145,7 @@ forbiddenApis {
     'jdk-deprecated', 'jdk-non-portable', 'jdk-reflection' ]
   // https://jenkins.thetaphi.de/job/Forbidden-APIs/javadoc/signatures-syntax.html
   signaturesFiles = files('config/forbiddenApis/signatures.txt')
-  ignoreFailures = true
+  ignoreFailures = false
 }
 
 // https://github.com/diffplug/spotless

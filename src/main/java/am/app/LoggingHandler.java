@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -79,7 +80,7 @@ public class LoggingHandler
   {
     if (logDirectory != null)
     {
-      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ROOT);
       final String name = formatter.format(new Date()) + ".log";
       final File file = new File(logDirectory, name);
 

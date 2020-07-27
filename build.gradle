@@ -161,7 +161,7 @@ spotless {
 // https://github.com/checkstyle/checkstyle
 // http://checkstyle.sourceforge.net
 checkstyle {
-  toolVersion '8.29'
+  toolVersion '8.34'
   ignoreFailures false
   showViolations true
   configDirectory = file("${rootDir}/config/checkstyle")

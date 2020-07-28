@@ -1,8 +1,8 @@
-# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am) [![Download](https://api.bintray.com/packages/marco-schmidt/am/maven/images/download.svg)](https://bintray.com/marco-schmidt/am/maven/) [![Download](https://maven-badges.herokuapp.com/maven-central/com.github.marco-schmidt/am/badge.svg)](https://repo1.maven.org/maven2/com/github/marco-schmidt/am/) [![Javadocs](https://javadoc.io/badge/com.github.marco-schmidt/am.svg)](https://javadoc.io/doc/com.github.marco-schmidt/am) [![Codecov](https://codecov.io/gh/marco-schmidt/am/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/gh/marco-schmidt/am) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/164fe26f43f7402792bd043fe712d703)](https://www.codacy.com/manual/marco-schmidt/am?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marco-schmidt/am&amp;utm_campaign=Badge_Grade) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![CodeQL](https://github.com/marco-schmidt/am/workflows/CodeQL/badge.svg)
+# am [![Travis CI](https://travis-ci.org/marco-schmidt/am.svg?branch=master)](https://travis-ci.org/marco-schmidt/am) [![Download](https://api.bintray.com/packages/marco-schmidt/am/maven/images/download.svg)](https://bintray.com/marco-schmidt/am/maven/) [![Download](https://maven-badges.herokuapp.com/maven-central/com.github.marco-schmidt/am/badge.svg)](https://repo1.maven.org/maven2/com/github/marco-schmidt/am/) [![Javadocs](https://javadoc.io/badge/com.github.marco-schmidt/am.svg)](https://javadoc.io/doc/com.github.marco-schmidt/am) [![Codecov](https://codecov.io/gh/marco-schmidt/am/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/gh/marco-schmidt/am) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/164fe26f43f7402792bd043fe712d703)](https://www.codacy.com/manual/marco-schmidt/am?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=marco-schmidt/am&amp;utm_campaign=Badge_Grade) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Java CI](https://github.com/marco-schmidt/am/workflows/Java%20CI/badge.svg) ![CodeQL](https://github.com/marco-schmidt/am/workflows/CodeQL/badge.svg)
 asset manager
 
 ## Status
-As of June 2020, this tool is in an early development stage, to be used only by the very curious.
+As of July 2020, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
   * Command-line asset manager, managing files, checking their integrity, extracting metadata.
@@ -15,7 +15,7 @@ As of June 2020, this tool is in an early development stage, to be used only by 
 
   * Optionally validate directory structure and file names against a ruleset.
 
-  * Query Wikidata to automatically retrieve semantic information. 
+  * Query [Wikidata](https://www.wikidata.org/) to automatically retrieve semantic information. 
 
   * Store results in an embedded [sqlite](https://www.sqlite.org/fileformat2.html) database. In addition to am itself data can thus be accessed using a more convenient database browser.
 

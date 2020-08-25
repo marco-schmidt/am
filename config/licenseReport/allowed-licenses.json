@@ -10,6 +10,7 @@
     {"moduleLicense": "Eclipse Distribution License v1.0"},
     {"moduleLicense": "Eclipse Public License - v 1.0"},
     {"moduleLicense": "GNU Lesser General Public License"},
-    {"moduleLicense": "MIT License"}
+    {"moduleLicense": "MIT License"},
+    {"moduleLicense": "The MIT License"}
   ]
 }

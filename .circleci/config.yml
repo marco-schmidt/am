@@ -5,7 +5,6 @@
 version: 2
 jobs:
   build:
-    machine: true
     docker:
         # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -38,7 +37,10 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-          
+
+      - setup_remote_docker:
+          docker_layer_caching: false
+
       # build application tar distribution and Docker image
       - run: |
           ./gradlew clean test distTar

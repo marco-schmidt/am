@@ -44,7 +44,7 @@ jobs:
       # build application tar distribution and Docker image
       - run: |
           ./gradlew clean test distTar
-          docker build -t marcoschmidt/am .
+          docker build --no-cache -t marcoschmidt/am .
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
           docker push marcoschmidt/am
 workflows:

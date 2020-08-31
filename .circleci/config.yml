@@ -31,7 +31,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: ./gradlew dependencies
+      - run: ./gradlew dependencies --write-verification-metadata sha256
 
       - save_cache:
           paths:
@@ -43,7 +43,7 @@ jobs:
 
       # build application tar distribution and Docker image
       - run: |
-          ./gradlew clean test distTar
+          ./gradlew clean test distTar --write-verification-metadata sha256
           docker build --no-cache -t marcoschmidt/am .
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
           docker push marcoschmidt/am

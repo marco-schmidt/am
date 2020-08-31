@@ -47,7 +47,7 @@ jobs:
       - run: |
           ./gradlew clean test distTar
           docker build -t marcoschmidt/am .
-          docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
           docker push marcoschmidt/am
 workflows:
   version: 2

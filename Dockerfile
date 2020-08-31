@@ -15,7 +15,8 @@ ENV PATH="/opt/exiftool:/opt/am/bin:$PATH"
 #       https://exiftool.org/checksums.txt
 
 # install perl and exiftool
-RUN set -eux; \
+RUN set -eux \
+  && java -version \
   && apk update \
   && apk upgrade \
   && apk add --no-cache curl perl \
@@ -34,8 +35,9 @@ RUN set -eux; \
 COPY build/distributions/am-*.tar /opt
 
 # unpack am tar file and delete it
-RUN cd /opt \
-  && tar xzf am-*.tar \
-  && rm -f am-*.tar
+RUN mkdir -p /opt/am \
+  && cd /opt/am \
+  && tar xf /opt/am-*.tar --strip-components=1 \
+  && rm -f /opt/am-*.tar
 
-ENTRYPOINT ["am", "--version", "--print-env"]
+ENTRYPOINT ["/bin/sh", "am", "--version", "--print-env"]

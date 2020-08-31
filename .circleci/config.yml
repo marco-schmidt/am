@@ -14,6 +14,8 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
 
+    context: DOCKER
+
     working_directory: ~/repo
 
     environment:
@@ -45,6 +47,8 @@ jobs:
       - run: |
           ./gradlew clean test distTar
           docker build -t marcoschmidt/am .
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          docker push marcoschmidt/am
 workflows:
   version: 2
   commit:

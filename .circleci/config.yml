@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
+        # specify the version you desire here
       - image: circleci/openjdk:8-jdk
 
       # Specify service dependencies here if necessary
@@ -38,8 +38,15 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      # run tests!
-      - run: ./gradlew test jar
+      - setup_remote_docker:
+          docker_layer_caching: false
+
+      # build application tar distribution and Docker image
+      - run: |
+          ./gradlew clean test distTar
+          docker build --no-cache -t marcoschmidt/am .
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+          docker push marcoschmidt/am
 workflows:
   version: 2
   commit:

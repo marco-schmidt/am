@@ -3,10 +3,12 @@ FROM adoptopenjdk/openjdk8:alpine-slim
 LABEL maintainer="mschmidtgit@protonmail.com"
 
 ARG BUILD_DATE
+ARG BUILD_REVISION
 
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.description="am (asset manager) with Java, Perl and exiftool"
 LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.vcs-ref=$BUILD_REVISION
 LABEL org.label-schema.name="marcoschmidt/am"
 LABEL org.label-schema.vcs-url="https://github.com/marco-schmidt/am"
 

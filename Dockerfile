@@ -11,9 +11,6 @@ LABEL maintainer="mschmidtgit@protonmail.com"
 # update PATH to include paths to exiftool and am 
 ENV PATH="/opt/exiftool:/opt/am/bin:$PATH"
 
-# TODO: download exiftool checksum file and validate exiftool archive checksum
-#       https://exiftool.org/checksums.txt
-
 # install perl and exiftool
 RUN set -eux \
   && java -version \
@@ -27,6 +24,8 @@ RUN set -eux \
   && EXIFTOOL_VERSION=`curl -s https://exiftool.org/ver.txt` \
   && EXIFTOOL_ARCHIVE=Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz \
   && curl -s -O https://exiftool.org/$EXIFTOOL_ARCHIVE \
+  && CHECKSUM=`curl -s https://exiftool.org/checksums.txt | grep SHA1\(Image | awk -F'= ' '{print $2}'` \
+  && echo "${CHECKSUM}  ${EXIFTOOL_ARCHIVE}" | /usr/bin/sha1sum -c -s - \
   && tar xzf $EXIFTOOL_ARCHIVE --strip-components=1 \
   && rm -f $EXIFTOOL_ARCHIVE \
   && exiftool -ver

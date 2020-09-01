@@ -3,7 +3,7 @@
 asset manager
 
 ## Status
-As of August 2020, this tool is in an early development stage, to be used only by the very curious.
+As of September 2020, this tool is in an early development stage, to be used only by the very curious.
 
 ## Purpose
   * Command-line asset manager, managing files, checking their integrity, extracting metadata.
@@ -64,6 +64,7 @@ As of August 2020, this tool is in an early development stage, to be used only b
 * Hosted at [GitHub](https://github.com/)
 * Continuous integration at
     * [Travis CI](https://travis-ci.org/marco-schmidt/am)
+    * [Circle CI](https://app.circleci.com/pipelines/github/marco-schmidt/am)
     * [GitHub Action Java CI](https://github.com/marco-schmidt/am/actions?query=workflow%3A%22Java+CI%22)
     * [JitCI](https://jitci.com/gh/marco-schmidt/am) [![](https://jitci.com/gh/marco-schmidt/am/svg)](https://jitci.com/gh/marco-schmidt/am)
 * Dependency version update checks by
@@ -159,6 +160,18 @@ ignoreDirNames=@eaDir
 # query Wikidata to find entity id values in combination with the movie validator
 wikidata=true
 ```
+
+## Docker
+
+This project contains a Dockerfile bundling Perl, exiftool, Java and am.
+
+The Circle CI pipeline uploads a new image to [Docker Hub](https://hub.docker.com/r/marcoschmidt/am).
+
+Some commands:
+  * Login at Docker Hub: ``docker login -u USER -p PASSWORD``
+  * Create new image: ``docker build -t marcoschmidt/am .``
+  * Step into shell: ``docker run --it --entrypoint sh marcoschmidt/am`
+  * Upload image to Docker Hub: ``docker push marcoschmidt/am``
 
 ## Troubleshooting
 

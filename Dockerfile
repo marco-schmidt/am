@@ -1,16 +1,18 @@
 # https://hub.docker.com/r/adoptopenjdk/openjdk8
 FROM adoptopenjdk/openjdk8:alpine-slim
-LABEL maintainer="mschmidtgit@protonmail.com"
+
+LABEL org.opencontainers.image.authors="Marco Schmidt <mschmidtgit@protonmail.com>"
+LABEL org.opencontainers.image.title="marcoschmidt/am"
+LABEL org.opencontainers.image.description="am: Asset Manager with Java, Perl and exiftool"
+LABEL org.opencontainers.image.url="marcoschmidt/am"
+LABEL org.opencontainers.image.source="https://github.com/marco-schmidt/am"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
 
 ARG BUILD_DATE
 ARG BUILD_REVISION
 
-LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.description="am (asset manager) with Java, Perl and exiftool"
-LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.vcs-ref=$BUILD_REVISION
-LABEL org.label-schema.name="marcoschmidt/am"
-LABEL org.label-schema.vcs-url="https://github.com/marco-schmidt/am"
+LABEL org.opencontainers.image.created=$BUILD_DATE
+LABEL org.opencontainers.image.revision=$BUILD_REVISION
 
 # Requirement: must have run
 #   ./gradlew clean distTar

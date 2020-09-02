@@ -170,7 +170,7 @@ The Circle CI pipeline uploads a new image to [Docker Hub](https://hub.docker.co
 Some commands:
   * Login at Docker Hub: ``docker login -u USER -p PASSWORD``
   * Create new image: ``docker build -t marcoschmidt/am .``
-  * Step into shell: ``docker run --it --entrypoint sh marcoschmidt/am`
+  * Step into shell: ``docker run --it --entrypoint sh marcoschmidt/am``
   * Upload image to Docker Hub: ``docker push marcoschmidt/am``
 
 ## Troubleshooting

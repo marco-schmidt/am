@@ -1,5 +1,5 @@
 # https://hub.docker.com/r/adoptopenjdk/openjdk8
-FROM adoptopenjdk/openjdk8:alpine-slim
+FROM adoptopenjdk/openjdk8:alpine-jre
 
 LABEL org.opencontainers.image.authors="mschmidtgit@protonmail.com"
 LABEL org.opencontainers.image.vendor="Marco Schmidt"

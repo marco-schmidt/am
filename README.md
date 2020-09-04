@@ -171,8 +171,14 @@ The Circle CI pipeline uploads a new image to [Docker Hub](https://hub.docker.co
 Some commands:
   * Login at Docker Hub: ``docker login -u USER -p PASSWORD``
   * Create new image: ``docker build -t marcoschmidt/am .``
-  * Step into shell: ``docker run --it --entrypoint sh marcoschmidt/am``
+  * Step into shell: ``docker run -it --entrypoint sh marcoschmidt/am``
   * Upload image to Docker Hub: ``docker push marcoschmidt/am``
+
+Within container:
+  * Print environment: ``am --print-env``
+  * Create minimal configuration: ``printf "databaseDir=/home/am/db\nlogDir=/home/am/logs\n" > /home/am/config/.am.properties``
+  * Create new volume with am: ``am --config /home/am/config/.am.properties --add-volume /opt/java``
+  * Make am add volume's files: ``am --config /home/am/config/.am.properties check``
 
 ## Troubleshooting
 

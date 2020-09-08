@@ -35,8 +35,6 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Delete cache
-      run: rm -rf ~/.gradle/dependency-check-data/
     - name: Build with Gradle
       run: ./gradlew check installDist generateLicenseReport dependencyUpdates jacocoTestReport --info --stacktrace --write-verification-metadata sha256
     - name: Upload application package

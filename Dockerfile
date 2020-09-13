@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.authors="mschmidtgit@protonmail.com"
 LABEL org.opencontainers.image.vendor="Marco Schmidt"
 LABEL org.opencontainers.image.title="marcoschmidt/am"
 LABEL org.opencontainers.image.description="am: Asset Manager with Java, Perl and exiftool"
-LABEL org.opencontainers.image.url="https://github.com/marco-schmidt/am"
+LABEL org.opencontainers.image.url="https://hub.docker.com/r/marcoschmidt/am"
 LABEL org.opencontainers.image.source="https://github.com/marco-schmidt/am/blob/master/Dockerfile"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 

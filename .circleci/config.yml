@@ -39,6 +39,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - setup_remote_docker:
+          version: 19.03.12
           docker_layer_caching: false
 
       # build application tar distribution and Docker image

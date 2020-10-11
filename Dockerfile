@@ -29,10 +29,10 @@ RUN set -eux \
   # install exiftool
   && mkdir -p /opt/exiftool \
   && cd /opt/exiftool \
-  && EXIFTOOL_VERSION=`curl -s https://exiftool.org/ver.txt` \
+  && EXIFTOOL_VERSION=$(curl -s https://exiftool.org/ver.txt) \
   && EXIFTOOL_ARCHIVE=Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz \
   && curl -s -O https://exiftool.org/$EXIFTOOL_ARCHIVE \
-  && CHECKSUM=`curl -s https://exiftool.org/checksums.txt | grep SHA1\(${EXIFTOOL_ARCHIVE} | awk -F'= ' '{print $2}'` \
+  && CHECKSUM=$(curl -s https://exiftool.org/checksums.txt | grep SHA1\(${EXIFTOOL_ARCHIVE} | awk -F'= ' '{print $2}') \
   && echo "${CHECKSUM}  ${EXIFTOOL_ARCHIVE}" | /usr/bin/sha1sum -c -s - \
   && tar xzf $EXIFTOOL_ARCHIVE --strip-components=1 \
   && rm -f $EXIFTOOL_ARCHIVE \

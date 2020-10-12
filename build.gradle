@@ -44,7 +44,7 @@ dependencies {
   implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '3.4.3'
   implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.11.1'
   implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.32.3.2'
-  testImplementation 'junit:junit:4.13'
+  testImplementation 'junit:junit:4.13.1'
 }
 
 // force versions of transitive dependencies

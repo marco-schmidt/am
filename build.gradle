@@ -51,7 +51,7 @@ dependencies {
 configurations.all {
   resolutionStrategy.eachDependency { DependencyResolveDetails details ->
    if (details.requested.group == 'com.google.guava' && details.requested.name == 'guava') {
-      details.useVersion '29.0-jre'
+      details.useVersion '30.0-jre'
       details.because 'CVE-2018-10237'
     }
   }

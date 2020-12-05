@@ -54,6 +54,15 @@ configurations.all {
       details.useVersion '30.0-jre'
       details.because 'CVE-2018-10237'
     }
+    if (details.requested.group == 'org.apache.httpcomponents' && 
+        (details.requested.name == 'fluent-hc' ||
+         details.requested.name == 'httpclient' ||
+         details.requested.name == 'httpclient-cache' ||
+         details.requested.name == 'httpclient-osgi')
+       ) {
+      details.useVersion '4.5.13'
+      details.because 'CVE-2020-13956'
+    }
   }
 }
 

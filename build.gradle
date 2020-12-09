@@ -63,6 +63,10 @@ configurations.all {
       details.useVersion '4.5.13'
       details.because 'CVE-2020-13956'
     }
+    if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
+      details.useVersion '2.11.0'
+      details.because 'CVE-2020-25649'
+    }
   }
 }
 

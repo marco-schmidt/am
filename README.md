@@ -10,7 +10,7 @@ As of September 2020, this tool is in an early development stage, to be used onl
 
   * Scan one or more directory trees (called volumes) for new, modified and deleted files.
 
-  * Extract metadata using command-line tool [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/).
+  * Extract metadata using command-line tool [exiftool](https://exiftool.org/).
 
   * Create SHA-256 hash values and determine changes.
 

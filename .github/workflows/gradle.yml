@@ -77,3 +77,5 @@ jobs:
       with:
         name: am-${{github.run_number}}-checkstyle-report
         path: build/reports/checkstyle
+    - name: Send coverage information to codecov.io
+      uses: codecov/codecov-action@v1

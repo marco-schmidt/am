@@ -120,7 +120,7 @@ public final class AppConfigUtils
         final String perc = s.substring(0, s.length() - 1);
         try
         {
-          double d = Double.valueOf(perc);
+          double d = Double.parseDouble(perc);
           d = Math.max(d, 0.0d);
           d = Math.min(d, 100.0d);
           hashConfig.setPercentage(Double.valueOf(d));

@@ -71,6 +71,10 @@ configurations.all {
       details.useVersion '1.5.0'
       details.because 'CVE-2020-15824, CVE-2020-29582'
     }
+    if (details.requested.group == 'com.squareup.okhttp3') {
+      details.useVersion '4.9.1'
+      details.because 'CVE-2016-2402'
+    }
   }
 }
 

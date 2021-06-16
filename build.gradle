@@ -240,7 +240,7 @@ task packageSources(type: Jar, dependsOn: 'classes') {
 
 task packageCoverageReport(type: Zip, dependsOn: 'jacocoTestReport') {
   description "create a zip archive with coverage report information"
-  from jacocoTestReport.reports.html.destination
+  from jacocoTestReport.reports.html.outputLocation
   classifier = 'coveragereport'
 }
 

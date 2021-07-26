@@ -5,9 +5,9 @@ buildscript {
 }
 
 plugins {
-  id 'com.diffplug.spotless' version '5.14.1'
+  id 'com.diffplug.spotless' version '5.14.2'
   id "com.github.ben-manes.versions" version '0.39.0'
-  id 'com.github.jk1.dependency-license-report' version '1.16'
+  id 'com.github.jk1.dependency-license-report' version '1.17'
   id 'com.github.spotbugs' version '4.7.2'
   id 'de.thetaphi.forbiddenapis' version '3.1'
   id 'jacoco'
@@ -36,8 +36,8 @@ def licenseName = 'The Apache Software License, Version 2.0'
 defaultTasks 'clean', 'check', 'javadoc', 'installDist', 'generateLicenseReport', 'run'
 
 dependencies {
-  implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31'
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+  implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.5'
   implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.6.0'
   implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '3.7.1'
   implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.12.1'
@@ -72,6 +72,10 @@ configurations.all {
     if (details.requested.group == 'com.squareup.okhttp3') {
       details.useVersion '4.9.1'
       details.because 'CVE-2016-2402'
+    }
+    if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-compress') {
+      details.useVersion '1.21'
+      details.because 'CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090'
     }
   }
 }

@@ -336,7 +336,7 @@ public class WikidataService
     return appConfig;
   }
 
-  public void setAppConfig(AppConfig appConfig)
+  public final void setAppConfig(AppConfig appConfig)
   {
     this.appConfig = appConfig;
   }

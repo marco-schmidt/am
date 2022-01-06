@@ -12,4 +12,12 @@
     <Class name="~.*"/>
     <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING" type="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING"/>
   </Match>
+  <Match>
+    <Class name="~.*"/>
+    <Bug pattern="EI_EXPOSE_REP" type="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="~.*"/>
+    <Bug pattern="EI_EXPOSE_REP2" type="EI_EXPOSE_REP2"/>
+  </Match>
 </FindBugsFilter>

@@ -44,7 +44,8 @@ jobs:
 
       # build application tar distribution and Docker image
       - run: |
-          ./gradlew clean test distTar --write-verification-metadata sha256
+          ./gradlew clean
+          ./gradlew test distTar --write-verification-metadata sha256
           docker build --no-cache --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg BUILD_REVISION=$CIRCLE_SHA1 -t marcoschmidt/am .
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
           docker push marcoschmidt/am

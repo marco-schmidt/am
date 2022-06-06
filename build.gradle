@@ -38,7 +38,7 @@ defaultTasks 'clean', 'check', 'javadoc', 'installDist', 'generateLicenseReport'
 dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
-  implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.6.0'
+  implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.6.1'
   implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '3.7.7'
   implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.13.2'
   implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'

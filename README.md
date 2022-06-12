@@ -23,7 +23,7 @@ As of September 2020, this tool is in an early development stage, to be used onl
   * Log runs to files in a log directory.
 
 ## Prerequisites
-* Version 8 JDK installed and in path. Check: ``javac -version``
+* Version 11 JDK installed and in path. Check: ``javac -version``
 
 * Version control tool git installed and in path. Check: ``git --version``
 
@@ -229,7 +229,7 @@ Once you've modified the version of a dependency library or plug-in by editing v
 
 ### Setup of Integrated Development Environment Eclipse
 
-Make sure a version 8 JDK is in the path and [Eclipse](https://www.eclipse.org/downloads/) is installed on the system.
+Make sure a version 11 JDK is in the path and [Eclipse](https://www.eclipse.org/downloads/) is installed on the system.
 
 Open a shell and change to the directory where you checked out am (see Usage above).
 

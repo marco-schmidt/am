@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine-jre
+FROM eclipse-temurin:11-jre-alpine
 
 ARG BUILD_DATE
 ARG BUILD_REVISION

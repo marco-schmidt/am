@@ -203,7 +203,8 @@ jacoco {
 
 jacocoTestReport {
   reports {
-    html.destination file("${buildDir}/reports/jacoco")
+    xml.required = false
+    html.required = true
   }
 }
 jacocoTestCoverageVerification.dependsOn test
@@ -211,8 +212,8 @@ jacocoTestReport.dependsOn jacocoTestCoverageVerification
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
   reports {
-    xml.enabled = false
-    html.enabled = true
+    xml.required = false
+    html.required = true
     html.stylesheet resources.text.fromFile('config/spotbugs/report-stylesheet.xsl')
   }
 }
@@ -241,7 +242,7 @@ task packageSources(type: Jar, dependsOn: 'classes') {
 
 task packageCoverageReport(type: Zip, dependsOn: 'jacocoTestReport') {
   description "create a zip archive with coverage report information"
-  from jacocoTestReport.reports.html.outputLocation
+  from jacoco.reportsDirectory
   classifier = 'coveragereport'
 }
 

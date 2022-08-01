@@ -39,7 +39,7 @@ dependencies {
   implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
   implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '2.7.0'
-  implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '4.0.4'
+  implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '4.1.0'
   implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.13.5'
   implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
   testImplementation 'junit:junit:4.13.2'

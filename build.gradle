@@ -5,13 +5,13 @@ buildscript {
 }
 
 plugins {
-  id 'com.diffplug.spotless' version '6.10.0'
-  id "com.github.ben-manes.versions" version '0.42.0'
+  id 'com.diffplug.spotless' version '6.12.0'
+  id "com.github.ben-manes.versions" version '0.44.0'
   id 'com.github.jk1.dependency-license-report' version '2.1'
-  id 'com.github.spotbugs' version '5.0.9'
-  id 'de.thetaphi.forbiddenapis' version '3.3'
+  id 'com.github.spotbugs' version '5.0.13'
+  id 'de.thetaphi.forbiddenapis' version '3.4'
   id 'jacoco'
-  id 'org.owasp.dependencycheck' version '7.1.2'
+  id 'org.owasp.dependencycheck' version '7.4.1'
   id 'net.researchgate.release' version '3.0.2'
 }
 
@@ -36,12 +36,12 @@ def licenseName = 'The Apache Software License, Version 2.0'
 defaultTasks 'clean', 'check', 'javadoc', 'installDist', 'generateLicenseReport', 'run'
 
 dependencies {
-  implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.0'
+  implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.5'
   implementation group: 'com.github.mjeanroy', name: 'exiftool-lib', version: '3.0.0'
-  implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '4.1.2'
-  implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.13.5'
-  implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.39.3.0'
+  implementation group: 'org.eclipse.rdf4j', name: 'rdf4j-repository-sparql', version: '4.2.2'
+  implementation group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version: '0.14.4'
+  implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.40.0.0'
   testImplementation 'junit:junit:4.13.2'
 }
 
@@ -62,8 +62,8 @@ configurations.all {
       details.because 'CVE-2020-13956'
     }
     if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-databind') {
-      details.useVersion '2.13.3'
-      details.because 'CVE-2020-36518'
+      details.useVersion '2.14.1'
+      details.because 'CVE-2022-42003'
     }
     if (details.requested.group == 'org.jetbrains.kotlin') {
       details.useVersion '1.7.0'
@@ -80,6 +80,10 @@ configurations.all {
     if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-compress') {
       details.useVersion '1.21'
       details.because 'CVE-2021-35515, CVE-2021-35516, CVE-2021-35517, CVE-2021-36090'
+    }
+    if (details.requested.group == 'org.apache.commons' && details.requested.name == 'commons-text') {
+      details.useVersion '1.10.0'
+      details.because 'CVE-2022-42889'
     }
   }
 }
